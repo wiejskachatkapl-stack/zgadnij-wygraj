@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZGADNIJ v1006</title>
+  <title>ZGADNIJ v1007</title>
   <style>
     :root {
       --bg1:#03101e; --bg2:#0a1f44; --panel:rgba(6,16,36,0.78); --panel2:rgba(255,255,255,0.08);
@@ -49,20 +49,24 @@
 
     .modal-backdrop{position:fixed;inset:0;background:rgba(3,10,20,.7);backdrop-filter:blur(5px);display:flex;align-items:center;justify-content:center;padding:24px;z-index:100}
     .modal{width:min(92vw,760px);border-radius:30px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,rgba(11,27,61,.97),rgba(8,19,42,.97));box-shadow:0 30px 80px rgba(0,0,0,.52);overflow:hidden}
+    .modal.small{width:min(92vw,650px)}
     .modal-header{padding:22px 28px 10px}
     .modal-badge{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.06);font-size:12px;font-weight:800;letter-spacing:.08em}
     .modal-title{margin:16px 0 6px;font-size:clamp(30px,3.5vw,44px);font-weight:900;letter-spacing:-.03em}
     .modal-desc{margin:0;color:var(--muted);font-size:16px;line-height:1.5}
     .modal-body{padding:12px 28px 28px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .modal-body.one-col{grid-template-columns:1fr}
     .field-box{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:22px;padding:16px}
     .field-box.full{grid-column:1/-1}
     .field-label{display:block;margin:0 0 10px;font-size:14px;font-weight:800;color:#cfe0ff;letter-spacing:.03em}
     .field-input{width:100%;border:none;outline:none;border-radius:16px;padding:16px 18px;background:rgba(4,11,25,.8);border:1px solid rgba(255,255,255,.12);color:#fff;font-size:18px;font-weight:700}
     .field-input[readonly]{color:#ffd34d}
     .button-row{grid-column:1/-1;display:flex;gap:16px;justify-content:center;padding-top:4px;flex-wrap:wrap}
+    .button-column{grid-column:1/-1;display:flex;flex-direction:column;gap:16px;align-items:center;padding-top:8px}
     .img-btn{background:none;border:none;padding:0;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;min-width:220px;min-height:72px}
-    .img-btn img{display:block;max-width:260px;max-height:84px;height:auto;width:auto}
-    .text-fallback{display:inline-flex;align-items:center;justify-content:center;min-width:220px;min-height:72px;padding:16px 26px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,#67b6ff,#235cd7);box-shadow:0 10px 0 #153e98,0 18px 34px rgba(0,0,0,.35);font-size:24px;font-weight:900;color:#eef7ff;letter-spacing:-.03em}
+    .img-btn img{display:block;max-width:260px;max-height:84px;height:auto;width:auto;transition:transform .15s ease}
+    .img-btn.large img{max-width:320px;max-height:96px}
+    .text-fallback{display:inline-flex;align-items:center;justify-content:center;min-width:220px;min-height:72px;padding:16px 26px;border-radius:20px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,#67b6ff,#235cd7);box-shadow:0 10px 0 #153e98,0 18px 34px rgba(0,0,0,.35);font-size:24px;font-weight:900;color:#eef7ff;letter-spacing:-.03em;transition:transform .15s ease;text-transform:uppercase}
     .text-fallback.secondary{background:linear-gradient(180deg,#31518f,#1a2f59);box-shadow:0 10px 0 #111f3f,0 18px 34px rgba(0,0,0,.35)}
     .img-btn:hover .text-fallback,.img-btn:hover img{transform:translateY(-2px)}
     .img-btn:active .text-fallback,.img-btn:active img{transform:translateY(1px)}
@@ -135,40 +139,13 @@
             <polygon points="250,20 236,44 264,44" fill="#d8422c"/>
             <circle cx="250" cy="20" r="8" fill="#f06451"/>
           </g>
-          <g fill="#f5f7ff" opacity=".9">
-            <circle cx="250" cy="21" r="4"/>
-          </g>
-          <g fill="#eef2ff" stroke="#bec7de" stroke-width="3">
-            <circle cx="250" cy="20" r="8"/>
-          </g>
-          <g fill="#f1f5ff" opacity=".88">
-            <circle cx="250" cy="21" r="6" class="hidden"></circle>
-          </g>
           <g fill="#f7f9ff" stroke="#c7cfdf" stroke-width="2">
-            <circle cx="250.0" cy="24.0" r="10"/>
-            <circle cx="308.5" cy="31.7" r="10"/>
-            <circle cx="363.0" cy="54.3" r="10"/>
-            <circle cx="409.8" cy="90.2" r="10"/>
-            <circle cx="445.7" cy="137.0" r="10"/>
-            <circle cx="468.3" cy="191.5" r="10"/>
-            <circle cx="476.0" cy="250.0" r="10"/>
-            <circle cx="468.3" cy="308.5" r="10"/>
-            <circle cx="445.7" cy="363.0" r="10"/>
-            <circle cx="409.8" cy="409.8" r="10"/>
-            <circle cx="363.0" cy="445.7" r="10"/>
-            <circle cx="308.5" cy="468.3" r="10"/>
-            <circle cx="250.0" cy="476.0" r="10"/>
-            <circle cx="191.5" cy="468.3" r="10"/>
-            <circle cx="137.0" cy="445.7" r="10"/>
-            <circle cx="90.2" cy="409.8" r="10"/>
-            <circle cx="54.3" cy="363.0" r="10"/>
-            <circle cx="31.7" cy="308.5" r="10"/>
-            <circle cx="24.0" cy="250.0" r="10"/>
-            <circle cx="31.7" cy="191.5" r="10"/>
-            <circle cx="54.3" cy="137.0" r="10"/>
-            <circle cx="90.2" cy="90.2" r="10"/>
-            <circle cx="137.0" cy="54.3" r="10"/>
-            <circle cx="191.5" cy="31.7" r="10"/>
+            <circle cx="250.0" cy="24.0" r="10"/><circle cx="308.5" cy="31.7" r="10"/><circle cx="363.0" cy="54.3" r="10"/><circle cx="409.8" cy="90.2" r="10"/>
+            <circle cx="445.7" cy="137.0" r="10"/><circle cx="468.3" cy="191.5" r="10"/><circle cx="476.0" cy="250.0" r="10"/><circle cx="468.3" cy="308.5" r="10"/>
+            <circle cx="445.7" cy="363.0" r="10"/><circle cx="409.8" cy="409.8" r="10"/><circle cx="363.0" cy="445.7" r="10"/><circle cx="308.5" cy="468.3" r="10"/>
+            <circle cx="250.0" cy="476.0" r="10"/><circle cx="191.5" cy="468.3" r="10"/><circle cx="137.0" cy="445.7" r="10"/><circle cx="90.2" cy="409.8" r="10"/>
+            <circle cx="54.3" cy="363.0" r="10"/><circle cx="31.7" cy="308.5" r="10"/><circle cx="24.0" cy="250.0" r="10"/><circle cx="31.7" cy="191.5" r="10"/>
+            <circle cx="54.3" cy="137.0" r="10"/><circle cx="90.2" cy="90.2" r="10"/><circle cx="137.0" cy="54.3" r="10"/><circle cx="191.5" cy="31.7" r="10"/>
           </g>
         </svg>
       </div>
@@ -205,7 +182,47 @@
     </div>
   </div>
 
-  <div class="version-tag">ZGADNIJ v1006</div>
+  <div class="modal-backdrop hidden" id="roomMenuModalBackdrop">
+    <div class="modal small" role="dialog" aria-modal="true" aria-labelledby="roomMenuTitle">
+      <div class="modal-header">
+        <div class="modal-badge" id="roomMenuBadge">POKÓJ GRY</div>
+        <h2 class="modal-title" id="roomMenuTitle">Wybierz akcję pokoju</h2>
+        <p class="modal-desc" id="roomMenuDesc">Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wrócić.</p>
+      </div>
+      <div class="modal-body one-col">
+        <div class="button-column">
+          <button class="img-btn large" id="createRoomBtn" type="button"></button>
+          <button class="img-btn large" id="enterRoomBtn" type="button"></button>
+          <button class="img-btn large" id="newLoginBtn" type="button"></button>
+          <button class="img-btn large" id="exitRoomMenuBtn" type="button"></button>
+        </div>
+        <div class="note" id="roomPathsNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop hidden" id="createRoomModalBackdrop">
+    <div class="modal small" role="dialog" aria-modal="true" aria-labelledby="createRoomTitle">
+      <div class="modal-header">
+        <div class="modal-badge" id="createRoomBadge">UTWÓRZ POKÓJ</div>
+        <h2 class="modal-title" id="createRoomTitle">Podaj nazwę pokoju</h2>
+        <p class="modal-desc" id="createRoomDesc">Wpisz nazwę pokoju i zatwierdź przyciskiem OK.</p>
+      </div>
+      <div class="modal-body one-col">
+        <div class="field-box full">
+          <label class="field-label" id="roomNameLabel" for="roomNameInput">Nazwa pokoju</label>
+          <input class="field-input" id="roomNameInput" type="text" maxlength="32" />
+        </div>
+        <div class="button-row">
+          <button class="img-btn" id="confirmCreateRoomBtn" type="button"></button>
+          <button class="img-btn" id="backCreateRoomBtn" type="button"></button>
+        </div>
+        <div class="note" id="createRoomPathsNote"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="version-tag">ZGADNIJ v1007</div>
 
   <script>
     const content = {
@@ -215,7 +232,13 @@
         modalDesc:'Przy pierwszym wejściu uzupełnij dane gracza. Numer wygeneruje się automatycznie.',
         playerId:'Nr gracza', nick:'Nick', country:'Kraj', addProfile:'Dodaj profil', back:'Cofnij',
         pathNote:'Ścieżki przycisków: ui/buttons/pl/btn_add_profile.png oraz ui/buttons/pl/btn_back.png',
-        alerts:{missing:'Uzupełnij Nick i Kraj.', saved:'Profil zapisany.', welcome:'Profil już istnieje. W kolejnej wersji otworzymy następne okno gry.'}
+        roomMenuBadge:'POKÓJ GRY', roomMenuTitle:'Wybierz akcję pokoju',
+        roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wrócić.',
+        createRoom:'Utwórz pokój', enterRoom:'Wejdź do pokoju', newLogin:'Nowe logowanie', exit:'Wyjście',
+        roomMenuPathNote:'Ścieżki: ui/buttons/pl/btn_create_room.png, btn_enter_room.png, btn_new_login.png, btn_exit.png',
+        createRoomBadge:'UTWÓRZ POKÓJ', createRoomTitle:'Podaj nazwę pokoju', createRoomDesc:'Wpisz nazwę pokoju i zatwierdź przyciskiem OK.',
+        roomName:'Nazwa pokoju', ok:'OK', createRoomPathNote:'Ścieżki: ui/buttons/pl/btn_ok.png oraz ui/buttons/pl/btn_back.png',
+        alerts:{missing:'Uzupełnij Nick i Kraj.', saved:'Profil zapisany.', enterRoom:'Obsługa wejścia do pokoju będzie w kolejnej wersji.', missingRoomName:'Wpisz nazwę pokoju.', roomSaved:'Pokój został zapisany lokalnie.'}
       },
       en: {
         startCaption:'START SCREEN', titleMain:'GUESS', titleSub:'AND WIN!', play:'PLAY!', langBtn:'PL / EN',
@@ -223,7 +246,13 @@
         modalDesc:'On first entry complete the player data. The player number is generated automatically.',
         playerId:'Player number', nick:'Nickname', country:'Country', addProfile:'Add profile', back:'Back',
         pathNote:'Button paths: ui/buttons/en/btn_add_profile.png and ui/buttons/en/btn_back.png',
-        alerts:{missing:'Complete Nickname and Country.', saved:'Profile saved.', welcome:'Profile already exists. In the next version we will open the next game window.'}
+        roomMenuBadge:'GAME ROOM', roomMenuTitle:'Choose room action',
+        roomMenuDesc:'After profile creation choose whether to create a room, enter a room, log in a new player, or go back.',
+        createRoom:'Create room', enterRoom:'Enter room', newLogin:'New login', exit:'Exit',
+        roomMenuPathNote:'Paths: ui/buttons/en/btn_create_room.png, btn_enter_room.png, btn_new_login.png, btn_exit.png',
+        createRoomBadge:'CREATE ROOM', createRoomTitle:'Enter room name', createRoomDesc:'Type the room name and confirm with OK.',
+        roomName:'Room name', ok:'OK', createRoomPathNote:'Paths: ui/buttons/en/btn_ok.png and ui/buttons/en/btn_back.png',
+        alerts:{missing:'Complete Nickname and Country.', saved:'Profile saved.', enterRoom:'Enter room flow will be added in the next version.', missingRoomName:'Enter the room name.', roomSaved:'Room has been saved locally.'}
       }
     };
 
@@ -244,8 +273,22 @@
       localStorage.setItem('zgadnij_profile', JSON.stringify(profile));
     }
 
+    function getRoom(){
+      try { return JSON.parse(localStorage.getItem('zgadnij_room') || 'null'); } catch(e){ return null; }
+    }
+
+    function setRoom(room){
+      localStorage.setItem('zgadnij_room', JSON.stringify(room));
+    }
+
+    function clearProfileAndRoom(){
+      localStorage.removeItem('zgadnij_profile');
+      localStorage.removeItem('zgadnij_room');
+    }
+
     function buttonMarkup(src, fallbackText, secondary=false){
-      return `<img src="${src}" alt="${fallbackText}" onerror="this.outerHTML='&lt;span class=&quot;text-fallback ${secondary?'secondary':''}&quot;&gt;${fallbackText}&lt;/span&gt;'">`;
+      const cls = secondary ? 'secondary' : '';
+      return `<img src="${src}" alt="${fallbackText}" onerror="this.outerHTML='&lt;span class=&quot;text-fallback ${cls}&quot;&gt;${fallbackText}&lt;/span&gt;'">`;
     }
 
     function renderButtons(){
@@ -253,13 +296,21 @@
       const base = `ui/buttons/${lang}/`;
       document.getElementById('saveProfileBtn').innerHTML = buttonMarkup(base + 'btn_add_profile.png', t.addProfile, false);
       document.getElementById('backProfileBtn').innerHTML = buttonMarkup(base + 'btn_back.png', t.back, true);
+      document.getElementById('createRoomBtn').innerHTML = buttonMarkup(base + 'btn_create_room.png', t.createRoom, false);
+      document.getElementById('enterRoomBtn').innerHTML = buttonMarkup(base + 'btn_enter_room.png', t.enterRoom, false);
+      document.getElementById('newLoginBtn').innerHTML = buttonMarkup(base + 'btn_new_login.png', t.newLogin, false);
+      document.getElementById('exitRoomMenuBtn').innerHTML = buttonMarkup(base + 'btn_exit.png', t.exit, true);
+      document.getElementById('confirmCreateRoomBtn').innerHTML = buttonMarkup(base + 'btn_ok.png', t.ok, false);
+      document.getElementById('backCreateRoomBtn').innerHTML = buttonMarkup(base + 'btn_back.png', t.back, true);
       document.getElementById('pathsNote').textContent = t.pathNote;
+      document.getElementById('roomPathsNote').textContent = t.roomMenuPathNote;
+      document.getElementById('createRoomPathsNote').textContent = t.createRoomPathNote;
     }
 
     function render(){
       const t = content[lang];
       document.documentElement.lang = lang;
-      document.title = 'ZGADNIJ v1006';
+      document.title = 'ZGADNIJ v1007';
       document.getElementById('startCaption').textContent = t.startCaption;
       document.getElementById('titleMain').textContent = t.titleMain;
       document.getElementById('titleSub').textContent = t.titleSub;
@@ -271,17 +322,54 @@
       document.getElementById('playerIdLabel').textContent = t.playerId;
       document.getElementById('nickLabel').textContent = t.nick;
       document.getElementById('countryLabel').textContent = t.country;
+      document.getElementById('roomMenuBadge').textContent = t.roomMenuBadge;
+      document.getElementById('roomMenuTitle').textContent = t.roomMenuTitle;
+      document.getElementById('roomMenuDesc').textContent = t.roomMenuDesc;
+      document.getElementById('createRoomBadge').textContent = t.createRoomBadge;
+      document.getElementById('createRoomTitle').textContent = t.createRoomTitle;
+      document.getElementById('createRoomDesc').textContent = t.createRoomDesc;
+      document.getElementById('roomNameLabel').textContent = t.roomName;
       renderButtons();
     }
 
     function openProfileModal(){
+      closeRoomMenuModal();
+      closeCreateRoomModal();
       document.getElementById('profileModalBackdrop').classList.remove('hidden');
       if(!document.getElementById('playerId').value) document.getElementById('playerId').value = generatePlayerId();
+      const profile = getProfile();
+      if(profile){
+        document.getElementById('playerId').value = profile.playerId || generatePlayerId();
+        document.getElementById('nickInput').value = profile.nick || '';
+        document.getElementById('countryInput').value = profile.country || '';
+      }
       setTimeout(() => document.getElementById('nickInput').focus(), 40);
     }
 
     function closeProfileModal(){
       document.getElementById('profileModalBackdrop').classList.add('hidden');
+    }
+
+    function openRoomMenuModal(){
+      closeProfileModal();
+      closeCreateRoomModal();
+      document.getElementById('roomMenuModalBackdrop').classList.remove('hidden');
+    }
+
+    function closeRoomMenuModal(){
+      document.getElementById('roomMenuModalBackdrop').classList.add('hidden');
+    }
+
+    function openCreateRoomModal(){
+      closeRoomMenuModal();
+      document.getElementById('createRoomModalBackdrop').classList.remove('hidden');
+      const room = getRoom();
+      document.getElementById('roomNameInput').value = room && room.roomName ? room.roomName : '';
+      setTimeout(() => document.getElementById('roomNameInput').focus(), 40);
+    }
+
+    function closeCreateRoomModal(){
+      document.getElementById('createRoomModalBackdrop').classList.add('hidden');
     }
 
     document.getElementById('langStartBtn').addEventListener('click', () => {
@@ -293,7 +381,7 @@
     document.getElementById('playBtn').addEventListener('click', () => {
       const profile = getProfile();
       if(profile){
-        alert(content[lang].alerts.welcome + `\n\n${lang==='pl'?'Nr gracza':'Player number'}: ${profile.playerId}\n${lang==='pl'?'Nick':'Nickname'}: ${profile.nick}`);
+        openRoomMenuModal();
       } else {
         openProfileModal();
       }
@@ -307,12 +395,53 @@
       const playerId = document.getElementById('playerId').value.trim() || generatePlayerId();
       if(!nick || !country){ alert(content[lang].alerts.missing); return; }
       setProfile({ playerId, nick, country, lang });
-      alert(content[lang].alerts.saved + `\n\n${playerId}`);
-      closeProfileModal();
+      openRoomMenuModal();
+    });
+
+    document.getElementById('createRoomBtn').addEventListener('click', openCreateRoomModal);
+
+    document.getElementById('enterRoomBtn').addEventListener('click', () => {
+      alert(content[lang].alerts.enterRoom);
+    });
+
+    document.getElementById('newLoginBtn').addEventListener('click', () => {
+      clearProfileAndRoom();
+      document.getElementById('playerId').value = generatePlayerId();
+      document.getElementById('nickInput').value = '';
+      document.getElementById('countryInput').value = '';
+      openProfileModal();
+    });
+
+    document.getElementById('exitRoomMenuBtn').addEventListener('click', closeRoomMenuModal);
+
+    document.getElementById('confirmCreateRoomBtn').addEventListener('click', () => {
+      const roomName = document.getElementById('roomNameInput').value.trim();
+      const profile = getProfile();
+      if(!roomName){ alert(content[lang].alerts.missingRoomName); return; }
+      setRoom({ roomName, ownerId: profile ? profile.playerId : '', createdAt: new Date().toISOString() });
+      alert(content[lang].alerts.roomSaved + `\n\n${roomName}`);
+      closeCreateRoomModal();
+      openRoomMenuModal();
+    });
+
+    document.getElementById('backCreateRoomBtn').addEventListener('click', () => {
+      closeCreateRoomModal();
+      openRoomMenuModal();
     });
 
     document.getElementById('profileModalBackdrop').addEventListener('click', (e) => {
       if(e.target.id === 'profileModalBackdrop') closeProfileModal();
+    });
+
+    document.getElementById('roomMenuModalBackdrop').addEventListener('click', (e) => {
+      if(e.target.id === 'roomMenuModalBackdrop') closeRoomMenuModal();
+    });
+
+    document.getElementById('createRoomModalBackdrop').addEventListener('click', (e) => {
+      if(e.target.id === 'createRoomModalBackdrop') {
+        closeCreateRoomModal();
+        openRoomMenuModal();
+      }
     });
 
     render();
