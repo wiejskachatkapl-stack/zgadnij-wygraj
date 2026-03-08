@@ -53,7 +53,7 @@
     <div class="top-badge" id="homeBadge">STRONA STARTOWA</div>
     <button class="lang-btn" id="langBtn" type="button">PL / EN</button>
     <button class="play-hotspot" id="playBtn" type="button" aria-label="Graj"></button>
-    <div class="version">ZGADNIJ v1015</div>
+    <div class="version">ZGADNIJ v1016</div>
 
     <div class="backdrop" id="backdrop">
       <div class="modal compact" id="modalProfile">
@@ -136,8 +136,8 @@
     import { getDatabase, ref, set, get, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const t = {
-      pl:{homeBadge:'STRONA STARTOWA',profilePill:'PROFIL',profileTitle:'Dodaj profil gracza',profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',labelPlayerNo:'Nr gracza',labelNick:'Nick',labelCountry:'Kraj',roomPill:'POKÓJ GRY',roomMenuTitle:'Wybierz akcję pokoju',roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',createPill:'TWORZENIE POKOJU',createTitle:'Załóż nowy pokój',createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.',labelRoomName:'Nazwa pokoju',joinPill:'DOŁĄCZANIE',joinTitle:'Dołącz do pokoju',joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.',labelRoomCode:'Kod pokoju',openPill:'OTWARTY POKÓJ',openTitle:'Pokój został otwarty',openDesc:'To jest podłączony widok pokoju z Firebase i listą graczy online.',openCodeLabel:'Kod pokoju:',openHostLabel:'Gracz:',onlineLabel:'Gracze online',saveProfileMissing:'Uzupełnij Nick i Kraj.',roomNameMissing:'Wpisz nazwę pokoju.',enterRoomMissing:'Podaj kod pokoju.',enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',host:'Gospodarz',player:'Gracz',online:'online',none:'Brak graczy online',dbg:'Debug'},
-      en:{homeBadge:'HOME SCREEN',profilePill:'PROFILE',profileTitle:'Create player profile',profileDesc:'At first entry, create a profile to continue to the game room.',labelPlayerNo:'Player No.',labelNick:'Nick',labelCountry:'Country',roomPill:'GAME ROOM',roomMenuTitle:'Choose room action',roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',createPill:'ROOM CREATION',createTitle:'Create new room',createDesc:'Enter a room name. After confirmation, the game room will open.',labelRoomName:'Room name',joinPill:'JOIN ROOM',joinTitle:'Join a room',joinDesc:'Enter the room code. If valid, the game room will open.',labelRoomCode:'Room code',openPill:'OPEN ROOM',openTitle:'Room opened',openDesc:'This is a Firebase-connected room view with a live online players list.',openCodeLabel:'Room code:',openHostLabel:'Player:',onlineLabel:'Online players',saveProfileMissing:'Fill in Nick and Country.',roomNameMissing:'Enter room name.',enterRoomMissing:'Enter room code.',enterRoomNotFound:'No room found with this code.',firebaseReady:'Firebase is working. The online players list refreshes live.',host:'Host',player:'Player',online:'online',none:'No players online',dbg:'Debug'}
+      pl:{homeBadge:'STRONA STARTOWA',profilePill:'PROFIL',profileTitle:'Dodaj profil gracza',profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',labelPlayerNo:'Nr gracza',labelNick:'Nick',labelCountry:'Kraj',roomPill:'POKÓJ GRY',roomMenuTitle:'Wybierz akcję pokoju',roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',createPill:'TWORZENIE POKOJU',createTitle:'Załóż nowy pokój',createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.',labelRoomName:'Nazwa pokoju',joinPill:'DOŁĄCZANIE',joinTitle:'Dołącz do pokoju',joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.',labelRoomCode:'Kod pokoju',openPill:'OTWARTY POKÓJ',openTitle:'Pokój został otwarty',openDesc:'To jest podłączony widok pokoju z Firebase i listą graczy online.',openCodeLabel:'Kod pokoju:',openHostLabel:'Gracz:',onlineLabel:'Gracze online',saveProfileMissing:'Uzupełnij Nick i Kraj.',roomNameMissing:'Wpisz nazwę pokoju.',enterRoomMissing:'Podaj kod pokoju.',enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',host:'Gospodarz',player:'Gracz',online:'online',none:'Brak graczy online'},
+      en:{homeBadge:'HOME SCREEN',profilePill:'PROFILE',profileTitle:'Create player profile',profileDesc:'At first entry, create a profile to continue to the game room.',labelPlayerNo:'Player No.',labelNick:'Nick',labelCountry:'Country',roomPill:'GAME ROOM',roomMenuTitle:'Choose room action',roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',createPill:'ROOM CREATION',createTitle:'Create new room',createDesc:'Enter a room name. After confirmation, the game room will open.',labelRoomName:'Room name',joinPill:'JOIN ROOM',joinTitle:'Join a room',joinDesc:'Enter the room code. If valid, the game room will open.',labelRoomCode:'Room code',openPill:'OPEN ROOM',openTitle:'Room opened',openDesc:'This is a Firebase-connected room view with a live online players list.',openCodeLabel:'Room code:',openHostLabel:'Player:',onlineLabel:'Online players',saveProfileMissing:'Fill in Nick and Country.',roomNameMissing:'Enter room name.',enterRoomMissing:'Enter room code.',enterRoomNotFound:'No room found with this code.',firebaseReady:'Firebase is working. The online players list refreshes live.',host:'Host',player:'Player',online:'online',none:'No players online'}
     };
 
     const firebaseConfig = {
@@ -156,6 +156,7 @@
     let lang = localStorage.getItem('zgadnij_lang') || 'pl';
     let currentRoomCode = null;
     let currentPlayersUnsub = null;
+    let currentConnectedUnsub = null;
 
     const profileKey = 'zgadnij_profile';
 
@@ -180,11 +181,7 @@
     function randRoomCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out=''; for(let i=0;i<6;i++) out+=chars[Math.floor(Math.random()*chars.length)]; return out; }
     function getProfile(){ try{return JSON.parse(localStorage.getItem(profileKey)||'null')}catch(e){return null} }
     function setProfile(p){ localStorage.setItem(profileKey, JSON.stringify(p)); }
-    function getSessionId(){
-      let sid=sessionStorage.getItem('zgadnij_session_id');
-      if(!sid){ sid='tab_' + Math.random().toString(36).slice(2,10); sessionStorage.setItem('zgadnij_session_id',sid); }
-      return sid;
-    }
+    function getSessionId(){ let sid=sessionStorage.getItem('zgadnij_session_id'); if(!sid){ sid='tab_' + Math.random().toString(36).slice(2,10); sessionStorage.setItem('zgadnij_session_id',sid); } return sid; }
     function btnPath(file){ return `ui/buttons/${lang}/${file}`; }
 
     function makeImgButton(el, file, fallbackText, onClick){
@@ -240,7 +237,15 @@
 
     function showModal(which){ [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); backdrop.classList.add('show'); which.classList.remove('hidden'); if(which===modalRoomMenu){ roomNameInput.value=''; roomCodeInput.value=''; } }
     function closeAll(){ backdrop.classList.remove('show'); [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); }
-    function saveProfile(){ const nick=nickInput.value.trim(); const country=countryInput.value.trim(); if(!nick||!country){ alert(t[lang].saveProfileMissing); return; } setProfile({playerNo:playerNo.value,nick,country}); showModal(modalRoomMenu); }
+    function saveProfile(){
+      const nick=nickInput.value.trim();
+      const country=countryInput.value.trim();
+      if(!nick||!country){ alert(t[lang].saveProfileMissing); return; }
+      const playerNoValue = playerNo.value || randPlayerNo();
+      playerNo.value = playerNoValue;
+      setProfile({playerNo:playerNoValue,nick,country});
+      showModal(modalRoomMenu);
+    }
     function newLogin(){ localStorage.removeItem(profileKey); playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); }
 
     async function createRoom(){
@@ -261,7 +266,7 @@
     }
 
     async function attachPresence(room){
-      const profile=getProfile();
+      const profile=getProfile() || {};
       const sessionId=getSessionId();
       const playerRef=ref(db, `rooms/${room.code}/players/${sessionId}`);
       const playersRef=ref(db, `rooms/${room.code}/players`);
@@ -272,24 +277,23 @@
         renderPlayers(snap.val() || {}, room);
       });
 
-      onValue(connectedRef, async (snap) => {
-        if (snap.val() !== true) {
-          firebaseNote.textContent = t[lang].firebaseReady + "\n" + t[lang].dbg + ": offline";
-          return;
-        }
+      if(currentConnectedUnsub) currentConnectedUnsub();
+      currentConnectedUnsub = onValue(connectedRef, async (snap) => {
+        if (snap.val() !== true) return;
         try{
           await onDisconnect(playerRef).remove();
-          await set(playerRef, {
-            sessionId,
-            nick: profile ? profile.nick : '---',
-            country: profile ? profile.country : '',
-            playerNo: profile ? profile.playerNo : '',
+          const safePlayer = {
+            sessionId: sessionId || '',
+            nick: profile.nick || '---',
+            country: profile.country || '',
+            playerNo: profile.playerNo || '',
             online: true,
             joinedAt: Date.now()
-          });
-          firebaseNote.textContent = t[lang].firebaseReady + "\n" + t[lang].dbg + `: session=${sessionId}`;
+          };
+          await set(playerRef, safePlayer);
+          firebaseNote.textContent=t[lang].firebaseReady;
         }catch(err){
-          firebaseNote.textContent = 'Firebase error: ' + (err?.message || err);
+          firebaseNote.textContent='Firebase error: ' + (err?.message || err);
         }
       });
 
@@ -331,12 +335,17 @@
       const sessionId=getSessionId();
       try { await remove(ref(db, `rooms/${currentRoomCode}/players/${sessionId}`)); } catch(e) {}
       if(currentPlayersUnsub){ currentPlayersUnsub(); currentPlayersUnsub=null; }
+      if(currentConnectedUnsub){ currentConnectedUnsub(); currentConnectedUnsub=null; }
       currentRoomCode=null;
     }
     async function leaveCurrentPresenceAndBack(){ await leavePresence(); showModal(modalRoomMenu); }
     async function leaveCurrentPresenceAndClose(){ await leavePresence(); closeAll(); }
 
-    playBtn.addEventListener('click', ()=>{ const profile=getProfile(); if(profile){ showModal(modalRoomMenu); } else { playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); } });
+    playBtn.addEventListener('click', ()=>{
+      const profile=getProfile();
+      if(profile){ showModal(modalRoomMenu); }
+      else { playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); }
+    });
     backdrop.addEventListener('click',(e)=>{ if(e.target===backdrop) closeAll(); });
     langBtn.addEventListener('click', ()=>{ lang = lang === 'pl' ? 'en' : 'pl'; applyLang(); });
     applyLang();
