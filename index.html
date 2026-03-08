@@ -22,6 +22,7 @@
     .backdrop.show{display:flex}
     .modal{width:min(760px,calc(100vw - 52px));max-height:min(86vh,760px);background:linear-gradient(180deg, rgba(34,68,150,.96), rgba(11,31,78,.96));border:1px solid rgba(150,190,255,.18);border-radius:34px;box-shadow:var(--shadow),0 0 0 1px rgba(120,165,255,.14) inset;padding:26px 28px 22px;overflow:auto;position:relative}
     .modal.compact{width:min(650px,calc(100vw - 52px))}
+    .modal.room-screen{width:min(1180px,calc(100vw - 48px));max-height:min(90vh,820px);padding:20px 22px 18px}
     .pill{display:inline-block;padding:10px 16px;border-radius:999px;background:rgba(12,34,85,.6);border:1px solid rgba(180,210,255,.18);font-weight:700;margin-bottom:14px;font-size:18px}
     h1{margin:8px 0 12px;font-size:clamp(32px,4vw,66px);line-height:.95}
     .desc{margin:0 0 18px;color:var(--sub);font-size:18px;line-height:1.35}
@@ -36,14 +37,37 @@
     input{width:100%;border-radius:16px;padding:14px 16px;border:1px solid rgba(255,255,255,.18);background:rgba(4,18,52,.7);color:#fff;font-size:18px;outline:none}
     .row-actions{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:18px;flex-wrap:wrap}
     .room-card{margin-top:16px;background:rgba(5,18,52,.52);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}
-    .room-title{font-size:34px;font-weight:800;margin:0 0 6px}
-    .room-meta{font-size:18px;color:#d8e4ff;line-height:1.5}
     .section-label{margin-top:16px;font-size:16px;font-weight:700;color:#dfe8ff;letter-spacing:.3px}
     .player-list{margin-top:10px;display:grid;gap:10px}
     .player{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:18px}
     .system-note{margin-top:14px;padding:14px 16px;border-radius:18px;background:rgba(255,210,90,.12);border:1px solid rgba(255,210,90,.28);color:#fff3c5;font-size:15px;line-height:1.45;white-space:pre-line}
     .hidden{display:none !important}
-    @media (max-width:900px){.top-badge,.lang-btn{font-size:15px;padding:11px 14px}.play-hotspot{width:min(38vw,300px);height:min(17vw,110px);bottom:7%}.modal{padding:22px 18px 18px}.desc{font-size:16px}.img-btn img{width:min(62vw,350px);max-height:82px}.fallback{font-size:20px;min-width:220px}.player{font-size:16px}}
+
+    .room-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
+    .room-title-big{font-size:clamp(34px,5vw,62px);font-weight:900;line-height:.95;margin:6px 0 0}
+    .room-code-badge{padding:14px 18px;border-radius:18px;background:rgba(7,24,63,.7);border:1px solid rgba(255,255,255,.14);font-size:20px;font-weight:800}
+    .room-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:18px}
+    .panel{background:rgba(7,24,63,.62);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}
+    .panel h3{margin:0 0 12px;font-size:28px}
+    .big-board{height:280px;border-radius:20px;border:1px dashed rgba(150,190,255,.35);background:linear-gradient(180deg, rgba(19,52,127,.55), rgba(7,26,74,.4));display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#dbe7ff;font-size:28px;font-weight:800}
+    .room-actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+    .room-text-btn{padding:14px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,#2b67ff,#1645c6);color:#fff;font-size:22px;font-weight:800;cursor:pointer}
+    .room-text-btn.secondary{background:rgba(255,255,255,.1)}
+    .room-meta-line{font-size:20px;color:#dce6ff;line-height:1.5}
+    .room-sub{color:#d0ddff;font-size:18px;line-height:1.4}
+    @media (max-width:900px){
+      .top-badge,.lang-btn{font-size:15px;padding:11px 14px}
+      .play-hotspot{width:min(38vw,300px);height:min(17vw,110px);bottom:7%}
+      .modal{padding:22px 18px 18px}
+      .desc{font-size:16px}
+      .img-btn img{width:min(62vw,350px);max-height:82px}
+      .fallback{font-size:20px;min-width:220px}
+      .player{font-size:16px}
+      .room-layout{grid-template-columns:1fr}
+      .big-board{height:180px;font-size:22px}
+      .room-text-btn{font-size:18px}
+      .room-code-badge{font-size:17px}
+    }
   </style>
 </head>
 <body>
@@ -53,7 +77,7 @@
     <div class="top-badge" id="homeBadge">STRONA STARTOWA</div>
     <button class="lang-btn" id="langBtn" type="button">PL / EN</button>
     <button class="play-hotspot" id="playBtn" type="button" aria-label="Graj"></button>
-    <div class="version">ZGADNIJ v1016</div>
+    <div class="version">ZGADNIJ v1017</div>
 
     <div class="backdrop" id="backdrop">
       <div class="modal compact" id="modalProfile">
@@ -109,20 +133,38 @@
         </div>
       </div>
 
-      <div class="modal hidden" id="modalOpenRoom">
-        <div class="pill" id="openPill">OTWARTY POKÓJ</div>
-        <h1 id="openTitle">Pokój został otwarty</h1>
-        <p class="desc" id="openDesc">To jest podłączony widok pokoju z Firebase i listą graczy online.</p>
-        <div class="room-card">
-          <div class="room-title" id="openRoomName">Pokój: ---</div>
-          <div class="room-meta">
-            <div><strong id="openCodeLabel">Kod pokoju:</strong> <span id="openRoomCode">------</span></div>
-            <div><strong id="openHostLabel">Gracz:</strong> <span id="openPlayerName">---</span></div>
+      <div class="modal room-screen hidden" id="modalOpenRoom">
+        <div class="room-top">
+          <div>
+            <div class="pill" id="openPill">POKÓJ GRY</div>
+            <div class="room-title-big" id="openRoomName">Pokój: ---</div>
+            <div class="room-sub" id="openDesc">Lobby pokoju zostało otwarte. Tutaj będziemy budować dalszą rozgrywkę.</div>
           </div>
-          <div class="section-label" id="onlineLabel">Gracze online</div>
-          <div class="player-list" id="onlinePlayersList"></div>
-          <div class="system-note" id="firebaseNote"></div>
+          <div class="room-code-badge"><span id="openCodeLabel">Kod pokoju:</span> <span id="openRoomCode">------</span></div>
         </div>
+
+        <div class="room-layout">
+          <div class="panel">
+            <h3 id="boardTitle">Strefa pokoju</h3>
+            <div class="big-board" id="roomBoard">
+              Lobby pokoju jest już otwarte.<br>
+              Następny krok to ekran właściwej gry.
+            </div>
+            <div class="room-actions">
+              <button class="room-text-btn" id="btnStartGameText">START GRY</button>
+              <button class="room-text-btn secondary" id="btnBackLobbyText">COFNIJ</button>
+              <button class="room-text-btn secondary" id="btnExitLobbyText">WYJŚCIE</button>
+            </div>
+          </div>
+
+          <div class="panel">
+            <h3 id="playersTitle">Gracze online</h3>
+            <div class="room-meta-line"><strong id="openHostLabel">Gracz:</strong> <span id="openPlayerName">---</span></div>
+            <div class="player-list" id="onlinePlayersList" style="margin-top:14px"></div>
+            <div class="system-note" id="firebaseNote" style="margin-top:16px"></div>
+          </div>
+        </div>
+
         <div class="row-actions">
           <button class="img-btn" id="backFromOpenRoomBtn" type="button"></button>
           <button class="img-btn" id="exitFromOpenRoomBtn" type="button"></button>
@@ -136,8 +178,44 @@
     import { getDatabase, ref, set, get, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const t = {
-      pl:{homeBadge:'STRONA STARTOWA',profilePill:'PROFIL',profileTitle:'Dodaj profil gracza',profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',labelPlayerNo:'Nr gracza',labelNick:'Nick',labelCountry:'Kraj',roomPill:'POKÓJ GRY',roomMenuTitle:'Wybierz akcję pokoju',roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',createPill:'TWORZENIE POKOJU',createTitle:'Załóż nowy pokój',createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.',labelRoomName:'Nazwa pokoju',joinPill:'DOŁĄCZANIE',joinTitle:'Dołącz do pokoju',joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.',labelRoomCode:'Kod pokoju',openPill:'OTWARTY POKÓJ',openTitle:'Pokój został otwarty',openDesc:'To jest podłączony widok pokoju z Firebase i listą graczy online.',openCodeLabel:'Kod pokoju:',openHostLabel:'Gracz:',onlineLabel:'Gracze online',saveProfileMissing:'Uzupełnij Nick i Kraj.',roomNameMissing:'Wpisz nazwę pokoju.',enterRoomMissing:'Podaj kod pokoju.',enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',host:'Gospodarz',player:'Gracz',online:'online',none:'Brak graczy online'},
-      en:{homeBadge:'HOME SCREEN',profilePill:'PROFILE',profileTitle:'Create player profile',profileDesc:'At first entry, create a profile to continue to the game room.',labelPlayerNo:'Player No.',labelNick:'Nick',labelCountry:'Country',roomPill:'GAME ROOM',roomMenuTitle:'Choose room action',roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',createPill:'ROOM CREATION',createTitle:'Create new room',createDesc:'Enter a room name. After confirmation, the game room will open.',labelRoomName:'Room name',joinPill:'JOIN ROOM',joinTitle:'Join a room',joinDesc:'Enter the room code. If valid, the game room will open.',labelRoomCode:'Room code',openPill:'OPEN ROOM',openTitle:'Room opened',openDesc:'This is a Firebase-connected room view with a live online players list.',openCodeLabel:'Room code:',openHostLabel:'Player:',onlineLabel:'Online players',saveProfileMissing:'Fill in Nick and Country.',roomNameMissing:'Enter room name.',enterRoomMissing:'Enter room code.',enterRoomNotFound:'No room found with this code.',firebaseReady:'Firebase is working. The online players list refreshes live.',host:'Host',player:'Player',online:'online',none:'No players online'}
+      pl:{
+        homeBadge:'STRONA STARTOWA', profilePill:'PROFIL', profileTitle:'Dodaj profil gracza',
+        profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',
+        labelPlayerNo:'Nr gracza', labelNick:'Nick', labelCountry:'Kraj',
+        roomPill:'POKÓJ GRY', roomMenuTitle:'Wybierz akcję pokoju',
+        roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
+        createPill:'TWORZENIE POKOJU', createTitle:'Załóż nowy pokój',
+        createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.', labelRoomName:'Nazwa pokoju',
+        joinPill:'DOŁĄCZANIE', joinTitle:'Dołącz do pokoju',
+        joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.', labelRoomCode:'Kod pokoju',
+        openPill:'POKÓJ GRY', openDesc:'Lobby pokoju zostało otwarte. Tutaj będziemy budować dalszą rozgrywkę.',
+        openCodeLabel:'Kod pokoju:', openHostLabel:'Gracz:', playersTitle:'Gracze online', boardTitle:'Strefa pokoju',
+        boardText:'Lobby pokoju jest już otwarte.<br>Następny krok to ekran właściwej gry.',
+        saveProfileMissing:'Uzupełnij Nick i Kraj.', roomNameMissing:'Wpisz nazwę pokoju.',
+        enterRoomMissing:'Podaj kod pokoju.', enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',
+        firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',
+        host:'Gospodarz', player:'Gracz', online:'online', none:'Brak graczy online',
+        startGame:'START GRY', back:'COFNIJ', exit:'WYJŚCIE', room:'Pokój'
+      },
+      en:{
+        homeBadge:'HOME SCREEN', profilePill:'PROFILE', profileTitle:'Create player profile',
+        profileDesc:'At first entry, create a profile to continue to the game room.',
+        labelPlayerNo:'Player No.', labelNick:'Nick', labelCountry:'Country',
+        roomPill:'GAME ROOM', roomMenuTitle:'Choose room action',
+        roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',
+        createPill:'ROOM CREATION', createTitle:'Create new room',
+        createDesc:'Enter a room name. After confirmation, the game room will open.', labelRoomName:'Room name',
+        joinPill:'JOIN ROOM', joinTitle:'Join a room',
+        joinDesc:'Enter the room code. If valid, the game room will open.', labelRoomCode:'Room code',
+        openPill:'GAME ROOM', openDesc:'The room lobby is open. Here we will build the next gameplay screens.',
+        openCodeLabel:'Room code:', openHostLabel:'Player:', playersTitle:'Online players', boardTitle:'Room area',
+        boardText:'The room lobby is already open.<br>The next step is the actual gameplay screen.',
+        saveProfileMissing:'Fill in Nick and Country.', roomNameMissing:'Enter room name.',
+        enterRoomMissing:'Enter room code.', enterRoomNotFound:'No room found with this code.',
+        firebaseReady:'Firebase is working. The online players list refreshes live.',
+        host:'Host', player:'Player', online:'online', none:'No players online',
+        startGame:'START GAME', back:'BACK', exit:'EXIT', room:'Room'
+      }
     };
 
     const firebaseConfig = {
@@ -214,11 +292,15 @@
       document.getElementById('joinDesc').textContent=t[lang].joinDesc;
       document.getElementById('labelRoomCode').textContent=t[lang].labelRoomCode;
       document.getElementById('openPill').textContent=t[lang].openPill;
-      document.getElementById('openTitle').textContent=t[lang].openTitle;
-      document.getElementById('openDesc').textContent=t[lang].openDesc;
       document.getElementById('openCodeLabel').textContent=t[lang].openCodeLabel;
       document.getElementById('openHostLabel').textContent=t[lang].openHostLabel;
-      document.getElementById('onlineLabel').textContent=t[lang].onlineLabel;
+      document.getElementById('playersTitle').textContent=t[lang].playersTitle;
+      document.getElementById('boardTitle').textContent=t[lang].boardTitle;
+      document.getElementById('openDesc').textContent=t[lang].openDesc;
+      document.getElementById('roomBoard').innerHTML=t[lang].boardText;
+      document.getElementById('btnStartGameText').textContent=t[lang].startGame;
+      document.getElementById('btnBackLobbyText').textContent=t[lang].back;
+      document.getElementById('btnExitLobbyText').textContent=t[lang].exit;
       firebaseNote.textContent=t[lang].firebaseReady;
 
       makeImgButton(document.getElementById('addProfileBtn'),'btn_add_profile.png',lang==='pl'?'Dodaj profil':'Add profile',saveProfile);
@@ -238,8 +320,7 @@
     function showModal(which){ [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); backdrop.classList.add('show'); which.classList.remove('hidden'); if(which===modalRoomMenu){ roomNameInput.value=''; roomCodeInput.value=''; } }
     function closeAll(){ backdrop.classList.remove('show'); [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); }
     function saveProfile(){
-      const nick=nickInput.value.trim();
-      const country=countryInput.value.trim();
+      const nick=nickInput.value.trim(); const country=countryInput.value.trim();
       if(!nick||!country){ alert(t[lang].saveProfileMissing); return; }
       const playerNoValue = playerNo.value || randPlayerNo();
       playerNo.value = playerNoValue;
@@ -282,15 +363,14 @@
         if (snap.val() !== true) return;
         try{
           await onDisconnect(playerRef).remove();
-          const safePlayer = {
+          await set(playerRef, {
             sessionId: sessionId || '',
             nick: profile.nick || '---',
             country: profile.country || '',
             playerNo: profile.playerNo || '',
             online: true,
             joinedAt: Date.now()
-          };
-          await set(playerRef, safePlayer);
+          });
           firebaseNote.textContent=t[lang].firebaseReady;
         }catch(err){
           firebaseNote.textContent='Firebase error: ' + (err?.message || err);
@@ -322,7 +402,7 @@
 
     async function openRoom(room){
       const profile=getProfile();
-      document.getElementById('openRoomName').textContent=`${lang==='pl'?'Pokój':'Room'}: ${room.name}`;
+      document.getElementById('openRoomName').textContent=`${t[lang].room}: ${room.name}`;
       document.getElementById('openRoomCode').textContent=room.code;
       document.getElementById('openPlayerName').textContent=profile ? profile.nick : room.hostNick || '---';
       firebaseNote.textContent=t[lang].firebaseReady;
@@ -340,6 +420,14 @@
     }
     async function leaveCurrentPresenceAndBack(){ await leavePresence(); showModal(modalRoomMenu); }
     async function leaveCurrentPresenceAndClose(){ await leavePresence(); closeAll(); }
+
+    document.getElementById('btnStartGameText').addEventListener('click', () => {
+      document.getElementById('roomBoard').innerHTML = lang === 'pl'
+        ? 'Pokój został otwarty poprawnie.<br>Tu podepniemy teraz właściwy ekran gry.'
+        : 'The room opened correctly.<br>Next we will connect the actual gameplay screen.';
+    });
+    document.getElementById('btnBackLobbyText').addEventListener('click', leaveCurrentPresenceAndBack);
+    document.getElementById('btnExitLobbyText').addEventListener('click', leaveCurrentPresenceAndClose);
 
     playBtn.addEventListener('click', ()=>{
       const profile=getProfile();
