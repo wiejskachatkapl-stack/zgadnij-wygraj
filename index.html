@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZGADNIJ v1005</title>
+  <style>
+    :root {
+      --bg1:#03101e;
+      --bg2:#0a1f44;
+      --panel:rgba(6,16,36,0.78);
+      --panel2:rgba(255,255,255,0.08);
+      --line:rgba(255,255,255,0.16);
+      --text:#eef6ff;
+      --muted:#b7c7dd;
+      --cyan:#67ddff;
+      --blue:#5682ff;
+      --gold:#ffd34d;
+      --green:#45d687;
+      --shadow:0 18px 44px rgba(0,0,0,.38);
+      --r1:28px;
+      --r2:22px;
+      --r3:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0;min-height:100%;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:
+      radial-gradient(circle at 20% 18%, rgba(103,221,255,.14), transparent 0 23%),
+      radial-gradient(circle at 80% 82%, rgba(86,130,255,.18), transparent 0 25%),
+      linear-gradient(180deg,var(--bg1),var(--bg2));overflow-x:hidden}
+    body.screen-start-active{overflow:hidden}
+    body.modal-open{overflow:hidden}
+    .hidden{display:none!important}
+
+    .screen-start{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;padding:24px;background:
+      radial-gradient(circle at 50% 15%, rgba(100,210,255,.08), transparent 0 25%),
+      linear-gradient(180deg,#020c18,#081b38)}
+    .start-frame{position:relative;width:min(94vw,1380px);aspect-ratio:16/9;border-radius:30px;overflow:hidden;border:1px solid rgba(255,255,255,.14);box-shadow:0 30px 90px rgba(0,0,0,.45);background:
+      radial-gradient(circle at 50% 30%, rgba(120,170,255,.25), transparent 0 24%),
+      radial-gradient(circle at 50% 50%, rgba(255,255,255,.06), transparent 0 55%),
+      linear-gradient(180deg,#07112a,#132f7a 40%, #0d1e4e 100%)}
+    .start-bg{position:absolute;inset:0;width:100%;height:100%;display:block}
+    .overlay-panel{position:absolute;inset:20px;border-radius:26px;border:1px solid rgba(255,255,255,.14);pointer-events:none}
+    .start-caption,.lang-start-btn{position:absolute;top:18px;z-index:4;padding:12px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.16);background:rgba(4,13,28,.56);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);font-weight:800;letter-spacing:.06em;color:var(--text)}
+    .start-caption{left:18px;font-size:14px}
+    .lang-start-btn{right:18px;font-size:14px;cursor:pointer}
+
+    .title-wrap{position:absolute;left:50%;top:6%;transform:translateX(-50%);text-align:center;z-index:3;width:min(80%,900px)}
+    .title-wrap .title-box{display:inline-block;padding:14px 28px 18px;border-radius:28px;background:linear-gradient(180deg,#183fba,#102b74);border:2px solid rgba(255,255,255,.15);box-shadow:0 16px 50px rgba(0,0,0,.35)}
+    .title-main{font-size:clamp(44px,7vw,98px);font-weight:900;line-height:.9;letter-spacing:-.05em;text-transform:uppercase;color:var(--gold);text-shadow:0 5px 0 #ad6d00,0 10px 22px rgba(0,0,0,.38)}
+    .title-sub{display:block;margin-top:4px;font-size:clamp(34px,5.5vw,78px);font-weight:900;line-height:.95;color:#ff6b3d;text-shadow:0 4px 0 #9d2d08,0 10px 20px rgba(0,0,0,.35)}
+    .title-stars{color:#ffd34d;text-shadow:0 0 18px rgba(255,211,77,.45)}
+
+    .wheel-wrap{position:absolute;left:50%;top:55%;transform:translate(-50%,-50%);width:min(42vw,580px);aspect-ratio:1/1;z-index:2;filter:drop-shadow(0 18px 36px rgba(0,0,0,.45))}
+    .play-button{position:absolute;left:50%;bottom:4.8%;transform:translateX(-50%);z-index:4;border:none;border-radius:32px;padding:18px 46px;min-width:220px;font-size:clamp(34px,4vw,62px);font-weight:900;letter-spacing:-.04em;color:#eef7ff;background:linear-gradient(180deg,#68baff,#2660d8);box-shadow:0 10px 0 #173d97,0 18px 34px rgba(0,0,0,.35);cursor:pointer;transition:transform .15s ease,filter .15s ease,box-shadow .15s ease;will-change:transform}
+    .play-button:hover{transform:translateX(-50%) translateY(-2px)}
+    .play-button:active{transform:translateX(-50%) translateY(1px)}
+    .nav-btn:hover,.action-btn:hover,.lang-btn:hover,.back-to-start:hover,.profile-btn:hover,.img-btn:hover{transform:translateY(-2px)}
+    .nav-btn:active,.action-btn:active,.lang-btn:active,.back-to-start:active,.profile-btn:active,.img-btn:active{transform:translateY(1px)}
+    .start-note{position:absolute;left:50%;bottom:16.5%;transform:translateX(-50%);z-index:4;padding:10px 18px;border-radius:999px;background:rgba(4,13,28,.58);border:1px solid rgba(255,255,255,.14);font-weight:700;color:#cde8ff;font-size:14px}
+
+    .page{max-width:1380px;min-height:100vh;margin:0 auto;padding:28px;display:flex;flex-direction:column}
+    .topbar{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px}
+    .badge,.lang-btn,.online,.back-to-start{border:1px solid var(--line);background:rgba(255,255,255,.08);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);border-radius:999px;padding:12px 18px;box-shadow:var(--shadow)}
+    .badge{font-size:12px;letter-spacing:.22em;text-transform:uppercase;display:inline-flex;align-items:center;gap:10px}
+    .badge-dot{width:10px;height:10px;border-radius:50%;background:var(--green);box-shadow:0 0 14px rgba(69,214,135,.9)}
+    .topbar-right{display:flex;gap:12px;flex-wrap:wrap}
+    .lang-btn,.back-to-start{color:var(--text);font-weight:800;cursor:pointer}
+    .hero{display:grid;grid-template-columns:1.15fr .85fr;gap:28px;flex:1;align-items:center}
+    .hero-left,.hero-right,.feature,.lobby-box,.player-row,.access-panel,.settings-panel{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);box-shadow:var(--shadow)}
+    .hero-left,.hero-right,.access-panel,.settings-panel{border-radius:var(--r1);padding:28px}
+    .hero-top-line{display:inline-block;padding:10px 16px;border-radius:999px;margin-bottom:18px;background:rgba(103,221,255,.12);border:1px solid rgba(103,221,255,.22);color:#bff4ff;font-size:14px;font-weight:800}
+    h1{margin:0;font-size:clamp(42px,7vw,78px);line-height:.98;font-weight:900;letter-spacing:-.03em;text-shadow:0 8px 28px rgba(0,0,0,.35)}
+    .title-accent{background:linear-gradient(90deg,#71ebff,#fff,#8cb1ff);-webkit-background-clip:text;background-clip:text;color:transparent}
+    .subtitle{margin-top:22px;max-width:760px;color:var(--muted);font-size:clamp(17px,2vw,23px);line-height:1.55}
+    .button-row{display:flex;flex-wrap:wrap;gap:16px;margin-top:28px}
+    .action-btn,.nav-btn,.profile-btn{border:none;border-radius:20px;padding:18px 28px;font-size:18px;font-weight:800;cursor:pointer;transition:transform .15s ease,filter .15s ease}
+    .action-btn.primary,.nav-btn.primary,.profile-btn.primary{background:linear-gradient(90deg,var(--cyan),var(--blue));color:#07111f;box-shadow:0 14px 28px rgba(77,124,255,.28)}
+    .action-btn.secondary,.nav-btn.secondary,.profile-btn.secondary{background:rgba(255,255,255,.08);color:var(--text);border:1px solid var(--line)}
+    .mini-note{margin-top:22px;color:#9edfff;font-size:14px;font-weight:800;letter-spacing:.05em}
+    .lobby-box{border-radius:24px;padding:22px;background:rgba(6,13,25,.72)}
+    .lobby-head{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px}
+    .lobby-label{font-size:12px;color:#8cecff;text-transform:uppercase;letter-spacing:.28em;margin-bottom:8px}
+    .lobby-title{margin:0;font-size:clamp(26px,4vw,36px)}
+    .online{color:#8df4b6;font-weight:800;white-space:nowrap}
+    .players{display:grid;gap:12px}.player-row{border-radius:18px;padding:14px;display:flex;justify-content:space-between;align-items:center;gap:14px;background:rgba(255,255,255,.05)}
+    .player-main{display:flex;align-items:center;gap:12px;min-width:0}.avatar{width:50px;height:50px;border-radius:16px;flex:0 0 50px;display:flex;align-items:center;justify-content:center;font-weight:900;color:#07111f;background:linear-gradient(135deg,#71ebff,#5b82ff)}
+    .player-name{font-size:18px;font-weight:800;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.player-status,.player-rank{color:var(--muted);font-size:13px}.player-points{font-weight:800;color:#98ebff;font-size:17px;text-align:right;white-space:nowrap}
+    .features{margin-top:28px;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}.feature{border-radius:24px;padding:24px}.feature-icon{width:54px;height:54px;border-radius:16px;background:rgba(103,221,255,.12);border:1px solid rgba(103,221,255,.2);display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:14px}.feature-title{font-size:24px;font-weight:800;margin-bottom:10px}.feature-text{color:var(--muted);line-height:1.55;font-size:15px}
+    .screen-panel{max-width:1380px;min-height:100vh;margin:0 auto;padding:28px;display:flex;flex-direction:column;gap:24px}
+    .panel-head{display:flex;justify-content:space-between;align-items:center;gap:16px;flex-wrap:wrap}
+    .panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+    .panel-title{margin:0 0 12px;font-size:clamp(28px,4vw,44px)}
+    .field{display:grid;gap:8px;margin-bottom:16px}.field label{font-size:14px;color:#cfe3ff;font-weight:700}.field input,.field select{width:100%;padding:16px 18px;border-radius:16px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.08);color:#fff;font-size:16px;outline:none}
+    .field input[readonly]{background:rgba(255,255,255,.05);color:#9fe6ff}
+    .small-note{color:var(--muted);line-height:1.6;font-size:15px}.inline-row{display:flex;gap:12px;flex-wrap:wrap}.option-box{padding:14px 16px;border-radius:16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);font-weight:700}
+    .footer{margin-top:28px;text-align:center;color:#91a8cb;font-size:15px;padding-bottom:8px;letter-spacing:.04em}.version-tag{position:fixed;right:16px;bottom:12px;z-index:9999;padding:8px 12px;border-radius:999px;background:rgba(5,11,20,.82);color:#dce9ff;border:1px solid rgba(255,255,255,.18);font-size:13px;letter-spacing:.08em;box-shadow:0 10px 30px rgba(0,0,0,.35);user-select:none}
+
+    .modal-overlay{position:fixed;inset:0;z-index:9998;background:rgba(2,10,20,.72);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:24px}
+    .profile-modal{width:min(720px,94vw);border-radius:30px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(180deg,rgba(10,25,55,.96),rgba(6,18,40,.96));box-shadow:0 30px 90px rgba(0,0,0,.48);padding:28px}
+    .profile-line{display:inline-block;padding:10px 16px;border-radius:999px;margin-bottom:18px;background:rgba(103,221,255,.12);border:1px solid rgba(103,221,255,.22);color:#bff4ff;font-size:14px;font-weight:800}
+    .profile-title{margin:0 0 8px;font-size:clamp(28px,4vw,46px)}
+    .profile-desc{margin:0 0 22px;color:var(--muted);font-size:16px;line-height:1.6}
+    .profile-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .profile-actions{display:flex;justify-content:flex-end;gap:14px;flex-wrap:wrap;margin-top:20px}
+    .img-btn{display:inline-flex;align-items:center;justify-content:center;min-width:190px;min-height:64px;padding:0 18px;border:none;border-radius:20px;background:linear-gradient(180deg,#68baff,#2660d8);color:#eef7ff;font-size:18px;font-weight:900;cursor:pointer;box-shadow:0 10px 0 #173d97,0 18px 34px rgba(0,0,0,.35);transition:transform .15s ease,filter .15s ease;overflow:hidden}
+    .img-btn.secondary{background:rgba(255,255,255,.08);border:1px solid var(--line);box-shadow:none}
+    .img-btn img{display:block;max-width:100%;max-height:64px;object-fit:contain}
+    .btn-label{display:inline-flex;align-items:center;justify-content:center;width:100%;padding:0 12px}
+
+    @media (max-width:1050px){.hero,.panel-grid,.profile-grid{grid-template-columns:1fr}.features{grid-template-columns:1fr}.wheel-wrap{width:min(56vw,500px)}}
+    @media (max-width:860px){.start-frame{width:96vw}.play-button{min-width:180px;padding:16px 32px}.title-wrap{top:8%;width:86%}.title-wrap .title-box{padding:12px 20px 16px}.start-note{bottom:18%}.button-row,.profile-actions{flex-direction:column}.action-btn,.profile-btn,.img-btn{width:100%}}
+    @media (max-width:640px){.page,.screen-panel{padding:18px}.hero-left,.hero-right,.access-panel,.settings-panel,.profile-modal{padding:20px}.start-caption,.lang-start-btn{top:12px;font-size:12px;padding:10px 14px}.start-caption{left:12px}.lang-start-btn{right:12px}.overlay-panel{inset:12px}.wheel-wrap{width:min(72vw,400px)}.play-button{bottom:5.3%;font-size:clamp(28px,5vw,40px)}.start-note{font-size:12px;padding:8px 14px}}
+  </style>
+</head>
+<body class="screen-start-active">
+  <div id="screenStart" class="screen-start">
+    <div class="start-frame">
+      <svg class="start-bg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+        <defs>
+          <radialGradient id="bgGlow" cx="50%" cy="38%" r="52%"><stop offset="0%" stop-color="#6ea7ff" stop-opacity=".38"/><stop offset="55%" stop-color="#2d54bf" stop-opacity=".18"/><stop offset="100%" stop-color="#0b1c4e" stop-opacity="0"/></radialGradient>
+          <linearGradient id="wheelRed" x1="0" x2="1"><stop offset="0%" stop-color="#b71c05"/><stop offset="100%" stop-color="#ff6b3d"/></linearGradient>
+          <linearGradient id="wheelBlue" x1="0" x2="1"><stop offset="0%" stop-color="#104fb9"/><stop offset="100%" stop-color="#3c83ff"/></linearGradient>
+          <linearGradient id="wheelGreen" x1="0" x2="1"><stop offset="0%" stop-color="#1f7e2d"/><stop offset="100%" stop-color="#72c83c"/></linearGradient>
+          <linearGradient id="wheelOrange" x1="0" x2="1"><stop offset="0%" stop-color="#db7b08"/><stop offset="100%" stop-color="#f9b01d"/></linearGradient>
+          <linearGradient id="metal" x1="0" x2="1"><stop offset="0%" stop-color="#7f86a3"/><stop offset="35%" stop-color="#f0f4ff"/><stop offset="70%" stop-color="#8f97b4"/><stop offset="100%" stop-color="#d9e2ff"/></linearGradient>
+          <radialGradient id="centerMetal" cx="40%" cy="30%" r="70%"><stop offset="0%" stop-color="#eef4ff"/><stop offset="55%" stop-color="#a9b3d0"/><stop offset="100%" stop-color="#596482"/></radialGradient>
+        </defs>
+        <rect width="1600" height="900" fill="url(#bgGlow)"/>
+        <g opacity=".38">
+          <polygon points="250,380 760,280 540,520" fill="#84b6ff"/>
+          <polygon points="1340,370 860,290 1090,540" fill="#84b6ff"/>
+          <polygon points="600,835 780,585 860,740" fill="#7ca9ff"/>
+          <polygon points="1000,835 835,585 910,745" fill="#7ca9ff"/>
+        </g>
+        <g opacity=".75">
+          <rect x="310" y="130" width="12" height="30" rx="2" fill="#de8f5a" transform="rotate(-18 316 145)"/>
+          <rect x="365" y="175" width="14" height="34" rx="2" fill="#5fa2ff" transform="rotate(14 372 192)"/>
+          <circle cx="405" cy="210" r="4" fill="#7ad5ff"/>
+          <circle cx="1190" cy="160" r="5" fill="#de8f5a"/>
+          <rect x="1238" y="185" width="14" height="35" rx="2" fill="#5fa2ff" transform="rotate(-14 1245 202)"/>
+          <rect x="1290" y="145" width="12" height="28" rx="2" fill="#9c8a75" transform="rotate(11 1296 159)"/>
+        </g>
+        <g transform="translate(800,510)">
+          <g stroke="#dcdff0" stroke-width="6">
+            <path d="M0 0 L0 -235 A235 235 0 0 1 166 -166 Z" fill="url(#wheelRed)"/>
+            <path d="M0 0 L166 -166 A235 235 0 0 1 235 0 Z" fill="url(#wheelOrange)"/>
+            <path d="M0 0 L235 0 A235 235 0 0 1 166 166 Z" fill="url(#wheelGreen)"/>
+            <path d="M0 0 L166 166 A235 235 0 0 1 0 235 Z" fill="#71c13f"/>
+            <path d="M0 0 L0 235 A235 235 0 0 1 -166 166 Z" fill="url(#wheelBlue)"/>
+            <path d="M0 0 L-166 166 A235 235 0 0 1 -235 0 Z" fill="url(#wheelRed)"/>
+            <path d="M0 0 L-235 0 A235 235 0 0 1 -166 -166 Z" fill="#3f9e2e"/>
+            <path d="M0 0 L-166 -166 A235 235 0 0 1 0 -235 Z" fill="url(#wheelBlue)"/>
+          </g>
+          <circle r="255" fill="none" stroke="url(#metal)" stroke-width="28"/>
+          <circle r="255" fill="none" stroke="#66708f" stroke-width="6"/>
+          <g fill="#f7f8fb">
+            <circle cx="0" cy="-255" r="10"/><circle cx="64" cy="-247" r="10"/><circle cx="124" cy="-223" r="10"/><circle cx="176" cy="-184" r="10"/><circle cx="215" cy="-131" r="10"/><circle cx="239" cy="-70" r="10"/><circle cx="255" cy="0" r="10"/><circle cx="239" cy="70" r="10"/><circle cx="215" cy="131" r="10"/><circle cx="176" cy="184" r="10"/><circle cx="124" cy="223" r="10"/><circle cx="64" cy="247" r="10"/><circle cx="0" cy="255" r="10"/><circle cx="-64" cy="247" r="10"/><circle cx="-124" cy="223" r="10"/><circle cx="-176" cy="184" r="10"/><circle cx="-215" cy="131" r="10"/><circle cx="-239" cy="70" r="10"/><circle cx="-255" cy="0" r="10"/><circle cx="-239" cy="-70" r="10"/><circle cx="-215" cy="-131" r="10"/><circle cx="-176" cy="-184" r="10"/><circle cx="-124" cy="-223" r="10"/><circle cx="-64" cy="-247" r="10"/>
+          </g>
+          <circle r="84" fill="url(#centerMetal)" stroke="#cdd6ea" stroke-width="10"/>
+          <circle r="36" fill="#cdd6ea"/>
+          <g fill="#fff2" stroke="#fff7" stroke-width="4"><line x1="-20" y1="0" x2="20" y2="0"/><line x1="0" y1="-20" x2="0" y2="20"/></g>
+          <g font-family="Arial" font-weight="900" text-anchor="middle" dominant-baseline="middle" fill="#f0f4ff" stroke="#36435a" stroke-width="8" paint-order="stroke">
+            <text x="0" y="-170" font-size="86">?</text><text x="154" y="-105" font-size="80">?</text><text x="0" y="170" font-size="86">?</text><text x="-158" y="74" font-size="80">🎁</text><text x="-166" y="-78" font-size="72">💰</text><text x="158" y="-150" font-size="74">🎁</text><text x="163" y="90" font-size="72">💰</text>
+          </g>
+          <g transform="translate(0,-300)"><polygon points="0,0 32,0 0,58 -32,0" fill="#e13f2e" stroke="#d7ddee" stroke-width="8"/><circle cx="0" cy="15" r="14" fill="#ffb4a8"/></g>
+        </g>
+      </svg>
+      <div class="overlay-panel"></div>
+      <div id="startCaption" class="start-caption">STRONA STARTOWA</div>
+      <button id="langStartBtn" class="lang-start-btn" type="button">PL / EN</button>
+      <div class="title-wrap">
+        <div class="title-box"><div id="startTitle1" class="title-main"><span class="title-stars">★</span> ZGADNIJ <span class="title-stars">★</span></div><span id="startTitle2" class="title-sub">I WYGRAJ!</span></div>
+      </div>
+      <div class="wheel-wrap"></div>
+      <div id="startNote" class="start-note">Gra pokojowa • Avatary • Statystyki • Liga</div>
+      <button id="playButton" class="play-button" type="button">GRAJ!</button>
+    </div>
+  </div>
+
+  <div id="mainPage" class="page hidden">
+    <div class="topbar">
+      <div class="badge"><span class="badge-dot"></span><span id="badgeText">NOWY PROJEKT ONLINE</span></div>
+      <div class="topbar-right">
+        <button id="langBtn" class="lang-btn" type="button">Język: PL / EN</button>
+        <button id="backToStart" class="back-to-start" type="button">Powrót do startu</button>
+      </div>
+    </div>
+    <div class="hero">
+      <div class="hero-left">
+        <div class="hero-top-line">Firebase • Rooms • Profiles • Rankings</div>
+        <h1><span id="titleText" class="title-accent">Zgadnij i wygraj</span></h1>
+        <div id="subtitleText" class="subtitle">Gra pokojowa dla wielu graczy z rankingiem, statystykami zwycięstw, avatarami, profilami, numerem indywidualnym gracza i ligą punktową.</div>
+        <div class="button-row">
+          <button id="accessBtn" class="action-btn primary" type="button">Dostęp do gry</button>
+          <button id="settingsBtn" class="action-btn secondary" type="button">Ustawienia</button>
+        </div>
+        <div id="projectInfo" class="mini-note">Gotowy ekran startowy przygotowany pod dalsze moduły gry oraz integrację z Firebase.</div>
+      </div>
+      <div class="hero-right">
+        <div class="lobby-box">
+          <div class="lobby-head">
+            <div><div class="lobby-label">Lobby Preview</div><h2 id="roomTitle" class="lobby-title">Pokój gry #1024</h2></div>
+            <div class="online">Online</div>
+          </div>
+          <div id="playersBox" class="players"></div>
+        </div>
+      </div>
+    </div>
+    <div id="featuresBox" class="features"></div>
+    <div class="footer">ZGADNIJ v1005</div>
+  </div>
+
+  <div id="accessScreen" class="screen-panel hidden">
+    <div class="panel-head">
+      <div class="badge"><span class="badge-dot"></span><span id="accessBadge">WEJŚCIE DO POKOJU</span></div>
+      <div class="topbar-right">
+        <button id="accessLangBtn" class="lang-btn" type="button">Język: PL / EN</button>
+        <button id="accessHomeBtn" class="back-to-start" type="button">Powrót do startu</button>
+      </div>
+    </div>
+    <div class="panel-grid">
+      <div class="access-panel">
+        <div class="hero-top-line" id="accessLine">Logowanie do pokoju gry</div>
+        <h2 class="panel-title" id="accessTitle">Dołącz do rozgrywki</h2>
+        <p class="small-note" id="accessDesc">W kolejnych wersjach podłączymy prawdziwe pokoje Firebase. Na razie jest to działający ekran wejścia z formularzem.</p>
+        <div class="field"><label id="labelRoomCode" for="roomCode">Kod pokoju</label><input id="roomCode" type="text" placeholder="ABCD123" /></div>
+        <div class="field"><label id="labelNick" for="playerNick">Nick gracza</label><input id="playerNick" type="text" placeholder="Mariusz" /></div>
+        <div class="button-row"><button id="joinRoomBtn" class="nav-btn primary" type="button">Dołącz</button><button id="goSettingsFromAccess" class="nav-btn secondary" type="button">Otwórz ustawienia</button></div>
+      </div>
+      <div class="access-panel">
+        <div class="hero-top-line" id="quickTitle">Szybkie informacje</div>
+        <div class="inline-row"><div class="option-box" id="quick1">Pokoje</div><div class="option-box" id="quick2">Kody</div><div class="option-box" id="quick3">Avatary</div></div>
+        <p id="accessInfoBox" class="small-note" style="margin-top:18px;">Po kliknięciu Dołącz sprawdzamy pola i pokazujemy przykładową gotowość do wejścia do pokoju.</p>
+      </div>
+    </div>
+    <div class="footer">ZGADNIJ v1005</div>
+  </div>
+
+  <div id="settingsScreen" class="screen-panel hidden">
+    <div class="panel-head">
+      <div class="badge"><span class="badge-dot"></span><span id="settingsBadge">USTAWIENIA GRY</span></div>
+      <div class="topbar-right">
+        <button id="settingsLangBtn" class="lang-btn" type="button">Język: PL / EN</button>
+        <button id="settingsHomeBtn" class="back-to-start" type="button">Powrót do startu</button>
+      </div>
+    </div>
+    <div class="panel-grid">
+      <div class="settings-panel">
+        <div class="hero-top-line" id="settingsLine">Konfiguracja profilu</div>
+        <h2 class="panel-title" id="settingsTitle">Ustawienia</h2>
+        <div class="field"><label id="labelLanguage" for="langSelect">Język</label><select id="langSelect"><option value="pl">Polski</option><option value="en">English</option></select></div>
+        <div class="field"><label id="labelAvatar" for="avatarSelect">Wybierz avatar</label><select id="avatarSelect"><option>Avatar 01</option><option>Avatar 02</option><option>Avatar 03</option></select></div>
+        <div class="button-row"><button id="saveSettingsBtn" class="nav-btn primary" type="button">Zapisz ustawienia</button><button id="goAccessFromSettings" class="nav-btn secondary" type="button">Przejdź do wejścia</button></div>
+      </div>
+      <div class="settings-panel">
+        <div class="hero-top-line" id="profileLine">Profil gracza</div>
+        <h2 class="panel-title" id="profileTitle">Podgląd profilu</h2>
+        <div id="profileInfo" class="small-note"></div>
+      </div>
+    </div>
+    <div class="footer">ZGADNIJ v1005</div>
+  </div>
+
+  <div id="profileModal" class="modal-overlay hidden" aria-hidden="true">
+    <div class="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalTitle">
+      <div id="profileLineBadge" class="profile-line">DODAJ PROFIL</div>
+      <h2 id="profileModalTitle" class="profile-title">Utwórz profil gracza</h2>
+      <p id="profileModalDesc" class="profile-desc">Przy pierwszym wejściu do gry uzupełnij podstawowe dane profilu.</p>
+      <div class="profile-grid">
+        <div class="field">
+          <label id="labelPlayerId" for="generatedPlayerId">Nr gracza</label>
+          <input id="generatedPlayerId" type="text" readonly />
+        </div>
+        <div class="field">
+          <label id="labelCountry" for="profileCountry">Kraj</label>
+          <input id="profileCountry" type="text" placeholder="Polska" />
+        </div>
+        <div class="field" style="grid-column:1 / -1;">
+          <label id="labelProfileNick" for="profileNick">Nick</label>
+          <input id="profileNick" type="text" placeholder="Mariusz" maxlength="24" />
+        </div>
+      </div>
+      <div class="profile-actions">
+        <button id="profileBackBtn" class="img-btn secondary" type="button"><span id="backBtnLabel" class="btn-label">Powrót</span></button>
+        <button id="profileSaveBtn" class="img-btn" type="button"><span id="addProfileBtnLabel" class="btn-label">Dodaj profil</span></button>
+      </div>
+    </div>
+  </div>
+
+  <div class="version-tag">ZGADNIJ v1005</div>
+
+  <script>
+    const content={
+      pl:{
+        badge:'NOWY PROJEKT ONLINE',title:'Zgadnij i wygraj',subtitle:'Gra pokojowa dla wielu graczy z rankingiem, statystykami zwycięstw, avatarami, profilami, numerem indywidualnym gracza i ligą punktową.',
+        access:'Dostęp do gry',settings:'Ustawienia',langButton:'Język: PL / EN',langStartButton:'PL / EN',projectInfo:'Gotowy ekran startowy przygotowany pod dalsze moduły gry oraz integrację z Firebase.',
+        roomTitle:'Pokój gry #1024',ready:'Gotowy do gry',ranking:'Ranking',backToStart:'Powrót do startu',startCaption:'STRONA STARTOWA',
+        startTitle1:'★ ZGADNIJ ★',startTitle2:'I WYGRAJ!',startPlay:'GRAJ!',startNote:'Gra pokojowa • Avatary • Statystyki • Liga',
+        features:[
+          {icon:'🏆',title:'Liga punktowa',text:'Rywalizacja sezonowa, tabela graczy i wzrost rankingowy w pokojach.'},
+          {icon:'👥',title:'Pokoje graczy',text:'Prywatne pokoje, logowanie kodem, rozgrywka wieloosobowa i profile.'},
+          {icon:'📊',title:'Statystyki',text:'Wygrane, skuteczność, historia meczów i przyszłe osiągnięcia.'}
+        ],
+        accessBadge:'WEJŚCIE DO POKOJU',accessLine:'Logowanie do pokoju gry',accessTitle:'Dołącz do rozgrywki',accessDesc:'W kolejnych wersjach podłączymy prawdziwe pokoje Firebase. Na razie jest to działający ekran wejścia z formularzem.',labelRoomCode:'Kod pokoju',labelNick:'Nick gracza',joinRoom:'Dołącz',goSettings:'Otwórz ustawienia',quickTitle:'Szybkie informacje',quick1:'Pokoje',quick2:'Kody',quick3:'Avatary',accessInfo:'Po kliknięciu Dołącz sprawdzamy pola i pokazujemy przykładową gotowość do wejścia do pokoju.',
+        settingsBadge:'USTAWIENIA GRY',settingsLine:'Konfiguracja profilu',settingsTitle:'Ustawienia',labelLanguage:'Język',labelAvatar:'Wybierz avatar',saveSettings:'Zapisz ustawienia',goAccess:'Przejdź do wejścia',profileLine:'Profil gracza',profileTitle:'Podgląd profilu',
+        profileModalLine:'DODAJ PROFIL',profileModalTitle:'Utwórz profil gracza',profileModalDesc:'Przy pierwszym wejściu do gry uzupełnij podstawowe dane profilu.',labelPlayerId:'Nr gracza',labelCountry:'Kraj',labelProfileNick:'Nick',saveProfile:'Dodaj profil',backProfile:'Powrót',
+        profileInfoFallback:'Numer gracza: brak\nNick: brak\nKraj: brak\nUlubiony klub: do uzupełnienia\nWygrane: 0\nPunkty ligowe: 0',
+        profileInfoTemplate:(p)=>`Numer gracza: ${p.id}\nNick: ${p.nick}\nKraj: ${p.country}\nUlubiony klub: do uzupełnienia\nWygrane: 0\nPunkty ligowe: 0`,
+        alerts:{joinMissing:'Wpisz kod pokoju i nick gracza.',joinOk:'Dane przyjęte. W następnej wersji podłączymy prawdziwe wejście do pokoju Firebase.',settingsSaved:'Ustawienia zapisane lokalnie w tej wersji demonstracyjnej.',profileMissing:'Wpisz nick i kraj.',profileSaved:'Profil został zapisany.'}
+      },
+      en:{
+        badge:'NEW ONLINE PROJECT',title:'Guess and Win',subtitle:'A multiplayer room-based game with rankings, win statistics, avatars, profiles, an individual player number, and a points league.',
+        access:'Enter game',settings:'Settings',langButton:'Language: PL / EN',langStartButton:'PL / EN',projectInfo:'Ready start screen prepared for future game modules and Firebase integration.',
+        roomTitle:'Game room #1024',ready:'Ready to play',ranking:'Ranking',backToStart:'Back to start',startCaption:'START SCREEN',
+        startTitle1:'★ GUESS ★',startTitle2:'AND WIN!',startPlay:'PLAY!',startNote:'Room game • Avatars • Statistics • League',
+        features:[
+          {icon:'🏆',title:'Points league',text:'Season competition, player standings, and ranking growth inside rooms.'},
+          {icon:'👥',title:'Player rooms',text:'Private rooms, code login, multiplayer gameplay, and personal profiles.'},
+          {icon:'📊',title:'Statistics',text:'Wins, efficiency, match history, and future achievements.'}
+        ],
+        accessBadge:'ROOM ENTRY',accessLine:'Game room login',accessTitle:'Join the match',accessDesc:'In later versions we will connect real Firebase rooms. For now this is a working entry screen with a form.',labelRoomCode:'Room code',labelNick:'Player nickname',joinRoom:'Join',goSettings:'Open settings',quickTitle:'Quick info',quick1:'Rooms',quick2:'Codes',quick3:'Avatars',accessInfo:'When you click Join, the fields are validated and a sample ready state is shown.',
+        settingsBadge:'GAME SETTINGS',settingsLine:'Profile configuration',settingsTitle:'Settings',labelLanguage:'Language',labelAvatar:'Choose avatar',saveSettings:'Save settings',goAccess:'Go to entry',profileLine:'Player profile',profileTitle:'Profile preview',
+        profileModalLine:'ADD PROFILE',profileModalTitle:'Create player profile',profileModalDesc:'On your first entry to the game, fill in the basic profile details.',labelPlayerId:'Player number',labelCountry:'Country',labelProfileNick:'Nickname',saveProfile:'Add profile',backProfile:'Back',
+        profileInfoFallback:'Player number: missing\nNickname: missing\nCountry: missing\nFavorite club: to be filled\nWins: 0\nLeague points: 0',
+        profileInfoTemplate:(p)=>`Player number: ${p.id}\nNickname: ${p.nick}\nCountry: ${p.country}\nFavorite club: to be filled\nWins: 0\nLeague points: 0`,
+        alerts:{joinMissing:'Enter the room code and player nickname.',joinOk:'Data accepted. In the next version we will connect the real Firebase room entry.',settingsSaved:'Settings saved locally in this demo version.',profileMissing:'Enter nickname and country.',profileSaved:'Profile has been saved.'}
+      }
+    };
+
+    const players=[{name:'Mariusz',points:24},{name:'PlayerOne',points:19},{name:'GuestFox',points:14}];
+    const PROFILE_KEY='zgadnij_profile_v1';
+    let lang=localStorage.getItem('zgadnij_lang') || 'pl';
+    let pendingGeneratedId='';
+
+    function initials(name){return name.slice(0,2).toUpperCase()}
+    function showScreen(id){['screenStart','mainPage','accessScreen','settingsScreen'].forEach(screen=>document.getElementById(screen).classList.add('hidden'));document.getElementById(id).classList.remove('hidden');document.body.classList.toggle('screen-start-active',id==='screenStart');}
+    function toggleLang(){lang=lang==='pl'?'en':'pl';localStorage.setItem('zgadnij_lang',lang);render();}
+    function getProfile(){try{return JSON.parse(localStorage.getItem(PROFILE_KEY) || 'null');}catch(e){return null}}
+    function saveProfile(data){localStorage.setItem(PROFILE_KEY,JSON.stringify(data));}
+    function generatePlayerId(){
+      const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let out='';
+      for(let i=0;i<7;i++){out+=chars[Math.floor(Math.random()*chars.length)];}
+      return out;
+    }
+    function ensureGeneratedId(){pendingGeneratedId=generatePlayerId();document.getElementById('generatedPlayerId').value=pendingGeneratedId;}
+    function openProfileModal(){ensureGeneratedId();const p=getProfile();if(p){document.getElementById('profileNick').value=p.nick||'';document.getElementById('profileCountry').value=p.country||'';}else{document.getElementById('profileNick').value='';document.getElementById('profileCountry').value='';}document.getElementById('profileModal').classList.remove('hidden');document.body.classList.add('modal-open');document.getElementById('profileModal').setAttribute('aria-hidden','false');}
+    function closeProfileModal(){document.getElementById('profileModal').classList.add('hidden');document.body.classList.remove('modal-open');document.getElementById('profileModal').setAttribute('aria-hidden','true');}
+    function updateProfilePreview(){
+      const t=content[lang];
+      const profile=getProfile();
+      document.getElementById('profileInfo').innerHTML=(profile?t.profileInfoTemplate(profile):t.profileInfoFallback).replace(/\n/g,'<br>');
+      if(profile){document.getElementById('playerNick').value=profile.nick;}
+    }
+    function tryEnterGame(){
+      if(!getProfile()){openProfileModal();return;}
+      showScreen('mainPage');
+    }
+    function setImageButton(buttonId, imagePath, fallbackText){
+      const btn=document.getElementById(buttonId);
+      btn.innerHTML=`<img src="${imagePath}" alt="${fallbackText}" onerror="this.remove(); this.parentElement.innerHTML='<span class=&quot;btn-label&quot;>${fallbackText}</span>';">`;
+    }
+    function render(){
+      const t=content[lang];
+      document.documentElement.lang=lang;
+      document.title='ZGADNIJ v1005';
+      document.getElementById('badgeText').textContent=t.badge;
+      document.getElementById('titleText').textContent=t.title;
+      document.getElementById('subtitleText').textContent=t.subtitle;
+      document.getElementById('accessBtn').textContent=t.access;
+      document.getElementById('settingsBtn').textContent=t.settings;
+      document.getElementById('langBtn').textContent=t.langButton;
+      document.getElementById('langStartBtn').textContent=t.langStartButton;
+      document.getElementById('projectInfo').textContent=t.projectInfo;
+      document.getElementById('roomTitle').textContent=t.roomTitle;
+      document.getElementById('backToStart').textContent=t.backToStart;
+      document.getElementById('startCaption').textContent=t.startCaption;
+      document.getElementById('startTitle1').textContent=t.startTitle1;
+      document.getElementById('startTitle2').textContent=t.startTitle2;
+      document.getElementById('playButton').textContent=t.startPlay;
+      document.getElementById('startNote').textContent=t.startNote;
+
+      document.getElementById('accessBadge').textContent=t.accessBadge;
+      document.getElementById('accessLine').textContent=t.accessLine;
+      document.getElementById('accessTitle').textContent=t.accessTitle;
+      document.getElementById('accessDesc').textContent=t.accessDesc;
+      document.getElementById('labelRoomCode').textContent=t.labelRoomCode;
+      document.getElementById('labelNick').textContent=t.labelNick;
+      document.getElementById('joinRoomBtn').textContent=t.joinRoom;
+      document.getElementById('goSettingsFromAccess').textContent=t.goSettings;
+      document.getElementById('quickTitle').textContent=t.quickTitle;
+      document.getElementById('quick1').textContent=t.quick1;
+      document.getElementById('quick2').textContent=t.quick2;
+      document.getElementById('quick3').textContent=t.quick3;
+      document.getElementById('accessInfoBox').textContent=t.accessInfo;
+      document.getElementById('accessHomeBtn').textContent=t.backToStart;
+      document.getElementById('accessLangBtn').textContent=t.langButton;
+
+      document.getElementById('settingsBadge').textContent=t.settingsBadge;
+      document.getElementById('settingsLine').textContent=t.settingsLine;
+      document.getElementById('settingsTitle').textContent=t.settingsTitle;
+      document.getElementById('labelLanguage').textContent=t.labelLanguage;
+      document.getElementById('labelAvatar').textContent=t.labelAvatar;
+      document.getElementById('saveSettingsBtn').textContent=t.saveSettings;
+      document.getElementById('goAccessFromSettings').textContent=t.goAccess;
+      document.getElementById('profileLine').textContent=t.profileLine;
+      document.getElementById('profileTitle').textContent=t.profileTitle;
+      document.getElementById('settingsHomeBtn').textContent=t.backToStart;
+      document.getElementById('settingsLangBtn').textContent=t.langButton;
+      document.getElementById('langSelect').value=lang;
+
+      document.getElementById('profileLineBadge').textContent=t.profileModalLine;
+      document.getElementById('profileModalTitle').textContent=t.profileModalTitle;
+      document.getElementById('profileModalDesc').textContent=t.profileModalDesc;
+      document.getElementById('labelPlayerId').textContent=t.labelPlayerId;
+      document.getElementById('labelCountry').textContent=t.labelCountry;
+      document.getElementById('labelProfileNick').textContent=t.labelProfileNick;
+      document.getElementById('profileCountry').placeholder=lang==='pl'?'Polska':'Poland';
+      document.getElementById('profileNick').placeholder='Mariusz';
+      setImageButton('profileSaveBtn','ui/buttons/btn_add_profile.png',t.saveProfile);
+      setImageButton('profileBackBtn','ui/buttons/btn_back.png',t.backProfile);
+
+      const playersBox=document.getElementById('playersBox');
+      playersBox.innerHTML='';
+      players.forEach(player=>{const pointsLabel=lang==='pl'?'pkt':'pts';const row=document.createElement('div');row.className='player-row';row.innerHTML=`<div class="player-main"><div class="avatar">${initials(player.name)}</div><div><div class="player-name">${player.name}</div><div class="player-status">${t.ready}</div></div></div><div><div class="player-points">${player.points} ${pointsLabel}</div><div class="player-rank">${t.ranking}</div></div>`;playersBox.appendChild(row);});
+
+      const featuresBox=document.getElementById('featuresBox');
+      featuresBox.innerHTML='';
+      t.features.forEach(feature=>{const card=document.createElement('div');card.className='feature';card.innerHTML=`<div class="feature-icon">${feature.icon}</div><div class="feature-title">${feature.title}</div><div class="feature-text">${feature.text}</div>`;featuresBox.appendChild(card);});
+
+      updateProfilePreview();
+    }
+
+    document.getElementById('langBtn').addEventListener('click',toggleLang);
+    document.getElementById('langStartBtn').addEventListener('click',toggleLang);
+    document.getElementById('accessLangBtn').addEventListener('click',toggleLang);
+    document.getElementById('settingsLangBtn').addEventListener('click',toggleLang);
+
+    document.getElementById('playButton').addEventListener('click',tryEnterGame);
+    document.getElementById('backToStart').addEventListener('click',()=>showScreen('screenStart'));
+    document.getElementById('accessHomeBtn').addEventListener('click',()=>showScreen('screenStart'));
+    document.getElementById('settingsHomeBtn').addEventListener('click',()=>showScreen('screenStart'));
+
+    document.getElementById('accessBtn').addEventListener('click',()=>showScreen('accessScreen'));
+    document.getElementById('settingsBtn').addEventListener('click',()=>showScreen('settingsScreen'));
+    document.getElementById('goSettingsFromAccess').addEventListener('click',()=>showScreen('settingsScreen'));
+    document.getElementById('goAccessFromSettings').addEventListener('click',()=>showScreen('accessScreen'));
+
+    document.getElementById('joinRoomBtn').addEventListener('click',()=>{
+      const t=content[lang];
+      const roomCode=document.getElementById('roomCode').value.trim();
+      const nick=document.getElementById('playerNick').value.trim();
+      if(!roomCode || !nick){alert(t.alerts.joinMissing);return;}
+      alert(t.alerts.joinOk + '\n\n' + (lang==='pl' ? `Kod: ${roomCode}\nNick: ${nick}` : `Code: ${roomCode}\nNickname: ${nick}`));
+    });
+
+    document.getElementById('saveSettingsBtn').addEventListener('click',()=>{
+      const selectedLang=document.getElementById('langSelect').value;
+      if(selectedLang!==lang){lang=selectedLang;localStorage.setItem('zgadnij_lang',lang);}      
+      alert(content[lang].alerts.settingsSaved);
+      render();
+    });
+
+    document.getElementById('langSelect').addEventListener('change',(e)=>{lang=e.target.value;localStorage.setItem('zgadnij_lang',lang);render();});
+    document.getElementById('profileBackBtn').addEventListener('click',()=>{closeProfileModal(); showScreen('screenStart');});
+    document.getElementById('profileSaveBtn').addEventListener('click',()=>{
+      const t=content[lang];
+      const nick=document.getElementById('profileNick').value.trim();
+      const country=document.getElementById('profileCountry').value.trim();
+      if(!nick || !country){alert(t.alerts.profileMissing);return;}
+      const existing=getProfile();
+      saveProfile({id:(existing&&existing.id)||pendingGeneratedId,nick,country});
+      closeProfileModal();
+      render();
+      showScreen('mainPage');
+      alert(t.alerts.profileSaved);
+    });
+
+    render();
+  </script>
+</body>
+</html>
