@@ -5,162 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ZGADNIJ I WYGRAJ</title>
   <style>
-    :root{
-      --bg:#021633;
-      --panel:#16367fdd;
-      --panel-2:#1b3f90ee;
-      --line:#5f8dff55;
-      --text:#eef5ff;
-      --sub:#d0ddff;
-      --shadow:0 20px 60px rgba(0,0,0,.45);
-      --radius:28px;
-    }
+    :root{--text:#eef5ff;--sub:#d0ddff;--shadow:0 20px 60px rgba(0,0,0,.45);}
     *{box-sizing:border-box}
-    body{
-      margin:0;
-      min-height:100vh;
-      font-family:Arial,Helvetica,sans-serif;
-      color:var(--text);
-      background:radial-gradient(circle at 50% 35%, #173d98 0%, #0a265d 28%, #04193e 60%, #02122b 100%);
-      overflow:hidden;
-    }
-    .app{
-      width:min(1400px, calc(100vw - 36px));
-      height:min(92vh, 820px);
-      margin:14px auto;
-      position:relative;
-      border:1px solid rgba(150,190,255,.25);
-      border-radius:32px;
-      overflow:hidden;
-      box-shadow:0 0 0 2px rgba(20,40,90,.22) inset, 0 20px 50px rgba(0,0,0,.35);
-      background:#04142f;
-    }
-    .start-art{
-      position:absolute; inset:0;
-      width:100%; height:100%;
-      object-fit:contain;
-      object-position:center center;
-      display:block;
-      background:#04142f;
-    }
-    .overlay{
-      position:absolute; inset:0;
-      pointer-events:none;
-      background:radial-gradient(circle at 50% 50%, transparent 40%, rgba(2,10,26,.25) 100%);
-    }
-    .top-badge,.lang-btn,.version{
-      position:absolute; z-index:4;
-      border:1px solid rgba(255,255,255,.16);
-      background:rgba(2,14,37,.7);
-      color:#f3f7ff;
-      border-radius:999px;
-      box-shadow:0 0 0 1px rgba(88,130,255,.12) inset;
-      backdrop-filter: blur(3px);
-      font-weight:700;
-      letter-spacing:.3px;
-    }
-    .top-badge{ top:18px; left:18px; padding:14px 18px; font-size:18px; }
-    .lang-btn{
-      top:18px; right:18px; padding:14px 18px; font-size:18px;
-      cursor:pointer; pointer-events:auto;
-    }
-    .version{ right:20px; bottom:14px; padding:11px 18px; font-size:14px; z-index:7; }
-    .play-hotspot{
-      position:absolute; left:50%; bottom:8%;
-      transform:translateX(-50%);
-      width:min(23vw, 330px); height:min(12vw, 120px);
-      cursor:pointer; z-index:3; background:transparent; border:none;
-    }
+    body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:radial-gradient(circle at 50% 35%, #173d98 0%, #0a265d 28%, #04193e 60%, #02122b 100%);overflow:hidden}
+    .app{width:min(1400px,calc(100vw - 36px));height:min(92vh,820px);margin:14px auto;position:relative;border:1px solid rgba(150,190,255,.25);border-radius:32px;overflow:hidden;box-shadow:0 0 0 2px rgba(20,40,90,.22) inset,0 20px 50px rgba(0,0,0,.35);background:#04142f}
+    .start-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:#04142f}
+    .overlay{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%, transparent 40%, rgba(2,10,26,.25) 100%)}
+    .top-badge,.lang-btn,.version{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.16);background:rgba(2,14,37,.7);color:#f3f7ff;border-radius:999px;box-shadow:0 0 0 1px rgba(88,130,255,.12) inset;backdrop-filter:blur(3px);font-weight:700;letter-spacing:.3px}
+    .top-badge{top:18px;left:18px;padding:14px 18px;font-size:18px}
+    .lang-btn{top:18px;right:18px;padding:14px 18px;font-size:18px;cursor:pointer}
+    .version{right:20px;bottom:14px;padding:11px 18px;font-size:14px;z-index:7}
+    .play-hotspot{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);width:min(23vw,330px);height:min(12vw,120px);cursor:pointer;z-index:3;background:transparent;border:none}
     .play-hotspot:hover{filter:brightness(1.06)}
     .play-hotspot:active{transform:translateX(-50%) scale(.985)}
-    .backdrop{
-      position:absolute; inset:0;
-      background:rgba(2,10,25,.52);
-      backdrop-filter: blur(8px);
-      z-index:10; display:none; align-items:center; justify-content:center; padding:18px;
-    }
+    .backdrop{position:absolute;inset:0;background:rgba(2,10,25,.52);backdrop-filter:blur(8px);z-index:10;display:none;align-items:center;justify-content:center;padding:18px}
     .backdrop.show{display:flex}
-    .modal{
-      width:min(760px, calc(100vw - 52px));
-      max-height:min(86vh, 760px);
-      background:linear-gradient(180deg, rgba(34,68,150,.96), rgba(11,31,78,.96));
-      border:1px solid rgba(150,190,255,.18);
-      border-radius:34px;
-      box-shadow:var(--shadow), 0 0 0 1px rgba(120,165,255,.14) inset;
-      padding:26px 28px 22px;
-      overflow:auto;
-      position:relative;
-    }
-    .modal.compact{width:min(650px, calc(100vw - 52px));}
-    .pill{
-      display:inline-block; padding:10px 16px; border-radius:999px;
-      background:rgba(12,34,85,.6); border:1px solid rgba(180,210,255,.18);
-      font-weight:700; margin-bottom:14px; font-size:18px;
-    }
-    h1{ margin:8px 0 12px; font-size:clamp(32px, 4vw, 66px); line-height:.95; }
-    .desc{ margin:0 0 18px; color:var(--sub); font-size:18px; line-height:1.35; }
-    .button-col{
-      display:flex; flex-direction:column; gap:14px; align-items:center; margin-top:18px; padding-bottom:4px;
-    }
-    .img-btn{ background:none; border:none; padding:0; cursor:pointer; display:block; }
-    .img-btn img{
-      display:block; width:min(54vw, 420px); max-width:100%; max-height:92px;
-      object-fit:contain; transition:transform .15s ease, filter .15s ease;
-    }
-    .img-btn:hover img{transform:translateY(-1px) scale(1.01); filter:brightness(1.05)}
+    .modal{width:min(760px,calc(100vw - 52px));max-height:min(86vh,760px);background:linear-gradient(180deg, rgba(34,68,150,.96), rgba(11,31,78,.96));border:1px solid rgba(150,190,255,.18);border-radius:34px;box-shadow:var(--shadow),0 0 0 1px rgba(120,165,255,.14) inset;padding:26px 28px 22px;overflow:auto;position:relative}
+    .modal.compact{width:min(650px,calc(100vw - 52px))}
+    .pill{display:inline-block;padding:10px 16px;border-radius:999px;background:rgba(12,34,85,.6);border:1px solid rgba(180,210,255,.18);font-weight:700;margin-bottom:14px;font-size:18px}
+    h1{margin:8px 0 12px;font-size:clamp(32px,4vw,66px);line-height:.95}
+    .desc{margin:0 0 18px;color:var(--sub);font-size:18px;line-height:1.35}
+    .button-col{display:flex;flex-direction:column;gap:14px;align-items:center;margin-top:18px;padding-bottom:4px}
+    .img-btn{background:none;border:none;padding:0;cursor:pointer;display:block}
+    .img-btn img{display:block;width:min(54vw,420px);max-width:100%;max-height:92px;object-fit:contain;transition:transform .15s ease,filter .15s ease}
+    .img-btn:hover img{transform:translateY(-1px) scale(1.01);filter:brightness(1.05)}
     .img-btn:active img{transform:scale(.985)}
-    .fallback{
-      min-width:250px; padding:16px 22px; border-radius:18px;
-      border:1px solid rgba(255,255,255,.18);
-      background:linear-gradient(180deg,#2b67ff,#1645c6);
-      color:white; font-size:24px; font-weight:700; box-shadow:0 12px 30px rgba(0,0,0,.22);
-    }
-    .form-grid{ display:grid; gap:14px; margin-top:14px; }
-    label{ font-size:15px; color:#d7e4ff; font-weight:700; display:block; margin-bottom:6px; }
-    input, select{
-      width:100%; border-radius:16px; padding:14px 16px;
-      border:1px solid rgba(255,255,255,.18); background:rgba(4,18,52,.7);
-      color:#fff; font-size:18px; outline:none;
-    }
-    .row-actions{ display:flex; gap:18px; align-items:center; justify-content:center; margin-top:18px; flex-wrap:wrap; }
-    .room-card{
-      margin-top:16px; background:rgba(5,18,52,.52); border:1px solid rgba(255,255,255,.12);
-      border-radius:24px; padding:18px;
-    }
-    .room-title{ font-size:34px; font-weight:800; margin:0 0 6px; }
-    .room-meta{ font-size:18px; color:#d8e4ff; line-height:1.5; }
-    .player-list{ margin-top:14px; display:grid; gap:10px; }
-    .player{
-      padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.08);
-      border:1px solid rgba(255,255,255,.08); display:flex; justify-content:space-between;
-      align-items:center; gap:14px; font-size:18px;
-    }
-    .system-note{
-      margin-top:14px; padding:14px 16px; border-radius:18px;
-      background:rgba(255,210,90,.12); border:1px solid rgba(255,210,90,.28);
-      color:#fff3c5; font-size:15px; line-height:1.45;
-    }
-    .hidden{display:none !important;}
-    @media (max-width: 900px){
-      .top-badge,.lang-btn{font-size:15px;padding:11px 14px}
-      .play-hotspot{width:min(38vw, 300px); height:min(17vw, 110px); bottom:7%;}
-      .modal{padding:22px 18px 18px}
-      .desc{font-size:16px}
-      .img-btn img{width:min(62vw, 350px); max-height:82px;}
-      .fallback{font-size:20px; min-width:220px;}
-    }
+    .fallback{min-width:250px;padding:16px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,#2b67ff,#1645c6);color:white;font-size:24px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.22)}
+    .form-grid{display:grid;gap:14px;margin-top:14px}
+    label{font-size:15px;color:#d7e4ff;font-weight:700;display:block;margin-bottom:6px}
+    input{width:100%;border-radius:16px;padding:14px 16px;border:1px solid rgba(255,255,255,.18);background:rgba(4,18,52,.7);color:#fff;font-size:18px;outline:none}
+    .row-actions{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:18px;flex-wrap:wrap}
+    .room-card{margin-top:16px;background:rgba(5,18,52,.52);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}
+    .room-title{font-size:34px;font-weight:800;margin:0 0 6px}
+    .room-meta{font-size:18px;color:#d8e4ff;line-height:1.5}
+    .section-label{margin-top:16px;font-size:16px;font-weight:700;color:#dfe8ff;letter-spacing:.3px}
+    .player-list{margin-top:10px;display:grid;gap:10px}
+    .player{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:18px}
+    .system-note{margin-top:14px;padding:14px 16px;border-radius:18px;background:rgba(255,210,90,.12);border:1px solid rgba(255,210,90,.28);color:#fff3c5;font-size:15px;line-height:1.45}
+    .hidden{display:none !important}
+    @media (max-width:900px){.top-badge,.lang-btn{font-size:15px;padding:11px 14px}.play-hotspot{width:min(38vw,300px);height:min(17vw,110px);bottom:7%}.modal{padding:22px 18px 18px}.desc{font-size:16px}.img-btn img{width:min(62vw,350px);max-height:82px}.fallback{font-size:20px;min-width:220px}.player{font-size:16px}}
   </style>
 </head>
 <body>
   <div class="app">
-    <img class="start-art" id="startArt" src="grafic/img_startowa.png" alt="ZGADNIJ I WYGRAJ - ekran startowy"
-         onerror="this.onerror=null; this.src='img_startowa.png';">
+    <img class="start-art" src="grafic/img_startowa.png" alt="ZGADNIJ I WYGRAJ - ekran startowy" onerror="this.onerror=null; this.src='img_startowa.png';">
     <div class="overlay"></div>
-
     <div class="top-badge" id="homeBadge">STRONA STARTOWA</div>
     <button class="lang-btn" id="langBtn" type="button">PL / EN</button>
     <button class="play-hotspot" id="playBtn" type="button" aria-label="Graj"></button>
-    <div class="version">ZGADNIJ v1013</div>
+    <div class="version">ZGADNIJ v1014</div>
 
     <div class="backdrop" id="backdrop">
       <div class="modal compact" id="modalProfile">
@@ -220,21 +113,16 @@
         <div class="pill" id="openPill">OTWARTY POKÓJ</div>
         <h1 id="openTitle">Pokój został otwarty</h1>
         <p class="desc" id="openDesc">To jest podłączony widok pokoju z Firebase i listą graczy online.</p>
-
         <div class="room-card">
           <div class="room-title" id="openRoomName">Pokój: ---</div>
           <div class="room-meta">
             <div><strong id="openCodeLabel">Kod pokoju:</strong> <span id="openRoomCode">------</span></div>
             <div><strong id="openHostLabel">Gracz:</strong> <span id="openPlayerName">---</span></div>
           </div>
-
+          <div class="section-label" id="onlineLabel">Gracze online</div>
           <div class="player-list" id="onlinePlayersList"></div>
-
-          <div class="system-note" id="firebaseNote">
-            Firebase nie jest jeszcze skonfigurowany. Wklej swój config w sekcji firebaseConfig w index.html.
-          </div>
+          <div class="system-note" id="firebaseNote"></div>
         </div>
-
         <div class="row-actions">
           <button class="img-btn" id="backFromOpenRoomBtn" type="button"></button>
           <button class="img-btn" id="exitFromOpenRoomBtn" type="button"></button>
@@ -245,87 +133,42 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getDatabase, ref, set, get, child, push, onValue, onDisconnect,
-      serverTimestamp, remove
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    import { getDatabase, ref, set, get, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
     const t = {
-      pl:{
-        homeBadge:'STRONA STARTOWA',
-        profilePill:'PROFIL', profileTitle:'Dodaj profil gracza', profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',
-        labelPlayerNo:'Nr gracza', labelNick:'Nick', labelCountry:'Kraj',
-        roomPill:'POKÓJ GRY', roomMenuTitle:'Wybierz akcję pokoju', roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
-        createPill:'TWORZENIE POKOJU', createTitle:'Załóż nowy pokój', createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.', labelRoomName:'Nazwa pokoju',
-        joinPill:'DOŁĄCZANIE', joinTitle:'Dołącz do pokoju', joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.', labelRoomCode:'Kod pokoju',
-        openPill:'OTWARTY POKÓJ', openTitle:'Pokój został otwarty', openDesc:'To jest podłączony widok pokoju z Firebase i listą graczy online.',
-        openCodeLabel:'Kod pokoju:', openHostLabel:'Gracz:',
-        saveProfileMissing:'Uzupełnij Nick i Kraj.',
-        roomNameMissing:'Wpisz nazwę pokoju.',
-        enterRoomMissing:'Podaj kod pokoju.',
-        enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',
-        firebaseMissing:'Firebase nie jest jeszcze skonfigurowany. Wklej swój config w sekcji firebaseConfig w index.html.',
-        firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',
-        host:'Gospodarz', player:'Gracz', online:'online'
-      },
-      en:{
-        homeBadge:'HOME SCREEN',
-        profilePill:'PROFILE', profileTitle:'Create player profile', profileDesc:'At first entry, create a profile to continue to the game room.',
-        labelPlayerNo:'Player No.', labelNick:'Nick', labelCountry:'Country',
-        roomPill:'GAME ROOM', roomMenuTitle:'Choose room action', roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',
-        createPill:'ROOM CREATION', createTitle:'Create new room', createDesc:'Enter a room name. After confirmation, the game room will open.', labelRoomName:'Room name',
-        joinPill:'JOIN ROOM', joinTitle:'Join a room', joinDesc:'Enter the room code. If valid, the game room will open.', labelRoomCode:'Room code',
-        openPill:'OPEN ROOM', openTitle:'Room opened', openDesc:'This is a Firebase-connected room view with a live online players list.',
-        openCodeLabel:'Room code:', openHostLabel:'Player:',
-        saveProfileMissing:'Fill in Nick and Country.',
-        roomNameMissing:'Enter room name.',
-        enterRoomMissing:'Enter room code.',
-        enterRoomNotFound:'No room found with this code.',
-        firebaseMissing:'Firebase is not configured yet. Paste your config into the firebaseConfig section in index.html.',
-        firebaseReady:'Firebase is working. The online players list refreshes live.',
-        host:'Host', player:'Player', online:'online'
-      }
+      pl:{homeBadge:'STRONA STARTOWA',profilePill:'PROFIL',profileTitle:'Dodaj profil gracza',profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',labelPlayerNo:'Nr gracza',labelNick:'Nick',labelCountry:'Kraj',roomPill:'POKÓJ GRY',roomMenuTitle:'Wybierz akcję pokoju',roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',createPill:'TWORZENIE POKOJU',createTitle:'Załóż nowy pokój',createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.',labelRoomName:'Nazwa pokoju',joinPill:'DOŁĄCZANIE',joinTitle:'Dołącz do pokoju',joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.',labelRoomCode:'Kod pokoju',openPill:'OTWARTY POKÓJ',openTitle:'Pokój został otwarty',openDesc:'To jest podłączony widok pokoju z Firebase i listą graczy online.',openCodeLabel:'Kod pokoju:',openHostLabel:'Gracz:',onlineLabel:'Gracze online',saveProfileMissing:'Uzupełnij Nick i Kraj.',roomNameMissing:'Wpisz nazwę pokoju.',enterRoomMissing:'Podaj kod pokoju.',enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',host:'Gospodarz',player:'Gracz',online:'online',none:'Brak graczy online'},
+      en:{homeBadge:'HOME SCREEN',profilePill:'PROFILE',profileTitle:'Create player profile',profileDesc:'At first entry, create a profile to continue to the game room.',labelPlayerNo:'Player No.',labelNick:'Nick',labelCountry:'Country',roomPill:'GAME ROOM',roomMenuTitle:'Choose room action',roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',createPill:'ROOM CREATION',createTitle:'Create new room',createDesc:'Enter a room name. After confirmation, the game room will open.',labelRoomName:'Room name',joinPill:'JOIN ROOM',joinTitle:'Join a room',joinDesc:'Enter the room code. If valid, the game room will open.',labelRoomCode:'Room code',openPill:'OPEN ROOM',openTitle:'Room opened',openDesc:'This is a Firebase-connected room view with a live online players list.',openCodeLabel:'Room code:',openHostLabel:'Player:',onlineLabel:'Online players',saveProfileMissing:'Fill in Nick and Country.',roomNameMissing:'Enter room name.',enterRoomMissing:'Enter room code.',enterRoomNotFound:'No room found with this code.',firebaseReady:'Firebase is working. The online players list refreshes live.',host:'Host',player:'Player',online:'online',none:'No players online'}
     };
 
-    // Wklej tu swój prawdziwy config z Firebase Console.
-  const firebaseConfig = {
-  apiKey: "AIzaSyAnUo249YUpm2cLtA90Wy9PHMF9IkYcAPE",
-  authDomain: "zgadnij-96db8.firebaseapp.com",
-  databaseURL: "https://zgadnij-96db8-default-rtdb.europe-west1.firebasedatabase.app",
-  projectId: "zgadnij-96db8",
-  storageBucket: "zgadnij-96db8.firebasestorage.app",
-  messagingSenderId: "542527336518",
-  appId: "1:542527336518:web:88bb8c23b34d5a7a501a47"
-};
+    const firebaseConfig = {
+      apiKey: "AIzaSyAnUo249YUpm2cLtA90Wy9PHMF9IkYcAPE",
+      authDomain: "zgadnij-96db8.firebaseapp.com",
+      databaseURL: "https://zgadnij-96db8-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "zgadnij-96db8",
+      storageBucket: "zgadnij-96db8.firebasestorage.app",
+      messagingSenderId: "542527336518",
+      appId: "1:542527336518:web:88bb8c23b34d5a7a501a47"
+    };
 
-    const firebaseConfigured = !!(firebaseConfig.apiKey && firebaseConfig.databaseURL && firebaseConfig.projectId);
-
-    let app = null;
-    let db = null;
-    if (firebaseConfigured) {
-      app = initializeApp(firebaseConfig);
-      db = getDatabase(app);
-    }
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
 
     let lang = localStorage.getItem('zgadnij_lang') || 'pl';
     let currentRoomCode = null;
     let currentPlayersUnsub = null;
 
     const profileKey = 'zgadnij_profile';
-    const roomCodeCacheKey = 'zgadnij_room_code';
     const sessionIdKey = 'zgadnij_session_id';
 
     const homeBadge = document.getElementById('homeBadge');
     const langBtn = document.getElementById('langBtn');
     const playBtn = document.getElementById('playBtn');
     const backdrop = document.getElementById('backdrop');
-
     const modalProfile = document.getElementById('modalProfile');
     const modalRoomMenu = document.getElementById('modalRoomMenu');
     const modalCreateRoom = document.getElementById('modalCreateRoom');
     const modalEnterRoom = document.getElementById('modalEnterRoom');
     const modalOpenRoom = document.getElementById('modalOpenRoom');
-
     const playerNo = document.getElementById('playerNo');
     const nickInput = document.getElementById('nickInput');
     const countryInput = document.getElementById('countryInput');
@@ -334,159 +177,90 @@
     const onlinePlayersList = document.getElementById('onlinePlayersList');
     const firebaseNote = document.getElementById('firebaseNote');
 
-    function randPlayerNo(){
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let out = '';
-      for(let i=0;i<7;i++) out += chars[Math.floor(Math.random()*chars.length)];
-      return out;
-    }
-    function randRoomCode(){
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let out = '';
-      for(let i=0;i<6;i++) out += chars[Math.floor(Math.random()*chars.length)];
-      return out;
-    }
+    function randPlayerNo(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out=''; for(let i=0;i<7;i++) out+=chars[Math.floor(Math.random()*chars.length)]; return out; }
+    function randRoomCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out=''; for(let i=0;i<6;i++) out+=chars[Math.floor(Math.random()*chars.length)]; return out; }
     function getProfile(){ try{return JSON.parse(localStorage.getItem(profileKey)||'null')}catch(e){return null} }
     function setProfile(p){ localStorage.setItem(profileKey, JSON.stringify(p)); }
-    function getSessionId(){
-      let sid = localStorage.getItem(sessionIdKey);
-      if(!sid){
-        sid = "s_" + Math.random().toString(36).slice(2, 10);
-        localStorage.setItem(sessionIdKey, sid);
-      }
-      return sid;
-    }
+    function getSessionId(){ let sid=localStorage.getItem(sessionIdKey); if(!sid){ sid="s_"+Math.random().toString(36).slice(2,10); localStorage.setItem(sessionIdKey,sid);} return sid; }
     function btnPath(file){ return `ui/buttons/${lang}/${file}`; }
 
     function makeImgButton(el, file, fallbackText, onClick){
       const img = new Image();
       img.alt = fallbackText;
       img.src = btnPath(file);
-      img.onerror = () => {
-        el.innerHTML = `<span class="fallback">${fallbackText}</span>`;
-      };
-      img.onload = () => {
-        el.innerHTML = '';
-        el.appendChild(img);
-      };
+      img.onerror = () => { el.innerHTML = `<span class="fallback">${fallbackText}</span>`; };
+      img.onload = () => { el.innerHTML = ''; el.appendChild(img); };
       el.onclick = onClick;
     }
 
     function applyLang(){
       localStorage.setItem('zgadnij_lang', lang);
-      homeBadge.textContent = t[lang].homeBadge;
-      document.getElementById('profilePill').textContent = t[lang].profilePill;
-      document.getElementById('profileTitle').textContent = t[lang].profileTitle;
-      document.getElementById('profileDesc').textContent = t[lang].profileDesc;
-      document.getElementById('labelPlayerNo').textContent = t[lang].labelPlayerNo;
-      document.getElementById('labelNick').textContent = t[lang].labelNick;
-      document.getElementById('labelCountry').textContent = t[lang].labelCountry;
+      homeBadge.textContent=t[lang].homeBadge;
+      document.getElementById('profilePill').textContent=t[lang].profilePill;
+      document.getElementById('profileTitle').textContent=t[lang].profileTitle;
+      document.getElementById('profileDesc').textContent=t[lang].profileDesc;
+      document.getElementById('labelPlayerNo').textContent=t[lang].labelPlayerNo;
+      document.getElementById('labelNick').textContent=t[lang].labelNick;
+      document.getElementById('labelCountry').textContent=t[lang].labelCountry;
+      document.getElementById('roomPill').textContent=t[lang].roomPill;
+      document.getElementById('roomMenuTitle').textContent=t[lang].roomMenuTitle;
+      document.getElementById('roomMenuDesc').textContent=t[lang].roomMenuDesc;
+      document.getElementById('createPill').textContent=t[lang].createPill;
+      document.getElementById('createTitle').textContent=t[lang].createTitle;
+      document.getElementById('createDesc').textContent=t[lang].createDesc;
+      document.getElementById('labelRoomName').textContent=t[lang].labelRoomName;
+      document.getElementById('joinPill').textContent=t[lang].joinPill;
+      document.getElementById('joinTitle').textContent=t[lang].joinTitle;
+      document.getElementById('joinDesc').textContent=t[lang].joinDesc;
+      document.getElementById('labelRoomCode').textContent=t[lang].labelRoomCode;
+      document.getElementById('openPill').textContent=t[lang].openPill;
+      document.getElementById('openTitle').textContent=t[lang].openTitle;
+      document.getElementById('openDesc').textContent=t[lang].openDesc;
+      document.getElementById('openCodeLabel').textContent=t[lang].openCodeLabel;
+      document.getElementById('openHostLabel').textContent=t[lang].openHostLabel;
+      document.getElementById('onlineLabel').textContent=t[lang].onlineLabel;
+      firebaseNote.textContent=t[lang].firebaseReady;
 
-      document.getElementById('roomPill').textContent = t[lang].roomPill;
-      document.getElementById('roomMenuTitle').textContent = t[lang].roomMenuTitle;
-      document.getElementById('roomMenuDesc').textContent = t[lang].roomMenuDesc;
-
-      document.getElementById('createPill').textContent = t[lang].createPill;
-      document.getElementById('createTitle').textContent = t[lang].createTitle;
-      document.getElementById('createDesc').textContent = t[lang].createDesc;
-      document.getElementById('labelRoomName').textContent = t[lang].labelRoomName;
-
-      document.getElementById('joinPill').textContent = t[lang].joinPill;
-      document.getElementById('joinTitle').textContent = t[lang].joinTitle;
-      document.getElementById('joinDesc').textContent = t[lang].joinDesc;
-      document.getElementById('labelRoomCode').textContent = t[lang].labelRoomCode;
-
-      document.getElementById('openPill').textContent = t[lang].openPill;
-      document.getElementById('openTitle').textContent = t[lang].openTitle;
-      document.getElementById('openDesc').textContent = t[lang].openDesc;
-      document.getElementById('openCodeLabel').textContent = t[lang].openCodeLabel;
-      document.getElementById('openHostLabel').textContent = t[lang].openHostLabel;
-
-      firebaseNote.textContent = firebaseConfigured ? t[lang].firebaseReady : t[lang].firebaseMissing;
-
-      makeImgButton(document.getElementById('addProfileBtn'), 'btn_add_profile.png', lang==='pl'?'Dodaj profil':'Add profile', saveProfile);
-      makeImgButton(document.getElementById('backFromProfileBtn'), 'btn_back.png', lang==='pl'?'Powrót':'Back', closeAll);
-      makeImgButton(document.getElementById('createRoomBtn'), 'btn_create_room.png', lang==='pl'?'Załóż nowy pokój':'Create new room', ()=>showModal(modalCreateRoom));
-      makeImgButton(document.getElementById('enterRoomBtn'), 'btn_enter_room.png', lang==='pl'?'Dołącz do pokoju':'Enter room', ()=>showModal(modalEnterRoom));
-      makeImgButton(document.getElementById('newLoginBtn'), 'btn_new_login.png', lang==='pl'?'Dołącz na innym urządzeniu':'New login', newLogin);
-      makeImgButton(document.getElementById('exitBtn'), 'btn_exit.png', lang==='pl'?'Wyjście':'Exit', closeAll);
-      makeImgButton(document.getElementById('okCreateBtn'), 'btn_ok.png', 'OK', createRoom);
-      makeImgButton(document.getElementById('backFromCreateBtn'), 'btn_back.png', lang==='pl'?'Powrót':'Back', ()=>showModal(modalRoomMenu));
-      makeImgButton(document.getElementById('okJoinBtn'), 'btn_ok.png', 'OK', joinRoom);
-      makeImgButton(document.getElementById('backFromJoinBtn'), 'btn_back.png', lang==='pl'?'Powrót':'Back', ()=>showModal(modalRoomMenu));
-      makeImgButton(document.getElementById('backFromOpenRoomBtn'), 'btn_back.png', lang==='pl'?'Powrót':'Back', leaveCurrentPresenceAndBack);
-      makeImgButton(document.getElementById('exitFromOpenRoomBtn'), 'btn_exit.png', lang==='pl'?'Wyjście':'Exit', leaveCurrentPresenceAndClose);
+      makeImgButton(document.getElementById('addProfileBtn'),'btn_add_profile.png',lang==='pl'?'Dodaj profil':'Add profile',saveProfile);
+      makeImgButton(document.getElementById('backFromProfileBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',closeAll);
+      makeImgButton(document.getElementById('createRoomBtn'),'btn_create_room.png',lang==='pl'?'Załóż nowy pokój':'Create new room',()=>showModal(modalCreateRoom));
+      makeImgButton(document.getElementById('enterRoomBtn'),'btn_enter_room.png',lang==='pl'?'Dołącz do pokoju':'Enter room',()=>showModal(modalEnterRoom));
+      makeImgButton(document.getElementById('newLoginBtn'),'btn_new_login.png',lang==='pl'?'Dołącz na innym urządzeniu':'New login',newLogin);
+      makeImgButton(document.getElementById('exitBtn'),'btn_exit.png',lang==='pl'?'Wyjście':'Exit',closeAll);
+      makeImgButton(document.getElementById('okCreateBtn'),'btn_ok.png','OK',createRoom);
+      makeImgButton(document.getElementById('backFromCreateBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',()=>showModal(modalRoomMenu));
+      makeImgButton(document.getElementById('okJoinBtn'),'btn_ok.png','OK',joinRoom);
+      makeImgButton(document.getElementById('backFromJoinBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',()=>showModal(modalRoomMenu));
+      makeImgButton(document.getElementById('backFromOpenRoomBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',leaveCurrentPresenceAndBack);
+      makeImgButton(document.getElementById('exitFromOpenRoomBtn'),'btn_exit.png',lang==='pl'?'Wyjście':'Exit',leaveCurrentPresenceAndClose);
     }
 
-    function showModal(which){
-      [modalProfile, modalRoomMenu, modalCreateRoom, modalEnterRoom, modalOpenRoom].forEach(m=>m.classList.add('hidden'));
-      backdrop.classList.add('show');
-      which.classList.remove('hidden');
-      if(which===modalRoomMenu){ roomNameInput.value=''; roomCodeInput.value=''; }
-    }
-    function closeAll(){
-      backdrop.classList.remove('show');
-      [modalProfile, modalRoomMenu, modalCreateRoom, modalEnterRoom, modalOpenRoom].forEach(m=>m.classList.add('hidden'));
-    }
-
-    function saveProfile(){
-      const nick = nickInput.value.trim();
-      const country = countryInput.value.trim();
-      if(!nick || !country){ alert(t[lang].saveProfileMissing); return; }
-      setProfile({playerNo: playerNo.value, nick, country});
-      showModal(modalRoomMenu);
-    }
-
-    function newLogin(){
-      localStorage.removeItem(profileKey);
-      playerNo.value = randPlayerNo();
-      nickInput.value = '';
-      countryInput.value = '';
-      showModal(modalProfile);
-    }
+    function showModal(which){ [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); backdrop.classList.add('show'); which.classList.remove('hidden'); if(which===modalRoomMenu){ roomNameInput.value=''; roomCodeInput.value=''; } }
+    function closeAll(){ backdrop.classList.remove('show'); [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); }
+    function saveProfile(){ const nick=nickInput.value.trim(); const country=countryInput.value.trim(); if(!nick||!country){ alert(t[lang].saveProfileMissing); return; } setProfile({playerNo:playerNo.value,nick,country}); showModal(modalRoomMenu); }
+    function newLogin(){ localStorage.removeItem(profileKey); playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); }
 
     async function createRoom(){
-      const name = roomNameInput.value.trim();
+      const name=roomNameInput.value.trim();
       if(!name){ alert(t[lang].roomNameMissing); return; }
-      if(!firebaseConfigured){ alert(t[lang].firebaseMissing); return; }
-
-      const profile = getProfile();
-      const code = randRoomCode();
-      const roomRef = ref(db, `rooms/${code}`);
-      await set(roomRef, {
-        name,
-        code,
-        hostNick: profile ? profile.nick : '---',
-        createdAt: Date.now()
-      });
-
-      localStorage.setItem(roomCodeCacheKey, code);
-      await openRoom({
-        code,
-        name,
-        hostNick: profile ? profile.nick : '---'
-      });
+      const profile=getProfile();
+      const code=randRoomCode();
+      await set(ref(db, `rooms/${code}`), {name,code,hostNick:profile?profile.nick:'---',createdAt:Date.now()});
+      await openRoom({code,name,hostNick:profile?profile.nick:'---'});
     }
 
     async function joinRoom(){
-      const code = roomCodeInput.value.trim().toUpperCase();
+      const code=roomCodeInput.value.trim().toUpperCase();
       if(!code){ alert(t[lang].enterRoomMissing); return; }
-      if(!firebaseConfigured){ alert(t[lang].firebaseMissing); return; }
-
-      const snap = await get(ref(db, `rooms/${code}`));
+      const snap=await get(ref(db, `rooms/${code}`));
       if(!snap.exists()){ alert(t[lang].enterRoomNotFound); return; }
-
-      const room = snap.val();
-      localStorage.setItem(roomCodeCacheKey, code);
-      await openRoom(room);
+      await openRoom(snap.val());
     }
 
     async function attachPresence(room){
-      if(!firebaseConfigured) return;
-
-      const profile = getProfile();
-      const sessionId = getSessionId();
-      const playerRef = ref(db, `rooms/${room.code}/players/${sessionId}`);
+      const profile=getProfile();
+      const sessionId=getSessionId();
+      const playerRef=ref(db, `rooms/${room.code}/players/${sessionId}`);
 
       await set(playerRef, {
         sessionId,
@@ -497,84 +271,58 @@
         joinedAt: Date.now()
       });
 
-      const disconnector = onDisconnect(playerRef);
-      await remove(playerRef).catch(()=>{});
-      await disconnector.remove();
+      await onDisconnect(playerRef).remove();
 
-      if (currentPlayersUnsub) currentPlayersUnsub();
+      if(currentPlayersUnsub) currentPlayersUnsub();
       currentPlayersUnsub = onValue(ref(db, `rooms/${room.code}/players`), (snap) => {
-        const players = snap.val() || {};
-        renderPlayers(players, room);
+        renderPlayers(snap.val() || {}, room);
       });
       currentRoomCode = room.code;
     }
 
     function renderPlayers(playersObj, room){
-      onlinePlayersList.innerHTML = '';
-      const players = Object.values(playersObj || {});
-      if(players.length === 0){
-        const row = document.createElement('div');
-        row.className = 'player';
-        row.innerHTML = `<span>---</span><span>${t[lang].online}</span>`;
+      onlinePlayersList.innerHTML='';
+      const players=Object.values(playersObj||{});
+      if(players.length===0){
+        const row=document.createElement('div');
+        row.className='player';
+        row.innerHTML=`<span>${t[lang].none}</span><span>—</span>`;
         onlinePlayersList.appendChild(row);
         return;
       }
-      players.sort((a,b) => (a.joinedAt||0) - (b.joinedAt||0));
-      players.forEach((p, idx) => {
-        const row = document.createElement('div');
-        row.className = 'player';
-        const role = idx === 0 ? t[lang].host : t[lang].player;
-        row.innerHTML = `<span>${role}: ${p.nick || '---'}${p.country ? ' • ' + p.country : ''}</span><span>${t[lang].online}</span>`;
+      players.sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0));
+      players.forEach((p)=>{
+        const row=document.createElement('div');
+        row.className='player';
+        const role = p.nick === room.hostNick ? t[lang].host : t[lang].player;
+        row.innerHTML=`<span>${role}: ${p.nick || '---'}${p.country ? ' • ' + p.country : ''}</span><span>${t[lang].online}</span>`;
         onlinePlayersList.appendChild(row);
       });
     }
 
     async function openRoom(room){
-      const profile = getProfile();
-      document.getElementById('openRoomName').textContent = `${lang==='pl'?'Pokój':'Room'}: ${room.name}`;
-      document.getElementById('openRoomCode').textContent = room.code;
-      document.getElementById('openPlayerName').textContent = profile ? profile.nick : room.hostNick || '---';
-      firebaseNote.textContent = firebaseConfigured ? t[lang].firebaseReady : t[lang].firebaseMissing;
+      const profile=getProfile();
+      document.getElementById('openRoomName').textContent=`${lang==='pl'?'Pokój':'Room'}: ${room.name}`;
+      document.getElementById('openRoomCode').textContent=room.code;
+      document.getElementById('openPlayerName').textContent=profile ? profile.nick : room.hostNick || '---';
+      firebaseNote.textContent=t[lang].firebaseReady;
       showModal(modalOpenRoom);
-      if (firebaseConfigured) await attachPresence(room);
+      await attachPresence(room);
     }
 
     async function leavePresence(){
-      if(!firebaseConfigured || !currentRoomCode) return;
-      const sessionId = getSessionId();
-      const playerRef = ref(db, `rooms/${currentRoomCode}/players/${sessionId}`);
-      try { await remove(playerRef); } catch(e) {}
-      if(currentPlayersUnsub){
-        currentPlayersUnsub();
-        currentPlayersUnsub = null;
-      }
-      currentRoomCode = null;
+      if(!currentRoomCode) return;
+      const sessionId=getSessionId();
+      try { await remove(ref(db, `rooms/${currentRoomCode}/players/${sessionId}`)); } catch(e) {}
+      if(currentPlayersUnsub){ currentPlayersUnsub(); currentPlayersUnsub=null; }
+      currentRoomCode=null;
     }
+    async function leaveCurrentPresenceAndBack(){ await leavePresence(); showModal(modalRoomMenu); }
+    async function leaveCurrentPresenceAndClose(){ await leavePresence(); closeAll(); }
 
-    async function leaveCurrentPresenceAndBack(){
-      await leavePresence();
-      showModal(modalRoomMenu);
-    }
-    async function leaveCurrentPresenceAndClose(){
-      await leavePresence();
-      closeAll();
-    }
-
-    playBtn.addEventListener('click', () => {
-      const profile = getProfile();
-      if(profile){
-        showModal(modalRoomMenu);
-      }else{
-        playerNo.value = randPlayerNo();
-        nickInput.value = '';
-        countryInput.value = '';
-        showModal(modalProfile);
-      }
-    });
-
-    backdrop.addEventListener('click', (e)=>{ if(e.target === backdrop) closeAll(); });
+    playBtn.addEventListener('click', ()=>{ const profile=getProfile(); if(profile){ showModal(modalRoomMenu); } else { playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); } });
+    backdrop.addEventListener('click',(e)=>{ if(e.target===backdrop) closeAll(); });
     langBtn.addEventListener('click', ()=>{ lang = lang === 'pl' ? 'en' : 'pl'; applyLang(); });
-
     applyLang();
   </script>
 </body>
