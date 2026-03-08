@@ -3,270 +3,307 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZGADNIJ v1009</title>
+  <title>ZGADNIJ I WYGRAJ</title>
   <style>
-    :root {
-      --bg1: #04101d;
-      --bg2: #0a1830;
-      --panel: rgba(12, 28, 74, 0.88);
-      --line: rgba(255,255,255,0.16);
-      --text: #eef5ff;
-      --muted: #b8c7e6;
-      --shadow: 0 24px 60px rgba(0,0,0,0.42);
+    :root{
+      --bg:#02142e;
+      --panel:#0d2357ee;
+      --panel2:#132d6eee;
+      --text:#eef6ff;
+      --muted:#b8c9f1;
+      --line:#4f6fc4;
+      --shadow:0 18px 55px rgba(0,0,0,.48);
+      --radius:28px;
     }
-    * { box-sizing: border-box; }
-    html, body { margin: 0; min-height: 100%; font-family: Arial, Helvetica, sans-serif; color: var(--text); }
-    body {
-      background:
-        radial-gradient(circle at 15% 20%, rgba(87,216,255,0.10), transparent 0 22%),
-        radial-gradient(circle at 85% 80%, rgba(77,124,255,0.18), transparent 0 24%),
-        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-      overflow-x: hidden;
+    *{box-sizing:border-box}
+    html,body{margin:0;height:100%;font-family:Segoe UI,Arial,sans-serif;background:radial-gradient(circle at center,#0a2c72 0%,#03122b 55%,#010915 100%);color:var(--text);overflow:hidden}
+    button,input{font:inherit}
+    .app{position:relative;min-height:100%;padding:28px}
+    .frame{
+      position:relative;
+      width:min(1360px,calc(100vw - 56px));
+      height:min(820px,calc(100vh - 56px));
+      margin:0 auto;
+      border-radius:34px;
+      border:1px solid rgba(120,160,255,.25);
+      box-shadow:var(--shadow), inset 0 0 0 1px rgba(255,255,255,.04);
+      background:linear-gradient(180deg,rgba(10,35,90,.85),rgba(3,18,46,.95));
+      overflow:hidden;
     }
-    .hidden { display: none !important; }
-
-    .screen-start {
-      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px;
-      background: linear-gradient(180deg, #04101d 0%, #0a1830 100%);
+    .frame::before{
+      content:"";position:absolute;inset:18px;border-radius:28px;border:1px solid rgba(144,176,255,.18);pointer-events:none;z-index:1;
     }
-    .start-frame {
-      position: relative; width: min(94vw, 1500px); aspect-ratio: 16 / 9; border-radius: 28px; overflow: hidden;
-      box-shadow: 0 30px 90px rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.14); background: #07111f;
+    .top-pill,.lang-pill,.version{
+      position:absolute;z-index:3;border-radius:999px;border:1px solid rgba(170,196,255,.22);background:rgba(4,18,49,.78);backdrop-filter: blur(8px);
+      color:#f4f7ff;font-weight:800;letter-spacing:.4px;
     }
-    .start-image { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
-    .start-caption, .lang-start-btn {
-      position: absolute; z-index: 3; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18);
-      background: rgba(7,17,31,0.62); color: var(--text); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
-      font-weight: 700;
+    .top-pill{top:18px;left:18px;padding:16px 30px;font-size:18px}
+    .lang-pill{top:18px;right:18px;padding:16px 22px;font-size:18px;cursor:pointer}
+    .version{right:16px;bottom:14px;padding:14px 20px;font-size:16px}
+    .screen{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+    #startScreen{z-index:0}
+    .start-art{
+      width:100%;height:100%;object-fit:contain;display:block;user-select:none;-webkit-user-drag:none;
+      filter:drop-shadow(0 20px 40px rgba(0,0,0,.4));
+      position:relative;z-index:0;
     }
-    .start-caption { left: 18px; top: 18px; padding: 12px 16px; font-size: 14px; letter-spacing: 0.08em; }
-    .lang-start-btn { right: 18px; top: 18px; padding: 12px 18px; font-size: 15px; cursor: pointer; }
-    .play-hotspot {
-      position: absolute; left: 50%; bottom: 4.6%; transform: translateX(-50%); width: 24%; height: 14%; min-width: 180px; min-height: 70px;
-      border: none; background: transparent; cursor: pointer; border-radius: 999px;
+    .fallback-note{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:2;text-align:center;padding:22px 26px;border-radius:18px;background:rgba(8,22,58,.88);border:1px solid rgba(169,193,255,.24);display:none;max-width:640px}
+    .play-hotspot{position:absolute;left:50%;bottom:4.5%;transform:translateX(-50%);width:min(25vw,350px);height:min(11.5vw,120px);z-index:2;background:transparent;border:none;cursor:pointer}
+    .overlay{position:absolute;inset:0;background:rgba(1,9,22,.62);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;z-index:5}
+    .overlay.show{display:flex}
+    .modal{
+      width:min(720px,92vw);max-height:86vh;overflow:auto;background:linear-gradient(180deg,var(--panel2),var(--panel));
+      border:1px solid rgba(154,181,255,.22);border-radius:34px;padding:28px 28px 24px;box-shadow:var(--shadow);
     }
-    .version-tag {
-      position: fixed; right: 16px; bottom: 12px; z-index: 9999; padding: 8px 12px; border-radius: 999px;
-      background: rgba(5, 11, 20, 0.82); color: #dce9ff; border: 1px solid rgba(255,255,255,0.18); font-size: 13px; letter-spacing: 0.08em;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    .modal h2{margin:12px 0 10px;font-size:56px;line-height:.95}
+    .modal p{margin:0 0 22px;color:var(--muted);font-size:17px;line-height:1.4}
+    .section-pill{display:inline-block;padding:10px 16px;border-radius:999px;background:rgba(17,42,104,.85);border:1px solid rgba(169,193,255,.22);font-weight:800}
+    .button-stack{display:flex;flex-direction:column;gap:18px;align-items:center;padding:8px 0 6px}
+    .img-btn{background:none;border:none;padding:0;cursor:pointer;display:block}
+    .img-btn img{display:block;max-width:100%;height:auto;filter:drop-shadow(0 10px 14px rgba(0,0,0,.26));transition:transform .18s ease, filter .18s ease}
+    .img-btn:hover img{transform:translateY(-2px) scale(1.01);filter:drop-shadow(0 14px 18px rgba(0,0,0,.32))}
+    .img-btn:active img{transform:translateY(0) scale(.99)}
+    .room-btn img{width:min(520px,62vw)}
+    .small-btn img{width:min(300px,44vw)}
+    .text-fallback{display:none;min-width:250px;padding:15px 22px;border-radius:18px;border:1px solid rgba(174,198,255,.32);background:linear-gradient(180deg,#2a74ff,#1946a9);color:#fff;font-weight:900;text-align:center;box-shadow:0 12px 20px rgba(0,0,0,.25)}
+    .fields{display:flex;flex-direction:column;gap:14px;margin:14px 0 24px}
+    label{font-weight:700;color:#dce8ff}
+    input{
+      width:100%;padding:16px 18px;border-radius:18px;border:1px solid rgba(169,193,255,.22);background:rgba(3,18,46,.72);color:#fff;outline:none;
     }
-
-    .modal-backdrop {
-      position: fixed; inset: 0; background: rgba(2,9,21,0.70); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-      display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 1000;
-    }
-    .modal {
-      width: min(92vw, 620px); min-height: 540px; border-radius: 32px; border: 1px solid var(--line);
-      background: linear-gradient(180deg, rgba(16,41,106,0.96) 0%, rgba(8,25,71,0.96) 100%); box-shadow: var(--shadow);
-      padding: 24px 28px 28px; position: relative;
-    }
-    .modal-badge {
-      display: inline-flex; padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06);
-      font-size: 14px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 18px;
-    }
-    .modal h2 { margin: 0 0 14px; font-size: clamp(34px, 5vw, 58px); line-height: 0.94; }
-    .modal p { margin: 0 0 22px; color: var(--muted); font-size: 16px; line-height: 1.45; }
-    .room-actions {
-      display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 8px;
-    }
-    .img-btn {
-      border: none; background: transparent; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
-      transition: transform 0.15s ease, filter 0.15s ease;
-    }
-    .img-btn:hover { transform: translateY(-2px) scale(1.01); filter: brightness(1.05); }
-    .img-btn img {
-      display: block; width: min(100%, 380px); max-width: 380px; height: auto; object-fit: contain;
-      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35));
-    }
-    .fallback-btn {
-      min-width: 260px; max-width: 380px; width: 100%; border: 1px solid rgba(255,255,255,0.20); border-radius: 22px;
-      padding: 18px 22px; font-size: 24px; font-weight: 800; color: white;
-      background: linear-gradient(180deg, #1f7cff 0%, #153de5 100%);
-      box-shadow: inset 0 2px 0 rgba(255,255,255,0.25), 0 10px 20px rgba(0,0,0,0.25);
-    }
-    .field-group { display: grid; gap: 14px; margin-top: 10px; }
-    .field-label { font-size: 14px; color: #c9d8f7; font-weight: 700; }
-    .field-input {
-      width: 100%; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); color: white; border-radius: 18px;
-      padding: 16px 18px; font-size: 18px; outline: none;
-    }
-    .inline-actions { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 26px; }
-    .footer-space { height: 52px; }
-
-    @media (max-width: 900px) {
-      .modal { width: min(94vw, 540px); padding: 22px; min-height: auto; }
-      .img-btn img { max-width: 320px; }
-      .fallback-btn { max-width: 320px; font-size: 21px; }
-    }
-    @media (max-width: 680px) {
-      .start-frame { width: 96vw; }
-      .modal { width: min(96vw, 430px); border-radius: 24px; padding: 18px; }
-      .modal h2 { font-size: 40px; }
-      .modal p { font-size: 14px; }
-      .img-btn img { max-width: 270px; }
-      .fallback-btn { min-width: 0; max-width: 270px; font-size: 18px; padding: 16px 18px; }
-      .start-caption, .lang-start-btn { font-size: 12px; padding: 10px 12px; }
-      .play-hotspot { width: 38%; height: 18%; min-width: 130px; min-height: 56px; }
+    input[readonly]{color:#bcd0ff}
+    .actions{display:flex;flex-direction:column;gap:16px;align-items:center}
+    .footpaths{margin-top:18px;color:#c7d5fb;font-size:14px;text-align:center;opacity:.9}
+    @media (max-width: 900px){
+      .modal h2{font-size:42px}
+      .top-pill,.lang-pill{font-size:15px;padding:12px 18px}
+      .play-hotspot{width:min(40vw,320px);height:min(18vw,110px);bottom:4%}
     }
   </style>
 </head>
 <body>
-  <section class="screen-start" id="screenStart">
-    <div class="start-frame">
-      <div class="start-caption" id="startCaption">STRONA STARTOWA</div>
-      <button class="lang-start-btn" id="langStartBtn">PL / EN</button>
-      <img src="img_startowa.png" alt="ZGADNIJ I WYGRAJ - ekran startowy" class="start-image" />
-      <button class="play-hotspot" id="playHotspot" aria-label="Graj"></button>
-    </div>
-  </section>
+  <div class="app">
+    <div class="frame">
+      <div class="top-pill" id="homeLabel">STRONA STARTOWA</div>
+      <button class="lang-pill" id="langToggle">PL / EN</button>
 
-  <div class="modal-backdrop hidden" id="roomChoiceModal">
-    <div class="modal">
-      <div class="modal-badge" id="roomBadge">POKÓJ GRY</div>
-      <h2 id="roomTitle">Wybierz akcję pokoju</h2>
-      <p id="roomDesc">Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.</p>
-      <div class="room-actions">
-        <button class="img-btn" id="btnCreateRoom"></button>
-        <button class="img-btn" id="btnEnterRoom"></button>
-        <button class="img-btn" id="btnNewLogin"></button>
-        <button class="img-btn" id="btnExit"></button>
+      <div class="screen" id="startScreen">
+        <img id="startArt" class="start-art" src="grafic/img_startowa.png" alt="ZGADNIJ I WYGRAJ - ekran startowy" />
+        <div class="fallback-note" id="startFallback"></div>
+        <button class="play-hotspot" id="playBtn" aria-label="Graj"></button>
       </div>
+
+      <div class="overlay" id="roomMenuOverlay">
+        <div class="modal">
+          <div class="section-pill" id="roomSectionLabel">POKÓJ GRY</div>
+          <h2 id="roomMenuTitle">Wybierz akcję pokoju</h2>
+          <p id="roomMenuText">Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.</p>
+          <div class="button-stack">
+            <button class="img-btn room-btn" id="createRoomBtn">
+              <img data-src-pl="ui/buttons/pl/btn_create_room.png" data-src-en="ui/buttons/en/btn_create_room.png" alt="Załóż nowy pokój" />
+              <span class="text-fallback" data-fallback-pl="Załóż nowy pokój" data-fallback-en="Create room"></span>
+            </button>
+            <button class="img-btn room-btn" id="enterRoomBtn">
+              <img data-src-pl="ui/buttons/pl/btn_enter_room.png" data-src-en="ui/buttons/en/btn_enter_room.png" alt="Dołącz do pokoju" />
+              <span class="text-fallback" data-fallback-pl="Dołącz do pokoju" data-fallback-en="Enter room"></span>
+            </button>
+            <button class="img-btn room-btn" id="newLoginBtn">
+              <img data-src-pl="ui/buttons/pl/btn_new_login.png" data-src-en="ui/buttons/en/btn_new_login.png" alt="Dołącz na innym urządzeniu" />
+              <span class="text-fallback" data-fallback-pl="Dołącz na innym urządzeniu" data-fallback-en="New login"></span>
+            </button>
+            <button class="img-btn small-btn" id="exitBtn">
+              <img data-src-pl="ui/buttons/pl/btn_exit.png" data-src-en="ui/buttons/en/btn_exit.png" alt="Wyjście" />
+              <span class="text-fallback" data-fallback-pl="Wyjście" data-fallback-en="Exit"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="profileOverlay">
+        <div class="modal">
+          <div class="section-pill" id="profileSectionLabel">PROFIL</div>
+          <h2 id="profileTitle">Dodaj profil</h2>
+          <p id="profileText">Przy pierwszym wejściu uzupełnij numer gracza, nick i kraj.</p>
+          <div class="fields">
+            <div>
+              <label id="playerNoLabel" for="playerNo">Nr gracza</label>
+              <input id="playerNo" readonly />
+            </div>
+            <div>
+              <label id="nickLabel" for="nickInput">Nick</label>
+              <input id="nickInput" maxlength="24" />
+            </div>
+            <div>
+              <label id="countryLabel" for="countryInput">Kraj</label>
+              <input id="countryInput" maxlength="32" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="img-btn small-btn" id="saveProfileBtn">
+              <img data-src-pl="ui/buttons/pl/btn_add_profile.png" data-src-en="ui/buttons/en/btn_add_profile.png" alt="Dodaj profil" />
+              <span class="text-fallback" data-fallback-pl="Dodaj profil" data-fallback-en="Add profile"></span>
+            </button>
+            <button class="img-btn small-btn" id="backProfileBtn">
+              <img data-src-pl="ui/buttons/pl/btn_back.png" data-src-en="ui/buttons/en/btn_back.png" alt="Cofnij" />
+              <span class="text-fallback" data-fallback-pl="Cofnij" data-fallback-en="Back"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="createRoomOverlay">
+        <div class="modal">
+          <div class="section-pill" id="createSectionLabel">NOWY POKÓJ</div>
+          <h2 id="createTitle">Utwórz pokój</h2>
+          <p id="createText">Wpisz nazwę pokoju, a następnie zatwierdź.</p>
+          <div class="fields">
+            <div>
+              <label id="roomNameLabel" for="roomNameInput">Nazwa pokoju</label>
+              <input id="roomNameInput" maxlength="40" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="img-btn small-btn" id="confirmCreateBtn">
+              <img data-src-pl="ui/buttons/pl/btn_ok.png" data-src-en="ui/buttons/en/btn_ok.png" alt="OK" />
+              <span class="text-fallback" data-fallback-pl="OK" data-fallback-en="OK"></span>
+            </button>
+            <button class="img-btn small-btn" id="backCreateBtn">
+              <img data-src-pl="ui/buttons/pl/btn_back.png" data-src-en="ui/buttons/en/btn_back.png" alt="Cofnij" />
+              <span class="text-fallback" data-fallback-pl="Cofnij" data-fallback-en="Back"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overlay" id="enterRoomOverlay">
+        <div class="modal">
+          <div class="section-pill" id="joinSectionLabel">DOŁĄCZ DO POKOJU</div>
+          <h2 id="joinTitle">Wpisz kod pokoju</h2>
+          <p id="joinText">Podaj kod pokoju, aby do niego dołączyć.</p>
+          <div class="fields">
+            <div>
+              <label id="roomCodeLabel" for="roomCodeInput">Kod pokoju</label>
+              <input id="roomCodeInput" maxlength="16" />
+            </div>
+          </div>
+          <div class="actions">
+            <button class="img-btn small-btn" id="confirmJoinBtn">
+              <img data-src-pl="ui/buttons/pl/btn_ok.png" data-src-en="ui/buttons/en/btn_ok.png" alt="OK" />
+              <span class="text-fallback" data-fallback-pl="OK" data-fallback-en="OK"></span>
+            </button>
+            <button class="img-btn small-btn" id="backJoinBtn">
+              <img data-src-pl="ui/buttons/pl/btn_back.png" data-src-en="ui/buttons/en/btn_back.png" alt="Cofnij" />
+              <span class="text-fallback" data-fallback-pl="Cofnij" data-fallback-en="Back"></span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="version">ZGADNIJ v1011</div>
     </div>
   </div>
-
-  <div class="modal-backdrop hidden" id="enterRoomModal">
-    <div class="modal" style="width:min(92vw,560px); min-height:auto;">
-      <div class="modal-badge" id="enterBadge">DOŁĄCZ DO POKOJU</div>
-      <h2 id="enterTitle">Wpisz kod pokoju</h2>
-      <p id="enterDesc">Podaj kod pokoju, aby dołączyć do rozgrywki.</p>
-      <div class="field-group">
-        <label class="field-label" for="roomCode" id="roomCodeLabel">Kod pokoju</label>
-        <input class="field-input" id="roomCode" maxlength="20" autocomplete="off" />
-      </div>
-      <div class="inline-actions">
-        <button class="img-btn" id="btnOkEnter"></button>
-        <button class="img-btn" id="btnBackEnter"></button>
-      </div>
-    </div>
-  </div>
-
-  <div class="version-tag">ZGADNIJ v1009</div>
-  <div class="footer-space"></div>
 
   <script>
-    const VERSION = 'ZGADNIJ v1009';
-    let lang = 'pl';
-
     const t = {
       pl: {
-        startCaption: 'STRONA STARTOWA',
-        roomBadge: 'POKÓJ GRY',
-        roomTitle: 'Wybierz akcję pokoju',
-        roomDesc: 'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
-        enterBadge: 'DOŁĄCZ DO POKOJU',
-        enterTitle: 'Wpisz kod pokoju',
-        enterDesc: 'Podaj kod pokoju, aby dołączyć do rozgrywki.',
-        roomCodeLabel: 'Kod pokoju',
-        createRoom: 'Załóż nowy pokój',
-        enterRoom: 'Dołącz do pokoju',
-        newLogin: 'Dołącz na innym urządzeniu',
-        exit: 'Wyjście',
-        ok: 'OK',
-        back: 'Cofnij',
-        createInfo: 'Okno zakładania pokoju podłączymy w następnym kroku.',
-        savedInfo: 'Kod pokoju został zapisany lokalnie.',
+        homeLabel:'STRONA STARTOWA',
+        roomSectionLabel:'POKÓJ GRY', roomMenuTitle:'Wybierz akcję pokoju', roomMenuText:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
+        profileSectionLabel:'PROFIL', profileTitle:'Dodaj profil', profileText:'Przy pierwszym wejściu uzupełnij numer gracza, nick i kraj.', playerNoLabel:'Nr gracza', nickLabel:'Nick', countryLabel:'Kraj',
+        createSectionLabel:'NOWY POKÓJ', createTitle:'Utwórz pokój', createText:'Wpisz nazwę pokoju, a następnie zatwierdź.', roomNameLabel:'Nazwa pokoju',
+        joinSectionLabel:'DOŁĄCZ DO POKOJU', joinTitle:'Wpisz kod pokoju', joinText:'Podaj kod pokoju, aby do niego dołączyć.', roomCodeLabel:'Kod pokoju',
+        missingStart:'Nie udało się wczytać grafiki startowej z pliku grafic/img_startowa.png.',
+        profileSaved:'Profil zapisany.', roomCreated:'Pokój zapisany lokalnie.', roomJoined:'Kod pokoju zapisany lokalnie.'
       },
       en: {
-        startCaption: 'START SCREEN',
-        roomBadge: 'GAME ROOM',
-        roomTitle: 'Choose room action',
-        roomDesc: 'After creating a profile, choose whether you want to create a room, enter a room, sign in a new player, or exit.',
-        enterBadge: 'ENTER ROOM',
-        enterTitle: 'Type room code',
-        enterDesc: 'Enter the room code to join the game.',
-        roomCodeLabel: 'Room code',
-        createRoom: 'Create room',
-        enterRoom: 'Enter room',
-        newLogin: 'Login on another device',
-        exit: 'Exit',
-        ok: 'OK',
-        back: 'Back',
-        createInfo: 'The create room window will be connected in the next step.',
-        savedInfo: 'Room code saved locally.',
+        homeLabel:'HOME SCREEN',
+        roomSectionLabel:'GAME ROOM', roomMenuTitle:'Choose room action', roomMenuText:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',
+        profileSectionLabel:'PROFILE', profileTitle:'Add profile', profileText:'On first entry complete player number, nickname and country.', playerNoLabel:'Player no.', nickLabel:'Nickname', countryLabel:'Country',
+        createSectionLabel:'NEW ROOM', createTitle:'Create room', createText:'Enter the room name and confirm.', roomNameLabel:'Room name',
+        joinSectionLabel:'ENTER ROOM', joinTitle:'Enter room code', joinText:'Enter the room code to join.', roomCodeLabel:'Room code',
+        missingStart:'Could not load the start image from grafic/img_startowa.png.',
+        profileSaved:'Profile saved.', roomCreated:'Room saved locally.', roomJoined:'Room code saved locally.'
       }
     };
 
-    function btnPath(name) {
-      return `ui/buttons/${lang}/${name}`;
+    let lang = 'pl';
+    const qs = s => document.querySelector(s);
+    const get = id => document.getElementById(id);
+    const overlays = ['roomMenuOverlay','profileOverlay','createRoomOverlay','enterRoomOverlay'].map(get);
+
+    function playerId(){
+      const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+      let out=''; for(let i=0;i<7;i++) out += chars[Math.floor(Math.random()*chars.length)]; return out;
+    }
+    function show(id){ overlays.forEach(o=>o.classList.remove('show')); get(id).classList.add('show'); }
+    function hideAll(){ overlays.forEach(o=>o.classList.remove('show')); }
+
+    function setTexts(){
+      const x=t[lang];
+      for(const id of Object.keys(x)){ if(get(id)) get(id).textContent=x[id]; }
+      get('langToggle').textContent = lang === 'pl' ? 'PL / EN' : 'EN / PL';
+      loadButtonImages();
     }
 
-    function setButtonContent(el, imgName, fallbackText) {
-      const img = new Image();
-      img.onload = () => {
-        el.innerHTML = '';
-        img.alt = fallbackText;
-        el.appendChild(img);
-      };
+    function applyButtonImage(img){
+      const src = lang === 'pl' ? img.dataset.srcPl : img.dataset.srcEn;
+      const fallback = img.nextElementSibling;
+      img.style.display='block'; fallback.style.display='none';
+      img.onerror = () => { img.style.display='none'; fallback.style.display='inline-block'; fallback.textContent = lang === 'pl' ? fallback.dataset.fallbackPl : fallback.dataset.fallbackEn; };
+      img.src = src + '?v=1011';
+    }
+
+    function loadButtonImages(){ document.querySelectorAll('.img-btn img').forEach(applyButtonImage); }
+
+    function loadStartImage(){
+      const img = get('startArt');
+      const fallback = get('startFallback');
       img.onerror = () => {
-        el.innerHTML = `<div class="fallback-btn">${fallbackText}</div>`;
+        fallback.style.display='block';
+        fallback.textContent = t[lang].missingStart;
       };
-      img.src = btnPath(imgName);
+      img.onload = () => fallback.style.display='none';
+      img.src = 'grafic/img_startowa.png?v=1011';
     }
 
-    function render() {
-      const c = t[lang];
-      document.documentElement.lang = lang;
-      document.title = VERSION;
-      document.getElementById('startCaption').textContent = c.startCaption;
-      document.getElementById('langStartBtn').textContent = 'PL / EN';
-      document.getElementById('roomBadge').textContent = c.roomBadge;
-      document.getElementById('roomTitle').textContent = c.roomTitle;
-      document.getElementById('roomDesc').textContent = c.roomDesc;
-      document.getElementById('enterBadge').textContent = c.enterBadge;
-      document.getElementById('enterTitle').textContent = c.enterTitle;
-      document.getElementById('enterDesc').textContent = c.enterDesc;
-      document.getElementById('roomCodeLabel').textContent = c.roomCodeLabel;
-      document.getElementById('roomCode').placeholder = c.roomCodeLabel;
+    function getProfile(){ try{return JSON.parse(localStorage.getItem('zgadnij_profile')||'null');}catch{return null;} }
 
-      setButtonContent(document.getElementById('btnCreateRoom'), 'btn_create_room.png', c.createRoom);
-      setButtonContent(document.getElementById('btnEnterRoom'), 'btn_enter_room.png', c.enterRoom);
-      setButtonContent(document.getElementById('btnNewLogin'), 'btn_new_login.png', c.newLogin);
-      setButtonContent(document.getElementById('btnExit'), 'btn_exit.png', c.exit);
-      setButtonContent(document.getElementById('btnOkEnter'), 'btn_ok.png', c.ok);
-      setButtonContent(document.getElementById('btnBackEnter'), 'btn_back.png', c.back);
-    }
-
-    function openRoomChoice() {
-      document.getElementById('roomChoiceModal').classList.remove('hidden');
-      document.getElementById('screenStart').classList.add('hidden');
-    }
-    function closeAllToStart() {
-      document.getElementById('roomChoiceModal').classList.add('hidden');
-      document.getElementById('enterRoomModal').classList.add('hidden');
-      document.getElementById('screenStart').classList.remove('hidden');
-    }
-    function openEnterRoom() {
-      document.getElementById('roomChoiceModal').classList.add('hidden');
-      document.getElementById('enterRoomModal').classList.remove('hidden');
-    }
-    function backToRoomChoice() {
-      document.getElementById('enterRoomModal').classList.add('hidden');
-      document.getElementById('roomChoiceModal').classList.remove('hidden');
-    }
-
-    document.getElementById('langStartBtn').addEventListener('click', () => { lang = lang === 'pl' ? 'en' : 'pl'; render(); });
-    document.getElementById('playHotspot').addEventListener('click', openRoomChoice);
-    document.getElementById('btnEnterRoom').addEventListener('click', openEnterRoom);
-    document.getElementById('btnBackEnter').addEventListener('click', backToRoomChoice);
-    document.getElementById('btnExit').addEventListener('click', closeAllToStart);
-    document.getElementById('btnCreateRoom').addEventListener('click', () => alert(t[lang].createInfo));
-    document.getElementById('btnNewLogin').addEventListener('click', closeAllToStart);
-    document.getElementById('btnOkEnter').addEventListener('click', () => {
-      localStorage.setItem('zgadnij_last_room_code', document.getElementById('roomCode').value.trim());
-      alert(t[lang].savedInfo);
+    get('langToggle').addEventListener('click',()=>{ lang = lang === 'pl' ? 'en' : 'pl'; setTexts(); loadStartImage(); });
+    get('playBtn').addEventListener('click',()=>{
+      const p=getProfile();
+      if(p) show('roomMenuOverlay');
+      else {
+        get('playerNo').value = playerId();
+        get('nickInput').value=''; get('countryInput').value='';
+        show('profileOverlay');
+      }
     });
 
-    render();
+    get('saveProfileBtn').addEventListener('click',()=>{
+      const nick=get('nickInput').value.trim(); const country=get('countryInput').value.trim(); const no=get('playerNo').value.trim();
+      if(!nick || !country){ alert(lang==='pl'?'Uzupełnij Nick i Kraj.':'Complete Nickname and Country.'); return; }
+      localStorage.setItem('zgadnij_profile', JSON.stringify({playerNo:no,nick,country}));
+      show('roomMenuOverlay');
+    });
+    get('backProfileBtn').addEventListener('click',hideAll);
+    get('createRoomBtn').addEventListener('click',()=>{ get('roomNameInput').value=''; show('createRoomOverlay'); });
+    get('enterRoomBtn').addEventListener('click',()=>{ get('roomCodeInput').value=''; show('enterRoomOverlay'); });
+    get('newLoginBtn').addEventListener('click',()=>{ localStorage.removeItem('zgadnij_profile'); get('playerNo').value = playerId(); get('nickInput').value=''; get('countryInput').value=''; show('profileOverlay'); });
+    get('exitBtn').addEventListener('click',hideAll);
+    get('confirmCreateBtn').addEventListener('click',()=>{
+      const roomName=get('roomNameInput').value.trim(); if(!roomName){ alert(lang==='pl'?'Wpisz nazwę pokoju.':'Enter room name.'); return; }
+      localStorage.setItem('zgadnij_last_room_name', roomName);
+      alert(t[lang].roomCreated + ' [' + roomName + ']'); show('roomMenuOverlay');
+    });
+    get('backCreateBtn').addEventListener('click',()=>show('roomMenuOverlay'));
+    get('confirmJoinBtn').addEventListener('click',()=>{
+      const roomCode=get('roomCodeInput').value.trim(); if(!roomCode){ alert(lang==='pl'?'Wpisz kod pokoju.':'Enter room code.'); return; }
+      localStorage.setItem('zgadnij_last_room_code', roomCode);
+      alert(t[lang].roomJoined + ' [' + roomCode + ']'); show('roomMenuOverlay');
+    });
+    get('backJoinBtn').addEventListener('click',()=>show('roomMenuOverlay'));
+
+    setTexts();
+    loadStartImage();
   </script>
 </body>
 </html>
