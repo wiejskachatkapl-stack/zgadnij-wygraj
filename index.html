@@ -1,424 +1,272 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="pl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZGADNIJ I WYGRAJ - ZGADNIJ v1008</title>
+  <title>ZGADNIJ v1009</title>
   <style>
-    :root{
-      --bg:#041634;
-      --panel:#112a66;
-      --panel2:#0a1d4c;
-      --line:rgba(255,255,255,.16);
-      --text:#edf5ff;
-      --muted:#b9c6e9;
-      --shadow:0 22px 55px rgba(0,0,0,.45);
+    :root {
+      --bg1: #04101d;
+      --bg2: #0a1830;
+      --panel: rgba(12, 28, 74, 0.88);
+      --line: rgba(255,255,255,0.16);
+      --text: #eef5ff;
+      --muted: #b8c7e6;
+      --shadow: 0 24px 60px rgba(0,0,0,0.42);
     }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:radial-gradient(circle at center,#123f98 0%,#06162f 55%,#031022 100%);color:var(--text);overflow:hidden}
-    body::before{
-      content:"";position:fixed;inset:0;
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; font-family: Arial, Helvetica, sans-serif; color: var(--text); }
+    body {
       background:
-        radial-gradient(circle at 25% 20%, rgba(92,159,255,.25), transparent 22%),
-        radial-gradient(circle at 80% 22%, rgba(92,159,255,.18), transparent 18%),
-        radial-gradient(circle at 55% 75%, rgba(41,111,255,.12), transparent 28%);
-      pointer-events:none;
+        radial-gradient(circle at 15% 20%, rgba(87,216,255,0.10), transparent 0 22%),
+        radial-gradient(circle at 85% 80%, rgba(77,124,255,0.18), transparent 0 24%),
+        linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
+      overflow-x: hidden;
     }
-    .app{position:relative;max-width:1400px;height:calc(100vh - 36px);margin:18px auto;padding:22px 22px 60px;border-radius:30px;background:linear-gradient(180deg,rgba(16,35,92,.92),rgba(8,22,58,.94));border:1px solid var(--line);box-shadow:var(--shadow), inset 0 0 0 1px rgba(88,129,233,.18)}
-    .inner{position:absolute;inset:18px;border:1px solid rgba(255,255,255,.12);border-radius:26px}
-    .pill{position:absolute;top:18px;display:inline-flex;align-items:center;justify-content:center;min-height:54px;padding:0 18px;border-radius:999px;background:rgba(8,20,54,.72);border:1px solid rgba(255,255,255,.14);font-weight:900;font-size:18px;letter-spacing:.6px;text-transform:uppercase;z-index:2}
-    .pill.left{left:18px}
-    .pill.right{right:18px;cursor:pointer;user-select:none}
-    .hero{position:absolute;inset:80px 70px 120px;display:flex;align-items:center;justify-content:center}
-    .confetti span{position:absolute;display:block;width:12px;height:34px;border-radius:4px;opacity:.65;transform:rotate(var(--r));box-shadow:0 8px 20px rgba(0,0,0,.2)}
-    .logo{position:absolute;top:15px;left:50%;transform:translateX(-50%);width:min(640px,62vw);padding:16px 22px 22px;background:linear-gradient(180deg,#2d5fe1,#173891);border-radius:26px;border:1px solid rgba(255,255,255,.18);box-shadow:0 14px 32px rgba(0,0,0,.35), inset 0 -4px 0 rgba(0,0,0,.12)}
-    .logo .top{font-size:clamp(42px,5vw,96px);line-height:.92;text-align:center;font-weight:1000;color:#ffd141;text-shadow:0 4px 0 #9c6800,0 10px 22px rgba(0,0,0,.4)}
-    .logo .bottom{font-size:clamp(36px,4.3vw,82px);line-height:.95;text-align:center;font-weight:1000;color:#ff7144;text-shadow:0 4px 0 #7e260e,0 10px 22px rgba(0,0,0,.38)}
-    .wheel-wrap{position:relative;width:min(510px,40vw);aspect-ratio:1/1;margin-top:120px}
-    .ray{position:absolute;left:50%;top:43%;width:640px;height:170px;background:linear-gradient(90deg,transparent,rgba(142,196,255,.16),transparent);clip-path:polygon(0 50%,50% 0,100% 50%,50% 100%);transform-origin:center center;transform:translate(-50%,-50%) rotate(var(--deg));filter:blur(.2px)}
-    .wheel{position:absolute;inset:0;border-radius:50%;background:
-      conic-gradient(#2f6ede 0 45deg,#e85a42 45deg 90deg,#f4a21b 90deg 135deg,#31963f 135deg 180deg,#71bf3e 180deg 225deg,#286ddf 225deg 270deg,#d94b2d 270deg 315deg,#3e9f30 315deg 360deg);
-      border:18px solid #d3d9ea;box-shadow:0 0 0 4px #828ca9,inset 0 0 0 3px rgba(255,255,255,.12),0 18px 38px rgba(0,0,0,.45)}
-    .wheel::before{content:"";position:absolute;inset:-16px;border-radius:50%;box-shadow:inset 0 0 0 6px #6b789b}
-    .wheel::after{content:"";position:absolute;inset:-10px;border-radius:50%;background:radial-gradient(circle,#fff 0 4px,transparent 5px);background-size:42px 42px;background-position:5px 6px;mask:radial-gradient(circle at center,transparent 0 78%,#000 79% 100%);opacity:.9}
-    .marker{position:absolute;left:50%;top:-26px;transform:translateX(-50%);width:52px;height:76px;background:linear-gradient(180deg,#ffffff,#d8e2ff 36%,#d83d32);clip-path:polygon(50% 100%,0 0,100% 0);filter:drop-shadow(0 8px 8px rgba(0,0,0,.28))}
-    .marker::after{content:"";position:absolute;left:50%;top:18px;transform:translateX(-50%);width:14px;height:28px;border-radius:10px;background:radial-gradient(circle at center,#fff0a6,#ff2e18 58%,#8b140f 100%)}
-    .center-knob{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:120px;height:120px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#e8eefc 0 28px,#c5d0e8 29px 55px,#7e8aa9 56px 100%);box-shadow:inset 0 2px 10px rgba(255,255,255,.6),0 5px 14px rgba(0,0,0,.35);border:10px solid #909bbb}
-    .segment-item{position:absolute;font-weight:1000;font-size:68px;color:#f8fbff;text-shadow:0 3px 0 #46516e,0 8px 12px rgba(0,0,0,.28)}
-    .segment-item.small{font-size:54px}
-    .segment-item.emoji{font-size:74px;text-shadow:0 8px 14px rgba(0,0,0,.28)}
-    .play-btn{position:absolute;left:50%;bottom:-55px;transform:translateX(-50%);border:none;border-radius:34px;padding:26px 58px;min-width:300px;background:linear-gradient(180deg,#68b9ff,#2f6fe8);color:#f4fbff;font-size:76px;font-weight:1000;line-height:1;box-shadow:0 12px 0 #1743a6,0 22px 34px rgba(0,0,0,.35);cursor:pointer;transition:transform .18s ease, filter .18s ease}
-    .play-btn:hover{transform:translateX(-50%) translateY(-3px);filter:brightness(1.06)}
-    .play-btn:active{transform:translateX(-50%) translateY(2px)}
-    .version{position:absolute;right:22px;bottom:16px;padding:11px 18px;border-radius:22px;background:rgba(8,20,54,.82);border:1px solid rgba(255,255,255,.14);font-weight:900;font-size:16px;letter-spacing:.4px}
+    .hidden { display: none !important; }
 
-    .overlay{position:fixed;inset:0;background:rgba(2,8,24,.58);backdrop-filter:blur(8px);display:none;align-items:center;justify-content:center;padding:20px;z-index:20}
-    .overlay.show{display:flex}
-    .modal{width:min(620px,92vw);background:linear-gradient(180deg,#102a67,#091b48);border:1px solid rgba(255,255,255,.15);border-radius:30px;box-shadow:0 30px 60px rgba(0,0,0,.45);padding:28px}
-    .modal .tag{display:inline-flex;padding:10px 16px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.14);font-size:16px;font-weight:900;text-transform:uppercase;letter-spacing:.4px}
-    .modal h2{margin:18px 0 10px;font-size:56px;line-height:.96;font-weight:1000}
-    .modal p{margin:0 0 24px;color:var(--muted);font-size:16px;line-height:1.4}
-    .field{margin-bottom:16px}
-    .field label{display:block;margin-bottom:8px;font-weight:800;font-size:17px}
-    .field input{width:100%;border-radius:18px;border:1px solid rgba(255,255,255,.15);background:rgba(255,255,255,.08);padding:16px 18px;color:#fff;font-size:18px;outline:none}
-    .field input:focus{border-color:#7bb7ff;box-shadow:0 0 0 3px rgba(92,159,255,.18)}
-    .auto-id{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:16px 18px;border-radius:20px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.13);font-size:20px;font-weight:900}
-    .auto-id .code{font-size:28px;color:#ffe173;letter-spacing:2px}
-    .btn-stack{display:flex;flex-direction:column;align-items:center;gap:16px;margin-top:8px}
-    .img-btn{display:inline-flex;align-items:center;justify-content:center;min-height:76px;cursor:pointer;transition:transform .16s ease,filter .16s ease;background:none;border:none;padding:0}
-    .img-btn:hover{transform:translateY(-2px) scale(1.01);filter:brightness(1.05)}
-    .img-btn:active{transform:translateY(1px)}
-    .img-btn img{display:block;max-width:100%;height:auto}
-    .fallback-btn{min-width:250px;padding:18px 26px;border-radius:24px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,#4f8fff,#1a4fc5);color:#fff;font-size:22px;font-weight:1000;box-shadow:0 10px 0 #133e9b}
-    .note{margin-top:16px;text-align:center;color:#c7d3f0;font-size:13px}
-    .hidden{display:none!important}
-    @media (max-width:1100px){
-      .logo{width:min(620px,76vw)}
-      .wheel-wrap{width:min(470px,52vw)}
-      .play-btn{font-size:60px;min-width:250px;padding:22px 46px}
-      .modal h2{font-size:44px}
+    .screen-start {
+      position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; padding: 24px;
+      background: linear-gradient(180deg, #04101d 0%, #0a1830 100%);
     }
-    @media (max-width:760px){
-      .app{height:calc(100vh - 20px);margin:10px;padding:16px 16px 58px}
-      .inner{inset:12px}
-      .pill{min-height:46px;font-size:14px;top:14px}
-      .pill.left{left:14px}.pill.right{right:14px}
-      .hero{inset:72px 24px 120px}
-      .logo{top:10px;width:min(560px,86vw);padding:14px 16px 18px}
-      .wheel-wrap{width:min(360px,72vw);margin-top:110px}
-      .play-btn{font-size:44px;min-width:220px;padding:18px 30px;bottom:-35px}
-      .segment-item{font-size:48px}.segment-item.small{font-size:40px}.segment-item.emoji{font-size:58px}
-      .modal{padding:22px}.modal h2{font-size:34px}
+    .start-frame {
+      position: relative; width: min(94vw, 1500px); aspect-ratio: 16 / 9; border-radius: 28px; overflow: hidden;
+      box-shadow: 0 30px 90px rgba(0,0,0,0.45); border: 1px solid rgba(255,255,255,0.14); background: #07111f;
+    }
+    .start-image { width: 100%; height: 100%; object-fit: cover; display: block; user-select: none; -webkit-user-drag: none; }
+    .start-caption, .lang-start-btn {
+      position: absolute; z-index: 3; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18);
+      background: rgba(7,17,31,0.62); color: var(--text); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+      font-weight: 700;
+    }
+    .start-caption { left: 18px; top: 18px; padding: 12px 16px; font-size: 14px; letter-spacing: 0.08em; }
+    .lang-start-btn { right: 18px; top: 18px; padding: 12px 18px; font-size: 15px; cursor: pointer; }
+    .play-hotspot {
+      position: absolute; left: 50%; bottom: 4.6%; transform: translateX(-50%); width: 24%; height: 14%; min-width: 180px; min-height: 70px;
+      border: none; background: transparent; cursor: pointer; border-radius: 999px;
+    }
+    .version-tag {
+      position: fixed; right: 16px; bottom: 12px; z-index: 9999; padding: 8px 12px; border-radius: 999px;
+      background: rgba(5, 11, 20, 0.82); color: #dce9ff; border: 1px solid rgba(255,255,255,0.18); font-size: 13px; letter-spacing: 0.08em;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.35);
+    }
+
+    .modal-backdrop {
+      position: fixed; inset: 0; background: rgba(2,9,21,0.70); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center; padding: 24px; z-index: 1000;
+    }
+    .modal {
+      width: min(92vw, 620px); min-height: 540px; border-radius: 32px; border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(16,41,106,0.96) 0%, rgba(8,25,71,0.96) 100%); box-shadow: var(--shadow);
+      padding: 24px 28px 28px; position: relative;
+    }
+    .modal-badge {
+      display: inline-flex; padding: 10px 16px; border-radius: 999px; border: 1px solid rgba(255,255,255,0.18); background: rgba(255,255,255,0.06);
+      font-size: 14px; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 18px;
+    }
+    .modal h2 { margin: 0 0 14px; font-size: clamp(34px, 5vw, 58px); line-height: 0.94; }
+    .modal p { margin: 0 0 22px; color: var(--muted); font-size: 16px; line-height: 1.45; }
+    .room-actions {
+      display: flex; flex-direction: column; align-items: center; gap: 18px; padding-top: 8px;
+    }
+    .img-btn {
+      border: none; background: transparent; padding: 0; cursor: pointer; display: inline-flex; align-items: center; justify-content: center;
+      transition: transform 0.15s ease, filter 0.15s ease;
+    }
+    .img-btn:hover { transform: translateY(-2px) scale(1.01); filter: brightness(1.05); }
+    .img-btn img {
+      display: block; width: min(100%, 380px); max-width: 380px; height: auto; object-fit: contain;
+      filter: drop-shadow(0 8px 18px rgba(0,0,0,0.35));
+    }
+    .fallback-btn {
+      min-width: 260px; max-width: 380px; width: 100%; border: 1px solid rgba(255,255,255,0.20); border-radius: 22px;
+      padding: 18px 22px; font-size: 24px; font-weight: 800; color: white;
+      background: linear-gradient(180deg, #1f7cff 0%, #153de5 100%);
+      box-shadow: inset 0 2px 0 rgba(255,255,255,0.25), 0 10px 20px rgba(0,0,0,0.25);
+    }
+    .field-group { display: grid; gap: 14px; margin-top: 10px; }
+    .field-label { font-size: 14px; color: #c9d8f7; font-weight: 700; }
+    .field-input {
+      width: 100%; border: 1px solid rgba(255,255,255,0.16); background: rgba(255,255,255,0.08); color: white; border-radius: 18px;
+      padding: 16px 18px; font-size: 18px; outline: none;
+    }
+    .inline-actions { display: flex; flex-direction: column; align-items: center; gap: 18px; margin-top: 26px; }
+    .footer-space { height: 52px; }
+
+    @media (max-width: 900px) {
+      .modal { width: min(94vw, 540px); padding: 22px; min-height: auto; }
+      .img-btn img { max-width: 320px; }
+      .fallback-btn { max-width: 320px; font-size: 21px; }
+    }
+    @media (max-width: 680px) {
+      .start-frame { width: 96vw; }
+      .modal { width: min(96vw, 430px); border-radius: 24px; padding: 18px; }
+      .modal h2 { font-size: 40px; }
+      .modal p { font-size: 14px; }
+      .img-btn img { max-width: 270px; }
+      .fallback-btn { min-width: 0; max-width: 270px; font-size: 18px; padding: 16px 18px; }
+      .start-caption, .lang-start-btn { font-size: 12px; padding: 10px 12px; }
+      .play-hotspot { width: 38%; height: 18%; min-width: 130px; min-height: 56px; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <div class="inner"></div>
-    <div class="pill left" id="screenLabel">STRONA STARTOWA</div>
-    <div class="pill right" id="langToggle">PL / EN</div>
-
-    <div class="hero">
-      <div class="confetti">
-        <span style="left:18%;top:8%;background:#ba7f5a;--r:-18deg"></span>
-        <span style="left:23%;top:13%;height:28px;background:#4f7fe9;--r:16deg"></span>
-        <span style="left:26%;top:17%;width:8px;height:8px;border-radius:999px;background:#82d5ff;--r:0deg"></span>
-        <span style="left:78%;top:10%;background:#d68d68;--r:-5deg"></span>
-        <span style="left:83%;top:13%;height:30px;background:#4f7fe9;--r:-18deg"></span>
-        <span style="left:68%;top:7%;width:8px;height:8px;border-radius:999px;background:#ffae72;--r:0deg"></span>
-      </div>
-
-      <div class="logo">
-        <div class="top">★ZGADNIJ★</div>
-        <div class="bottom">I WYGRAJ!</div>
-      </div>
-
-      <div class="wheel-wrap">
-        <div class="ray" style="--deg:0deg"></div>
-        <div class="ray" style="--deg:120deg"></div>
-        <div class="ray" style="--deg:240deg"></div>
-        <div class="marker"></div>
-        <div class="wheel"></div>
-        <div class="segment-item small" style="left:35%;top:4%">?</div>
-        <div class="segment-item emoji" style="left:64%;top:10%">🎁</div>
-        <div class="segment-item small" style="left:74%;top:28%">?</div>
-        <div class="segment-item emoji" style="left:67%;top:67%">💰</div>
-        <div class="segment-item" style="left:44%;top:72%">?</div>
-        <div class="segment-item emoji" style="left:15%;top:58%">🎁</div>
-        <div class="segment-item small" style="left:18%;top:33%">?</div>
-        <div class="segment-item emoji" style="left:20%;top:18%">💰</div>
-        <div class="center-knob"></div>
-        <button class="play-btn" id="playBtn">GRAJ!</button>
-      </div>
+  <section class="screen-start" id="screenStart">
+    <div class="start-frame">
+      <div class="start-caption" id="startCaption">STRONA STARTOWA</div>
+      <button class="lang-start-btn" id="langStartBtn">PL / EN</button>
+      <img src="img_startowa.png" alt="ZGADNIJ I WYGRAJ - ekran startowy" class="start-image" />
+      <button class="play-hotspot" id="playHotspot" aria-label="Graj"></button>
     </div>
+  </section>
 
-    <div class="version">ZGADNIJ v1008</div>
-  </div>
-
-  <div class="overlay" id="profileOverlay">
+  <div class="modal-backdrop hidden" id="roomChoiceModal">
     <div class="modal">
-      <div class="tag" id="profileTag">PROFIL</div>
-      <h2 id="profileTitle">Dodaj profil</h2>
-      <p id="profileDesc">Przy pierwszym wejściu uzupełnij dane gracza.</p>
-      <div class="field">
-        <label id="playerIdLabel">Nr gracza</label>
-        <div class="auto-id"><span id="playerIdText">Numer wygenerowany automatycznie</span><span class="code" id="playerIdCode"></span></div>
-      </div>
-      <div class="field">
-        <label for="nicknameInput" id="nickLabel">Nick</label>
-        <input id="nicknameInput" type="text" maxlength="18" />
-      </div>
-      <div class="field">
-        <label for="countryInput" id="countryLabel">Kraj</label>
-        <input id="countryInput" type="text" maxlength="24" />
-      </div>
-      <div class="btn-stack">
-        <button class="img-btn" id="addProfileBtn"></button>
-        <button class="img-btn" id="backFromProfileBtn"></button>
+      <div class="modal-badge" id="roomBadge">POKÓJ GRY</div>
+      <h2 id="roomTitle">Wybierz akcję pokoju</h2>
+      <p id="roomDesc">Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.</p>
+      <div class="room-actions">
+        <button class="img-btn" id="btnCreateRoom"></button>
+        <button class="img-btn" id="btnEnterRoom"></button>
+        <button class="img-btn" id="btnNewLogin"></button>
+        <button class="img-btn" id="btnExit"></button>
       </div>
     </div>
   </div>
 
-  <div class="overlay" id="roomActionOverlay">
-    <div class="modal">
-      <div class="tag" id="roomTag">POKÓJ GRY</div>
-      <h2 id="roomActionTitle">Wybierz akcję pokoju</h2>
-      <p id="roomActionDesc">Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.</p>
-      <div class="btn-stack">
-        <button class="img-btn" id="createRoomMenuBtn"></button>
-        <button class="img-btn" id="enterRoomMenuBtn"></button>
-        <button class="img-btn" id="newLoginMenuBtn"></button>
-        <button class="img-btn" id="exitMenuBtn"></button>
+  <div class="modal-backdrop hidden" id="enterRoomModal">
+    <div class="modal" style="width:min(92vw,560px); min-height:auto;">
+      <div class="modal-badge" id="enterBadge">DOŁĄCZ DO POKOJU</div>
+      <h2 id="enterTitle">Wpisz kod pokoju</h2>
+      <p id="enterDesc">Podaj kod pokoju, aby dołączyć do rozgrywki.</p>
+      <div class="field-group">
+        <label class="field-label" for="roomCode" id="roomCodeLabel">Kod pokoju</label>
+        <input class="field-input" id="roomCode" maxlength="20" autocomplete="off" />
+      </div>
+      <div class="inline-actions">
+        <button class="img-btn" id="btnOkEnter"></button>
+        <button class="img-btn" id="btnBackEnter"></button>
       </div>
     </div>
   </div>
 
-  <div class="overlay" id="createRoomOverlay">
-    <div class="modal">
-      <div class="tag" id="createTag">TWORZENIE POKOJU</div>
-      <h2 id="createRoomTitle">Utwórz pokój</h2>
-      <p id="createRoomDesc">Wpisz nazwę pokoju i zatwierdź przyciskiem OK.</p>
-      <div class="field">
-        <label for="roomNameInput" id="roomNameLabel">Nazwa pokoju</label>
-        <input id="roomNameInput" type="text" maxlength="30" />
-      </div>
-      <div class="btn-stack">
-        <button class="img-btn" id="okCreateRoomBtn"></button>
-        <button class="img-btn" id="backFromCreateBtn"></button>
-      </div>
-    </div>
-  </div>
-
-  <div class="overlay" id="enterRoomOverlay">
-    <div class="modal">
-      <div class="tag" id="enterTag">DOŁĄCZANIE DO POKOJU</div>
-      <h2 id="enterRoomTitle">Dołącz do pokoju</h2>
-      <p id="enterRoomDesc">Wpisz kod pokoju, do którego chcesz dołączyć.</p>
-      <div class="field">
-        <label for="roomCodeInput" id="roomCodeLabel">Kod pokoju</label>
-        <input id="roomCodeInput" type="text" maxlength="12" />
-      </div>
-      <div class="btn-stack">
-        <button class="img-btn" id="okEnterRoomBtn"></button>
-        <button class="img-btn" id="backFromEnterBtn"></button>
-      </div>
-      <div class="note" id="joinInfo">Kod jest na razie zapisywany lokalnie jako przygotowanie pod Firebase.</div>
-    </div>
-  </div>
+  <div class="version-tag">ZGADNIJ v1009</div>
+  <div class="footer-space"></div>
 
   <script>
-    const version = 'ZGADNIJ v1008';
-    const texts = {
+    const VERSION = 'ZGADNIJ v1009';
+    let lang = 'pl';
+
+    const t = {
       pl: {
-        screenLabel:'STRONA STARTOWA',
-        play:'GRAJ!',
-        profileTag:'PROFIL',
-        profileTitle:'Dodaj profil',
-        profileDesc:'Przy pierwszym wejściu uzupełnij dane gracza.',
-        playerIdLabel:'Nr gracza',
-        playerIdText:'Numer wygenerowany automatycznie',
-        nickLabel:'Nick', countryLabel:'Kraj',
-        roomTag:'POKÓJ GRY',
-        roomActionTitle:'Wybierz akcję pokoju',
-        roomActionDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
-        createTag:'TWORZENIE POKOJU',
-        createRoomTitle:'Utwórz pokój',
-        createRoomDesc:'Wpisz nazwę pokoju i zatwierdź przyciskiem OK.',
-        roomNameLabel:'Nazwa pokoju',
-        enterTag:'DOŁĄCZANIE DO POKOJU',
-        enterRoomTitle:'Dołącz do pokoju',
-        enterRoomDesc:'Wpisz kod pokoju, do którego chcesz dołączyć.',
-        roomCodeLabel:'Kod pokoju',
-        joinInfo:'Kod jest na razie zapisywany lokalnie jako przygotowanie pod Firebase.',
-        placeholders:{nick:'Wpisz nick', country:'Wpisz kraj', roomName:'Wpisz nazwę pokoju', roomCode:'Wpisz kod pokoju'},
-        fallback:{addProfile:'Dodaj profil', back:'Powrót', createRoom:'Załóż nowy pokój', enterRoom:'Dołącz do pokoju', newLogin:'Dołącz na innym urządzeniu', exit:'Wyjście', ok:'OK'},
-        alerts:{profileSaved:'Profil zapisany.', roomCreated:'Pokój zapisany lokalnie: ', roomCodeSaved:'Kod pokoju zapisany lokalnie: ', missingProfile:'Uzupełnij nick i kraj.', missingRoom:'Wpisz nazwę pokoju.', missingCode:'Wpisz kod pokoju.'}
+        startCaption: 'STRONA STARTOWA',
+        roomBadge: 'POKÓJ GRY',
+        roomTitle: 'Wybierz akcję pokoju',
+        roomDesc: 'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
+        enterBadge: 'DOŁĄCZ DO POKOJU',
+        enterTitle: 'Wpisz kod pokoju',
+        enterDesc: 'Podaj kod pokoju, aby dołączyć do rozgrywki.',
+        roomCodeLabel: 'Kod pokoju',
+        createRoom: 'Załóż nowy pokój',
+        enterRoom: 'Dołącz do pokoju',
+        newLogin: 'Dołącz na innym urządzeniu',
+        exit: 'Wyjście',
+        ok: 'OK',
+        back: 'Cofnij',
+        createInfo: 'Okno zakładania pokoju podłączymy w następnym kroku.',
+        savedInfo: 'Kod pokoju został zapisany lokalnie.',
       },
       en: {
-        screenLabel:'START PAGE',
-        play:'PLAY!',
-        profileTag:'PROFILE',
-        profileTitle:'Add profile',
-        profileDesc:'On first entry, complete the player data.',
-        playerIdLabel:'Player ID',
-        playerIdText:'Number generated automatically',
-        nickLabel:'Nickname', countryLabel:'Country',
-        roomTag:'GAME ROOM',
-        roomActionTitle:'Choose room action',
-        roomActionDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',
-        createTag:'CREATE ROOM',
-        createRoomTitle:'Create room',
-        createRoomDesc:'Enter a room name and confirm with OK.',
-        roomNameLabel:'Room name',
-        enterTag:'JOIN ROOM',
-        enterRoomTitle:'Join room',
-        enterRoomDesc:'Enter the room code you want to join.',
-        roomCodeLabel:'Room code',
-        joinInfo:'The room code is currently saved locally as preparation for Firebase.',
-        placeholders:{nick:'Enter nickname', country:'Enter country', roomName:'Enter room name', roomCode:'Enter room code'},
-        fallback:{addProfile:'Add profile', back:'Back', createRoom:'Create room', enterRoom:'Enter room', newLogin:'New login', exit:'Exit', ok:'OK'},
-        alerts:{profileSaved:'Profile saved.', roomCreated:'Room saved locally: ', roomCodeSaved:'Room code saved locally: ', missingProfile:'Fill in nickname and country.', missingRoom:'Enter room name.', missingCode:'Enter room code.'}
+        startCaption: 'START SCREEN',
+        roomBadge: 'GAME ROOM',
+        roomTitle: 'Choose room action',
+        roomDesc: 'After creating a profile, choose whether you want to create a room, enter a room, sign in a new player, or exit.',
+        enterBadge: 'ENTER ROOM',
+        enterTitle: 'Type room code',
+        enterDesc: 'Enter the room code to join the game.',
+        roomCodeLabel: 'Room code',
+        createRoom: 'Create room',
+        enterRoom: 'Enter room',
+        newLogin: 'Login on another device',
+        exit: 'Exit',
+        ok: 'OK',
+        back: 'Back',
+        createInfo: 'The create room window will be connected in the next step.',
+        savedInfo: 'Room code saved locally.',
       }
     };
 
-    let currentLang = localStorage.getItem('zg_lang') || 'pl';
-    const profileKey = 'zg_profile';
-    const roomKey = 'zg_room';
-    const joinKey = 'zg_join_room';
-
-    const el = id => document.getElementById(id);
-
-    function randomPlayerId(){
-      const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-      let out = '';
-      for(let i=0;i<7;i++) out += chars[Math.floor(Math.random()*chars.length)];
-      return out;
+    function btnPath(name) {
+      return `ui/buttons/${lang}/${name}`;
     }
 
-    function getProfile(){
-      try{return JSON.parse(localStorage.getItem(profileKey) || 'null');}catch{return null;}
-    }
-
-    function makeImageButton(buttonEl, key){
-      const lang = currentLang;
-      const src = `ui/buttons/${lang}/${key}.png`;
-      const fallback = texts[lang].fallback;
-      const labelMap = {
-        'btn_add_profile': fallback.addProfile,
-        'btn_back': fallback.back,
-        'btn_create_room': fallback.createRoom,
-        'btn_enter_room': fallback.enterRoom,
-        'btn_new_login': fallback.newLogin,
-        'btn_exit': fallback.exit,
-        'btn_ok': fallback.ok,
-      };
-      buttonEl.innerHTML = '';
+    function setButtonContent(el, imgName, fallbackText) {
       const img = new Image();
-      img.alt = labelMap[key] || key;
       img.onload = () => {
-        buttonEl.innerHTML = '';
-        buttonEl.appendChild(img);
+        el.innerHTML = '';
+        img.alt = fallbackText;
+        el.appendChild(img);
       };
       img.onerror = () => {
-        buttonEl.innerHTML = `<span class="fallback-btn">${labelMap[key] || key}</span>`;
+        el.innerHTML = `<div class="fallback-btn">${fallbackText}</div>`;
       };
-      img.src = src;
-      buttonEl.dataset.src = src;
+      img.src = btnPath(imgName);
     }
 
-    function hideAll(){
-      ['profileOverlay','roomActionOverlay','createRoomOverlay','enterRoomOverlay'].forEach(id => el(id).classList.remove('show'));
-    }
-    function show(id){ hideAll(); el(id).classList.add('show'); }
+    function render() {
+      const c = t[lang];
+      document.documentElement.lang = lang;
+      document.title = VERSION;
+      document.getElementById('startCaption').textContent = c.startCaption;
+      document.getElementById('langStartBtn').textContent = 'PL / EN';
+      document.getElementById('roomBadge').textContent = c.roomBadge;
+      document.getElementById('roomTitle').textContent = c.roomTitle;
+      document.getElementById('roomDesc').textContent = c.roomDesc;
+      document.getElementById('enterBadge').textContent = c.enterBadge;
+      document.getElementById('enterTitle').textContent = c.enterTitle;
+      document.getElementById('enterDesc').textContent = c.enterDesc;
+      document.getElementById('roomCodeLabel').textContent = c.roomCodeLabel;
+      document.getElementById('roomCode').placeholder = c.roomCodeLabel;
 
-    function applyLang(){
-      localStorage.setItem('zg_lang', currentLang);
-      const t = texts[currentLang];
-      document.documentElement.lang = currentLang;
-      el('langToggle').textContent = currentLang === 'pl' ? 'PL / EN' : 'EN / PL';
-      el('screenLabel').textContent = t.screenLabel;
-      el('playBtn').textContent = t.play;
-      el('profileTag').textContent = t.profileTag;
-      el('profileTitle').textContent = t.profileTitle;
-      el('profileDesc').textContent = t.profileDesc;
-      el('playerIdLabel').textContent = t.playerIdLabel;
-      el('playerIdText').textContent = t.playerIdText;
-      el('nickLabel').textContent = t.nickLabel;
-      el('countryLabel').textContent = t.countryLabel;
-      el('roomTag').textContent = t.roomTag;
-      el('roomActionTitle').textContent = t.roomActionTitle;
-      el('roomActionDesc').textContent = t.roomActionDesc;
-      el('createTag').textContent = t.createTag;
-      el('createRoomTitle').textContent = t.createRoomTitle;
-      el('createRoomDesc').textContent = t.createRoomDesc;
-      el('roomNameLabel').textContent = t.roomNameLabel;
-      el('enterTag').textContent = t.enterTag;
-      el('enterRoomTitle').textContent = t.enterRoomTitle;
-      el('enterRoomDesc').textContent = t.enterRoomDesc;
-      el('roomCodeLabel').textContent = t.roomCodeLabel;
-      el('joinInfo').textContent = t.joinInfo;
-      el('nicknameInput').placeholder = t.placeholders.nick;
-      el('countryInput').placeholder = t.placeholders.country;
-      el('roomNameInput').placeholder = t.placeholders.roomName;
-      el('roomCodeInput').placeholder = t.placeholders.roomCode;
-
-      makeImageButton(el('addProfileBtn'),'btn_add_profile');
-      makeImageButton(el('backFromProfileBtn'),'btn_back');
-      makeImageButton(el('createRoomMenuBtn'),'btn_create_room');
-      makeImageButton(el('enterRoomMenuBtn'),'btn_enter_room');
-      makeImageButton(el('newLoginMenuBtn'),'btn_new_login');
-      makeImageButton(el('exitMenuBtn'),'btn_exit');
-      makeImageButton(el('okCreateRoomBtn'),'btn_ok');
-      makeImageButton(el('backFromCreateBtn'),'btn_back');
-      makeImageButton(el('okEnterRoomBtn'),'btn_ok');
-      makeImageButton(el('backFromEnterBtn'),'btn_back');
+      setButtonContent(document.getElementById('btnCreateRoom'), 'btn_create_room.png', c.createRoom);
+      setButtonContent(document.getElementById('btnEnterRoom'), 'btn_enter_room.png', c.enterRoom);
+      setButtonContent(document.getElementById('btnNewLogin'), 'btn_new_login.png', c.newLogin);
+      setButtonContent(document.getElementById('btnExit'), 'btn_exit.png', c.exit);
+      setButtonContent(document.getElementById('btnOkEnter'), 'btn_ok.png', c.ok);
+      setButtonContent(document.getElementById('btnBackEnter'), 'btn_back.png', c.back);
     }
 
-    function prepareProfileModal(){
-      const profile = getProfile();
-      const generated = profile?.playerId || randomPlayerId();
-      el('playerIdCode').textContent = generated;
-      el('nicknameInput').value = profile?.nick || '';
-      el('countryInput').value = profile?.country || '';
+    function openRoomChoice() {
+      document.getElementById('roomChoiceModal').classList.remove('hidden');
+      document.getElementById('screenStart').classList.add('hidden');
+    }
+    function closeAllToStart() {
+      document.getElementById('roomChoiceModal').classList.add('hidden');
+      document.getElementById('enterRoomModal').classList.add('hidden');
+      document.getElementById('screenStart').classList.remove('hidden');
+    }
+    function openEnterRoom() {
+      document.getElementById('roomChoiceModal').classList.add('hidden');
+      document.getElementById('enterRoomModal').classList.remove('hidden');
+    }
+    function backToRoomChoice() {
+      document.getElementById('enterRoomModal').classList.add('hidden');
+      document.getElementById('roomChoiceModal').classList.remove('hidden');
     }
 
-    el('langToggle').addEventListener('click', () => {
-      currentLang = currentLang === 'pl' ? 'en' : 'pl';
-      applyLang();
+    document.getElementById('langStartBtn').addEventListener('click', () => { lang = lang === 'pl' ? 'en' : 'pl'; render(); });
+    document.getElementById('playHotspot').addEventListener('click', openRoomChoice);
+    document.getElementById('btnEnterRoom').addEventListener('click', openEnterRoom);
+    document.getElementById('btnBackEnter').addEventListener('click', backToRoomChoice);
+    document.getElementById('btnExit').addEventListener('click', closeAllToStart);
+    document.getElementById('btnCreateRoom').addEventListener('click', () => alert(t[lang].createInfo));
+    document.getElementById('btnNewLogin').addEventListener('click', closeAllToStart);
+    document.getElementById('btnOkEnter').addEventListener('click', () => {
+      localStorage.setItem('zgadnij_last_room_code', document.getElementById('roomCode').value.trim());
+      alert(t[lang].savedInfo);
     });
 
-    el('playBtn').addEventListener('click', () => {
-      const profile = getProfile();
-      if(profile && profile.nick && profile.country) {
-        show('roomActionOverlay');
-      } else {
-        prepareProfileModal();
-        show('profileOverlay');
-      }
-    });
-
-    el('addProfileBtn').addEventListener('click', () => {
-      const t = texts[currentLang];
-      const nick = el('nicknameInput').value.trim();
-      const country = el('countryInput').value.trim();
-      if(!nick || !country){ alert(t.alerts.missingProfile); return; }
-      const profile = { playerId: el('playerIdCode').textContent, nick, country };
-      localStorage.setItem(profileKey, JSON.stringify(profile));
-      alert(t.alerts.profileSaved);
-      show('roomActionOverlay');
-    });
-
-    el('backFromProfileBtn').addEventListener('click', hideAll);
-    el('createRoomMenuBtn').addEventListener('click', () => { el('roomNameInput').value=''; show('createRoomOverlay'); });
-    el('enterRoomMenuBtn').addEventListener('click', () => { el('roomCodeInput').value=''; show('enterRoomOverlay'); });
-    el('newLoginMenuBtn').addEventListener('click', () => {
-      localStorage.removeItem(profileKey);
-      prepareProfileModal();
-      show('profileOverlay');
-    });
-    el('exitMenuBtn').addEventListener('click', hideAll);
-    el('backFromCreateBtn').addEventListener('click', () => show('roomActionOverlay'));
-    el('backFromEnterBtn').addEventListener('click', () => show('roomActionOverlay'));
-
-    el('okCreateRoomBtn').addEventListener('click', () => {
-      const t = texts[currentLang];
-      const roomName = el('roomNameInput').value.trim();
-      if(!roomName){ alert(t.alerts.missingRoom); return; }
-      localStorage.setItem(roomKey, JSON.stringify({ roomName, createdAt: new Date().toISOString(), version }));
-      alert(t.alerts.roomCreated + roomName);
-      show('roomActionOverlay');
-    });
-
-    el('okEnterRoomBtn').addEventListener('click', () => {
-      const t = texts[currentLang];
-      const roomCode = el('roomCodeInput').value.trim().toUpperCase();
-      if(!roomCode){ alert(t.alerts.missingCode); return; }
-      localStorage.setItem(joinKey, JSON.stringify({ roomCode, joinedAt: new Date().toISOString(), version }));
-      alert(t.alerts.roomCodeSaved + roomCode);
-      show('roomActionOverlay');
-    });
-
-    applyLang();
+    render();
   </script>
 </body>
 </html>
