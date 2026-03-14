@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>Typer (BUILD 8037)</title>
+  <title>ZGADNIJ v3002</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -32,13 +32,13 @@
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      background:linear-gradient(135deg,#d4fff6 0%,#86eed8 35%,#3ec8c3 68%,#105c7e 100%);
+      background:var(--bg);
       overflow:hidden;
     }
 
     #bg{
       position:fixed; inset:0;
-      background:linear-gradient(135deg,#d4fff6 0%,#86eed8 35%,#3ec8c3 68%,#105c7e 100%) center/cover no-repeat;
+      background:#071229 center/cover no-repeat;
       z-index:0;
     }
 
@@ -1927,8 +1927,8 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <img alt="Ustawienia" class="homeGearImg" src="ui/logo/btn_ustawienia.png"/>
 </div>
 <div aria-label="Menu" class="homeBtns">
-<button class="imgBtn" data-btn="btn_tipster_room.png" id="btnHomeRooms" title="Pokoje typerów">
-<img alt="Pokoje typerów" data-btn="btn_tipster_room.png" src="ui/buttons/pl/btn_tipster_room.png"/>
+<button class="imgBtn" id="btnHomeRooms" title="ZGADNIJ">
+<img alt="ZGADNIJ" src="grafic/img_tlo_start.png"/>
 </button>
 <button class="imgBtn" data-btn="btn_statistics.png" id="btnHomeStats" title="Statystyki">
 <img alt="Statystyki" data-btn="btn_statistics.png" src="ui/buttons/pl/btn_statistics.png"/>
