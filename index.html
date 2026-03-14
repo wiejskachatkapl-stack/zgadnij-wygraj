@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3016</title>
+  <title>ZGADNIJ v3017</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1894,7 +1894,7 @@
     }
 
 
-/* ZGADNIJ v3016 - serce gry: plansza 40 liter */
+/* ZGADNIJ v3017 - serce gry: plansza 40 liter */
 #room .midHead{display:none !important;}
 #room .matchActionsPanel{display:none !important;}
 #room .matchesWrap{
@@ -1980,7 +1980,7 @@
 }
 
 
-/* ZGADNIJ v3016 mobile fill */
+/* ZGADNIJ v3017 mobile fill */
 html, body {
   width: 100%;
   height: 100%;
@@ -2054,7 +2054,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3016 - smaller responsive board on phones */
+/* ZGADNIJ v3017 - smaller responsive board on phones */
 .zgBoardFrame{
   max-width: 980px;
 }
@@ -2124,7 +2124,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3016 */
+/* ZGADNIJ v3017 */
 #roomProfileCard,
 .substituteRow,
 #btnAllRankingFromRoom,
@@ -2204,7 +2204,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3016 - alphabet smaller: 2 rows PC, 3 rows mobile */
+/* ZGADNIJ v3017 - alphabet smaller: 2 rows PC, 3 rows mobile */
 .zgAlphabetWrap{
   max-width: 760px !important;
   padding: 10px 12px !important;
@@ -2246,6 +2246,91 @@ html, body {
     min-height: 30px !important;
     font-size: clamp(10px, 3vw, 14px) !important;
     border-radius: 8px !important;
+  }
+}
+
+
+/* ZGADNIJ v3017 - board 4x15 + wheel amount */
+.zgBoardGrid{
+  grid-template-columns: repeat(15, 1fr) !important;
+}
+.zgBoardShell{
+  max-width: 1120px !important;
+}
+.zgBoardFrame{
+  max-width: 1120px !important;
+}
+.zgCell{
+  font-size: clamp(16px, 1.4vw, 28px) !important;
+}
+.zgWheelWrap{
+  width: 100%;
+  max-width: 760px;
+  margin: 0 auto 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+.zgAmountBox{
+  min-width: 260px;
+  padding: 12px 18px;
+  border-radius: 16px;
+  background: linear-gradient(180deg,#f7f4eb,#e5dfd0);
+  color: #11234f;
+  border: 1px solid rgba(0,0,0,.12);
+  box-shadow: 0 10px 24px rgba(0,0,0,.18);
+  font-weight: 1000;
+  font-size: clamp(18px, 1.5vw, 26px);
+  text-align: center;
+}
+.zgSpinBtn{
+  min-width: 180px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 16px;
+  background: linear-gradient(180deg,#ffcc35,#ff9f00);
+  color: #6b2a00;
+  font-weight: 1000;
+  font-size: clamp(18px, 1.4vw, 24px);
+  box-shadow: 0 12px 24px rgba(0,0,0,.22), inset 0 0 10px rgba(255,255,255,.28);
+  cursor: pointer;
+}
+.zgSpinBtn:active{ transform: scale(.98); }
+@media (max-width: 900px){
+  .zgBoardGrid{
+    grid-template-columns: repeat(15, 1fr) !important;
+  }
+  .zgCell{
+    font-size: clamp(10px, 2vw, 16px) !important;
+  }
+  .zgAmountBox{
+    min-width: 220px;
+    font-size: clamp(15px, 3.4vw, 20px);
+    padding: 10px 14px;
+  }
+  .zgSpinBtn{
+    min-width: 150px;
+    font-size: clamp(15px, 3.4vw, 18px);
+    padding: 10px 16px;
+  }
+}
+@media (max-width: 560px){
+  .zgWheelWrap{
+    gap: 8px;
+  }
+  .zgCell{
+    font-size: clamp(8px, 1.9vw, 13px) !important;
+    border-radius: 6px !important;
+  }
+  .zgAmountBox{
+    width: 100%;
+    min-width: 0;
+  }
+  .zgSpinBtn{
+    width: 100%;
+    min-width: 0;
   }
 }
 

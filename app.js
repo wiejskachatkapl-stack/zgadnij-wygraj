@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3016;
+const BUILD = 3017;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4855,6 +4855,27 @@ function createLogoImg(teamName){
 
 function renderZgadnijAlphabet(panel){
   panel.innerHTML = "";
+  const wheelWrap = document.createElement("div");
+  wheelWrap.className = "zgWheelWrap";
+
+  const amountBox = document.createElement("div");
+  amountBox.className = "zgAmountBox";
+  amountBox.id = "zgAmountBox";
+  amountBox.textContent = (getLang()==="en") ? "Drawn amount: 500" : "Wylosowana kwota: 500";
+
+  const spinBtn = document.createElement("button");
+  spinBtn.className = "zgSpinBtn";
+  spinBtn.type = "button";
+  spinBtn.textContent = (getLang()==="en") ? "SPIN" : "ZAKRĘĆ";
+  spinBtn.onclick = ()=>{
+    const vals = [50,100,150,200,250,300,400,500,700,1000];
+    const val = vals[Math.floor(Math.random()*vals.length)];
+    amountBox.textContent = (getLang()==="en") ? `Drawn amount: ${val}` : `Wylosowana kwota: ${val}`;
+  };
+
+  wheelWrap.appendChild(amountBox);
+  wheelWrap.appendChild(spinBtn);
+
   const wrap = document.createElement("div");
   wrap.className = "zgAlphabetWrap";
   const grid = document.createElement("div");
@@ -4878,6 +4899,7 @@ function renderZgadnijAlphabet(panel){
 
 
   wrap.appendChild(grid);
+  panel.appendChild(wheelWrap);
   panel.appendChild(wrap);
 }
 
@@ -4898,10 +4920,10 @@ function renderZgadnijBoard(list){
   grid.className = "zgBoardGrid";
 
   const layout = [
-    [{s:"revealed",t:"Z"},{s:"revealed",t:"G"},{s:"revealed",t:"A"},{s:"revealed",t:"D"},{s:"revealed",t:"N"},{s:"revealed",t:"I"},{s:"revealed",t:"J"},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}],
-    [{s:"revealed",t:"I"},{s:"hidden",t:""},{s:"revealed",t:"W"},{s:"revealed",t:"Y"},{s:"revealed",t:"G"},{s:"revealed",t:"R"},{s:"revealed",t:"A"},{s:"revealed",t:"J"},{s:"hidden",t:""},{s:"hidden",t:""}],
-    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"revealed",t:"H"},{s:"revealed",t:"A"},{s:"revealed",t:"S"},{s:"revealed",t:"Ł"},{s:"revealed",t:"O"},{s:"hidden",t:""},{s:"hidden",t:""}],
-    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}]
+    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"revealed",t:"Z"},{s:"revealed",t:"G"},{s:"revealed",t:"A"},{s:"revealed",t:"D"},{s:"revealed",t:"N"},{s:"revealed",t:"I"},{s:"revealed",t:"J"},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}],
+    [{s:"hidden",t:""},{s:"revealed",t:"I"},{s:"hidden",t:""},{s:"revealed",t:"W"},{s:"revealed",t:"Y"},{s:"revealed",t:"G"},{s:"revealed",t:"R"},{s:"revealed",t:"A"},{s:"revealed",t:"J"},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}],
+    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"revealed",t:"H"},{s:"revealed",t:"A"},{s:"revealed",t:"S"},{s:"revealed",t:"Ł"},{s:"revealed",t:"O"},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}],
+    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}]
   ];
 
   layout.flat().forEach(cellData=>{
@@ -4928,7 +4950,7 @@ function renderZgadnijBoard(list){
 
   list.appendChild(shell);
 
-  if(el("matchesCount")) el("matchesCount").textContent = "40";
+  if(el("matchesCount")) el("matchesCount").textContent = "60";
 }
 
 function renderMatches(){
