@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3021;
+const BUILD = 3022;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4921,6 +4921,41 @@ function ensureZgWheelBuilt(){
   }
 }
 
+function zgSpinAmount(){
+  if(!__zgGame || __zgWheelBusy) return;
+  ensureZgWheelBuilt();
+  const overlay = document.getElementById("zgWheelOverlay");
+  const disc = document.getElementById("zgWheelDisc");
+  const result = document.getElementById("zgWheelResult");
+  if(!overlay || !disc || !result) return;
+
+  __zgWheelBusy = true;
+  const segs = ZG_WHEEL_SEGMENTS.length;
+  const index = Math.floor(Math.random() * segs);
+  const segAngle = 360 / segs;
+  const centerAngle = index * segAngle + segAngle / 2;
+  const target = 360 - centerAngle;
+  __zgWheelRotation += 360 * (5 + Math.floor(Math.random()*2)) + target;
+
+  result.textContent = (getLang()==="en") ? "Spinning..." : "Losowanie...";
+  overlay.classList.add("show");
+  disc.style.transition = "none";
+  disc.getBoundingClientRect();
+  disc.style.transition = "transform 6s cubic-bezier(.16,.9,.1,1)";
+  disc.style.transform = `rotate(${__zgWheelRotation}deg)`;
+
+  window.setTimeout(()=>{
+    const seg = ZG_WHEEL_SEGMENTS[index];
+    zgApplyWheelOutcome(seg);
+    result.textContent = (getLang()==="en") ? `Result: ${seg.label}` : `Wynik: ${seg.label}`;
+    renderMatches();
+    window.setTimeout(()=>{
+      overlay.classList.remove("show");
+      __zgWheelBusy = false;
+    }, 1200);
+  }, 6200);
+}
+
 function zgApplyWheelOutcome(seg){
   if(!__zgGame) return;
   if(seg.type === "money"){
@@ -5038,12 +5073,7 @@ function zgLastFilledIndex(){
   }
   return -1;
 }
-function zgSpinAmount(){
-  if(!__zgGame) return;
-  const vals = [50,100,150,200,250,300,400,500,700,1000];
-  __zgGame.currentAmount = vals[Math.floor(Math.random()*vals.length)];
-  renderMatches();
-}
+
 function zgHandleLetterClick(letter){
   if(!__zgGame) return;
   if(__zgGame.guessMode){
