@@ -1,4 +1,4 @@
-// Typer PWA Service Worker (BUILD 3003)
+// ZGADNIJ PWA Service Worker (BUILD 3004)
 const CACHE_NAME = 'typer-cache-8037';
 
 // Core assets to pre-cache (keep minimal to avoid stale UI)

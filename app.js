@@ -1,9 +1,9 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3003;
+const BUILD = 3004;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
-const BG_HOME = "img_menu_pc.png";
+const BG_HOME = "grafic/img_tlo_start.png";
 const BG_ROOM = "img_tlo.png";
 
 const KEY_NICK = "typer_nick_v3";
@@ -178,14 +178,15 @@ function showScreen(id){
 }
 
 
-function applyZgadnijStartButtonByLang(){
+function applyZgadnijHomeButtonsByLang(){
   try{
-    const btn = document.getElementById('btnHomeRooms');
-    if(!btn) return;
-    const img = btn.querySelector('img');
-    if(!img) return;
     const isEn = (typeof state !== 'undefined' && state.lang === 'en');
-    img.src = isEn ? 'ui/buttons/en/btn_zgadnij_start.png' : 'ui/buttons/pl/btn_zgadnij_start.png';
+    const roomImg = document.querySelector('#btnHomeRooms img');
+    if(roomImg){ roomImg.src = isEn ? 'ui/buttons/en/btn_zgadnij_start.png' : 'ui/buttons/pl/btn_zgadnij_start.png'; }
+    const statsImg = document.querySelector('#btnHomeStats img');
+    if(statsImg){ statsImg.src = isEn ? 'ui/buttons/en/btn_ranking.png' : 'ui/buttons/pl/btn_ranking.png'; }
+    const exitImg = document.querySelector('#btnHomeExit img');
+    if(exitImg){ exitImg.src = isEn ? 'ui/buttons/en/btn_wyjscie.png' : 'ui/buttons/pl/btn_wyjscie.png'; }
   }catch(e){}
 }
 
@@ -6810,4 +6811,4 @@ window.closeModal = function(){
   try{ document.querySelectorAll('.modal.active').forEach(m=>m.classList.remove('active')); }catch(e){}
 };
 
-try{applyZgadnijStartButtonByLang();}catch(e){}
+try{applyZgadnijHomeButtonsByLang();}catch(e){}
