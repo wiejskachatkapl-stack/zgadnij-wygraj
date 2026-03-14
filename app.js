@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3018;
+const BUILD = 3019;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4854,191 +4854,241 @@ function createLogoImg(teamName){
 
 
 
-const ZGADNIJ_PHRASES_URL = "./data/hasla.json";
-let zgadnijPhrasePool = [];
-let zgadnijPhraseLoaded = false;
-let zgadnijCurrent = null;
-let zgadnijGuessed = new Set();
-let zgadnijRoundScore = 0;
-let zgadnijSpinValue = 0;
-let zgadnijBoardMessage = "";
+const ZG_VOWELS = new Set(["A","Ą","E","Ę","I","O","Ó","U","Y"]);
+let __zgData = null;
+let __zgGame = null;
 
-function normalizeZgadnijText(txt){
-  return String(txt || "").toUpperCase().replace(/\s+/g, " ").trim();
+function zgNotify(msg){
+  try{ if(typeof showToast === "function") showToast(msg); else alert(msg); }catch(e){}
 }
-function getZgadnijPhraseField(obj, key){
-  const val = obj && obj[key];
-  if(val && typeof val === "object"){
-    return val[getLang()] || val.pl || val.en || "";
-  }
-  return val || "";
+function zgNormalize(s){ return String(s||"").toUpperCase(); }
+function zgLetterCount(phrase){
+  return Array.from(phrase).filter(ch => /[A-ZĄĆĘŁŃÓŚŹŻ]/.test(ch)).length;
 }
-function getZgadnijDefaultPhrases(){
-  return [
-    { category:{pl:"PRZYSŁOWIE", en:"PROVERB"}, phrase:{pl:"CO MA BYĆ TO BĘDZIE", en:"WHAT WILL BE WILL BE"} },
-    { category:{pl:"ZWROT", en:"PHRASE"}, phrase:{pl:"CZAS TO PIENIĄDZ", en:"TIME IS MONEY"} },
-    { category:{pl:"TYTUŁ", en:"TITLE"}, phrase:{pl:"ZGADNIJ I WYGRAJ", en:"GUESS AND WIN"} },
-    { category:{pl:"ZWROT", en:"PHRASE"}, phrase:{pl:"NIE MA RÓŻY BEZ KOLCÓW", en:"NO ROSE WITHOUT THORNS"} },
-    { category:{pl:"POWIEDZENIE", en:"SAYING"}, phrase:{pl:"RAZ NA WOZIE RAZ POD WOZEM", en:"ONCE ON TOP ONCE BELOW"} }
-  ];
-}
-function canPhraseFitRows(phrase, maxCols=10, maxRows=4){
-  const words = normalizeZgadnijText(phrase).split(" ").filter(Boolean);
-  let rows = 1;
-  let used = 0;
-  for(const word of words){
-    const len = word.length;
-    if(len > maxCols) return false;
-    if(used === 0){ used = len; continue; }
-    if(used + 1 + len <= maxCols){ used += 1 + len; }
-    else { rows += 1; used = len; }
-  }
-  return rows <= maxRows;
-}
-async function ensureZgadnijPhrases(){
-  if(zgadnijPhraseLoaded) return;
-  try{
-    const res = await fetch(ZGADNIJ_PHRASES_URL, { cache:"no-store" });
-    if(!res.ok) throw new Error("phrases");
-    const data = await res.json();
-    zgadnijPhrasePool = Array.isArray(data) ? data : [];
-  }catch(e){
-    zgadnijPhrasePool = getZgadnijDefaultPhrases();
-  }
-  if(!zgadnijPhrasePool.length) zgadnijPhrasePool = getZgadnijDefaultPhrases();
-  zgadnijPhraseLoaded = true;
-}
-function pickRandomZgadnijPhrase(){
-  if(!zgadnijPhrasePool.length) zgadnijPhrasePool = getZgadnijDefaultPhrases();
-  const fit = zgadnijPhrasePool.filter(item=>canPhraseFitRows(getZgadnijPhraseField(item,"phrase"), 10, 4));
-  const pool = fit.length ? fit : zgadnijPhrasePool;
-  return pool[Math.floor(Math.random()*pool.length)];
-}
-function startZgadnijRound(forceNew=false){
-  if(forceNew || !zgadnijCurrent){
-    zgadnijCurrent = pickRandomZgadnijPhrase();
-  }
-  zgadnijGuessed = new Set();
-  zgadnijRoundScore = 0;
-  zgadnijSpinValue = 0;
-  zgadnijBoardMessage = "";
-}
-function getZgadnijPhraseText(){
-  return normalizeZgadnijText(getZgadnijPhraseField(zgadnijCurrent,"phrase"));
-}
-function getZgadnijCategoryText(){
-  return getZgadnijPhraseField(zgadnijCurrent,"category") || ((getLang()==="en") ? "PHRASE" : "HASŁO");
-}
-function getZgadnijRows(phrase, maxCols=10, maxRows=4){
-  const words = normalizeZgadnijText(phrase).split(" ").filter(Boolean);
-  const rows = [];
-  let current = [];
-  let used = 0;
-  for(const word of words){
-    const len = word.length;
-    if(used === 0){
-      current.push(word); used = len;
-    }else if(used + 1 + len <= maxCols){
-      current.push(word); used += 1 + len;
-    }else{
-      rows.push(current);
-      current = [word];
-      used = len;
-    }
-  }
-  if(current.length) rows.push(current);
-  while(rows.length < maxRows) rows.push([]);
-  return rows.slice(0, maxRows).map(wordsRow=>{
-    const chars = wordsRow.join(" ").split("");
-    const empties = Math.max(0, maxCols - chars.length);
-    const left = Math.floor(empties/2);
-    const right = empties - left;
-    return [
-      ...Array(left).fill(null),
-      ...chars.map(ch => ch === " " ? null : ch),
-      ...Array(right).fill(null)
-    ].slice(0, maxCols);
+function zgCountRevealed(){
+  if(!__zgGame) return 0;
+  const phrase = __zgGame.phrase;
+  let n = 0;
+  Array.from(phrase).forEach(ch=>{
+    if(/[A-ZĄĆĘŁŃÓŚŹŻ]/.test(ch) && __zgGame.revealed.has(ch)) n++;
   });
+  return n;
 }
-function isZgadnijRevealedChar(ch){
-  return zgadnijGuessed.has(ch);
+async function zgEnsureData(){
+  if(__zgData) return __zgData;
+  try{
+    const res = await fetch("data/hasla.json?v=" + Date.now(), {cache:"no-store"});
+    if(res.ok){
+      __zgData = await res.json();
+      if(Array.isArray(__zgData) && __zgData.length) return __zgData;
+    }
+  }catch(e){}
+  __zgData = [
+    {"category":{"pl":"POWIEDZENIE","en":"SAYING"},"phrase":{"pl":"MILCZENIE JEST ZŁOTEM","en":"SILENCE IS GOLDEN"}},
+    {"category":{"pl":"PRZYSŁOWIE","en":"PROVERB"},"phrase":{"pl":"APETYT ROŚNIE W MIARĘ JEDZENIA","en":"APPETITE GROWS WITH EATING"}},
+    {"category":{"pl":"CYTAT","en":"QUOTE"},"phrase":{"pl":"BYĆ ALBO NIE BYĆ","en":"TO BE OR NOT TO BE"}}
+  ];
+  return __zgData;
 }
-function revealZgadnijLetter(ch){
-  const phrase = getZgadnijPhraseText();
-  const count = [...phrase].filter(x=>x===ch).length;
-  zgadnijGuessed.add(ch);
-  if(count > 0){
-    zgadnijRoundScore += count * Math.max(0, zgadnijSpinValue || 0);
-    zgadnijBoardMessage = (getLang()==="en")
-      ? `Correct letter: ${ch} (+${count * Math.max(0, zgadnijSpinValue || 0)})`
-      : `Dobra litera: ${ch} (+${count * Math.max(0, zgadnijSpinValue || 0)})`;
-  }else{
-    zgadnijBoardMessage = (getLang()==="en")
-      ? `No letter: ${ch}`
-      : `Brak litery: ${ch}`;
+function zgBuildRows(phrase, cols=15, rows=4){
+  const words = phrase.split(" ");
+  const out = [];
+  let cur = "";
+  for(const word of words){
+    if(!cur){ cur = word; continue; }
+    if((cur + " " + word).length <= cols) cur += " " + word;
+    else { out.push(cur); cur = word; }
   }
-  zgadnijSpinValue = 0;
+  if(cur) out.push(cur);
+  while(out.length < rows) out.push("");
+  return out.slice(0, rows);
 }
-function hasAnyZgadnijLetter(){
-  const phrase = getZgadnijPhraseText();
-  return [...phrase].some(ch => ch !== " " && zgadnijGuessed.has(ch));
+async function zgNewPuzzle(){
+  const data = await zgEnsureData();
+  const lang = (getLang()==="en") ? "en" : "pl";
+  const item = data[Math.floor(Math.random() * data.length)];
+  const phrase = zgNormalize((item.phrase && (item.phrase[lang] || item.phrase.pl)) || "MILCZENIE JEST ZŁOTEM");
+  const category = (item.category && (item.category[lang] || item.category.pl)) || ((lang==="en") ? "PHRASE" : "HASŁO");
+  __zgGame = {
+    category,
+    phrase,
+    currentAmount: 0,
+    total: 0,
+    guessed: new Set(),
+    revealed: new Set(),
+    guessMode: false,
+    guessChars: Array.from(phrase).map(ch => (ch === " " ? " " : "")),
+  };
 }
-function isZgadnijSolved(){
-  const phrase = getZgadnijPhraseText();
-  return [...phrase].every(ch => ch === " " || zgadnijGuessed.has(ch));
+async function zgEnsureGame(){
+  if(__zgGame) return __zgGame;
+  await zgNewPuzzle();
+  return __zgGame;
 }
-function solveZgadnijPhrase(){
-  const ans = prompt((getLang()==="en") ? "Enter the whole phrase:" : "Podaj całe hasło:");
-  if(ans == null) return;
-  const guess = normalizeZgadnijText(ans);
-  const phrase = getZgadnijPhraseText();
-  if(guess === phrase){
-    [...phrase].forEach(ch => { if(ch !== " ") zgadnijGuessed.add(ch); });
-    zgadnijBoardMessage = (getLang()==="en") ? "Correct answer!" : "Prawidłowe hasło!";
-    renderMatches();
-  }else{
-    zgadnijBoardMessage = (getLang()==="en") ? "Wrong answer." : "Błędne hasło.";
-    renderMatches();
+function zgResetGuessChars(){
+  if(!__zgGame) return;
+  __zgGame.guessChars = Array.from(__zgGame.phrase).map(ch => (ch === " " ? " " : ""));
+}
+function zgNextEmptyIndex(){
+  if(!__zgGame) return -1;
+  for(let i=0;i<__zgGame.guessChars.length;i++){
+    if(__zgGame.guessChars[i] === "") return i;
   }
+  return -1;
 }
+function zgLastFilledIndex(){
+  if(!__zgGame) return -1;
+  for(let i=__zgGame.guessChars.length-1;i>=0;i--){
+    if(__zgGame.guessChars[i] && __zgGame.guessChars[i] !== " ") return i;
+  }
+  return -1;
+}
+function zgSpinAmount(){
+  if(!__zgGame) return;
+  const vals = [50,100,150,200,250,300,400,500,700,1000];
+  __zgGame.currentAmount = vals[Math.floor(Math.random()*vals.length)];
+  renderMatches();
+}
+function zgHandleLetterClick(letter){
+  if(!__zgGame) return;
+  if(__zgGame.guessMode){
+    const idx = zgNextEmptyIndex();
+    if(idx === -1) return;
+    __zgGame.guessChars[idx] = letter;
+    renderMatches();
+    return;
+  }
+
+  if(__zgGame.guessed.has(letter)) return;
+  const chars = Array.from(__zgGame.phrase);
+  const hits = chars.filter(ch => ch === letter).length;
+  __zgGame.guessed.add(letter);
+
+  if(ZG_VOWELS.has(letter)){
+    if(__zgGame.total < 200){
+      zgNotify((getLang()==="en") ? "You need at least 200 to buy a vowel." : "Potrzebujesz minimum 200 zł, aby kupić samogłoskę.");
+      return;
+    }
+    __zgGame.total -= 200;
+    if(hits > 0) __zgGame.revealed.add(letter);
+    renderMatches();
+    return;
+  }
+
+  if(!__zgGame.currentAmount){
+    zgNotify((getLang()==="en") ? "Spin the wheel first." : "Najpierw zakręć kołem.");
+    return;
+  }
+  if(hits > 0){
+    __zgGame.total += (__zgGame.currentAmount * hits);
+    __zgGame.revealed.add(letter);
+  }
+  __zgGame.currentAmount = 0;
+  renderMatches();
+}
+function zgToggleGuessMode(){
+  if(!__zgGame) return;
+  if(!__zgGame.guessMode){
+    __zgGame.guessMode = true;
+    zgResetGuessChars();
+  }else{
+    const guess = __zgGame.guessChars.join("");
+    const ok = guess === __zgGame.phrase;
+    if(ok){
+      Array.from(__zgGame.phrase).forEach(ch=>{
+        if(/[A-ZĄĆĘŁŃÓŚŹŻ]/.test(ch)) __zgGame.revealed.add(ch);
+      });
+      zgNotify((getLang()==="en") ? "Correct phrase!" : "Prawidłowe hasło!");
+    }else{
+      zgNotify((getLang()==="en") ? "Incorrect phrase." : "Nieprawidłowe hasło.");
+    }
+    __zgGame.guessMode = false;
+    zgResetGuessChars();
+  }
+  renderMatches();
+}
+function zgBackspaceGuess(){
+  if(!__zgGame || !__zgGame.guessMode) return;
+  const idx = zgLastFilledIndex();
+  if(idx >= 0) __zgGame.guessChars[idx] = "";
+  renderMatches();
+}
+function renderZgGuessArea(parent){
+  if(!__zgGame || !__zgGame.guessMode) return;
+  const wrap = document.createElement("div");
+  wrap.className = "zgGuessWrap";
+  const grid = document.createElement("div");
+  grid.className = "zgGuessGrid";
+  Array.from(__zgGame.phrase).forEach((ch, i)=>{
+    const slot = document.createElement("div");
+    if(ch === " "){
+      slot.className = "zgGuessSlot space";
+      slot.textContent = "";
+    }else{
+      const val = __zgGame.guessChars[i] || "";
+      slot.className = "zgGuessSlot " + (val ? "filled" : "empty");
+      slot.textContent = val;
+    }
+    grid.appendChild(slot);
+  });
+  wrap.appendChild(grid);
+  const hint = document.createElement("div");
+  hint.className = "zgGuessHint";
+  hint.textContent = (getLang()==="en")
+    ? "Click letters below. Filling goes from the first free slot to the last."
+    : "Klikaj litery poniżej. Uzupełnianie idzie od pierwszego wolnego pola do ostatniego.";
+  wrap.appendChild(hint);
+  parent.appendChild(wrap);
+}
+
 
 function renderZgadnijAlphabet(panel){
   panel.innerHTML = "";
+  if(!__zgGame) return;
 
-  const wheelWrap = document.createElement("div");
-  wheelWrap.className = "zgWheelWrap";
+  const controls = document.createElement("div");
+  controls.className = "zgControlsWrap";
+
+  const top = document.createElement("div");
+  top.className = "zgTopControls";
 
   const amountBox = document.createElement("div");
   amountBox.className = "zgAmountBox";
-  amountBox.id = "zgAmountBox";
   amountBox.textContent = (getLang()==="en")
-    ? `Drawn amount: ${zgadnijSpinValue || 0} | Total: ${zgadnijRoundScore}`
-    : `Wylosowana kwota: ${zgadnijSpinValue || 0} | Suma: ${zgadnijRoundScore}`;
+    ? `Drawn amount: ${__zgGame.currentAmount || 0} | Total: ${__zgGame.total}`
+    : `Wylosowana kwota: ${__zgGame.currentAmount || 0} | Suma: ${__zgGame.total}`;
 
   const spinBtn = document.createElement("button");
-  spinBtn.className = "zgSpinBtn";
+  spinBtn.className = "zgBtn spin";
   spinBtn.type = "button";
   spinBtn.textContent = (getLang()==="en") ? "SPIN" : "ZAKRĘĆ";
-  spinBtn.onclick = ()=>{
-    const vals = [50,100,150,200,250,300,400,500,700,1000];
-    zgadnijSpinValue = vals[Math.floor(Math.random()*vals.length)];
-    zgadnijBoardMessage = (getLang()==="en")
-      ? `Amount drawn: ${zgadnijSpinValue}`
-      : `Wylosowano: ${zgadnijSpinValue}`;
-    renderMatches();
-  };
+  spinBtn.onclick = ()=> zgSpinAmount();
 
-  wheelWrap.appendChild(amountBox);
-  wheelWrap.appendChild(spinBtn);
+  top.appendChild(amountBox);
+  top.appendChild(spinBtn);
 
-  if(hasAnyZgadnijLetter()){
-    const solveBtn = document.createElement("button");
-    solveBtn.className = "zgSolveBtn";
-    solveBtn.type = "button";
-    solveBtn.textContent = (getLang()==="en") ? "SOLVE" : "ZGADUJ HASŁO";
-    solveBtn.onclick = solveZgadnijPhrase;
-    wheelWrap.appendChild(solveBtn);
+  if(zgCountRevealed() > 0){
+    const guessBtn = document.createElement("button");
+    guessBtn.className = "zgBtn guess";
+    guessBtn.type = "button";
+    guessBtn.textContent = __zgGame.guessMode
+      ? ((getLang()==="en") ? "CHECK PHRASE" : "SPRAWDŹ HASŁO")
+      : ((getLang()==="en") ? "GUESS PHRASE" : "ZGADUJ HASŁO");
+    guessBtn.onclick = ()=> zgToggleGuessMode();
+    top.appendChild(guessBtn);
+
+    if(__zgGame.guessMode){
+      const backBtn = document.createElement("button");
+      backBtn.className = "zgBtn backspace";
+      backBtn.type = "button";
+      backBtn.textContent = (getLang()==="en") ? "BACKSPACE" : "COFNIJ LITERĘ";
+      backBtn.onclick = ()=> zgBackspaceGuess();
+      top.appendChild(backBtn);
+    }
   }
+
+  controls.appendChild(top);
+  renderZgGuessArea(controls);
 
   const wrap = document.createElement("div");
   wrap.className = "zgAlphabetWrap";
@@ -5054,32 +5104,34 @@ function renderZgadnijAlphabet(panel){
 
   letters.forEach(ch=>{
     const btn = document.createElement("button");
-    btn.className = "zgKey";
+    btn.className = "zgKey" + (__zgGame.guessed.has(ch) ? " used" : "");
     btn.type = "button";
     btn.textContent = ch;
-    btn.disabled = zgadnijGuessed.has(ch);
-    btn.onclick = ()=>{
-      if(zgadnijGuessed.has(ch)) return;
-      if(!zgadnijSpinValue){
-        showToast((getLang()==="en") ? "Spin first." : "Najpierw zakręć.");
-        return;
-      }
-      revealZgadnijLetter(ch);
-      renderMatches();
-    };
+    btn.disabled = __zgGame.guessed.has(ch);
+    btn.onclick = ()=> zgHandleLetterClick(ch);
     grid.appendChild(btn);
   });
 
   wrap.appendChild(grid);
-  panel.appendChild(wheelWrap);
-  panel.appendChild(wrap);
+  controls.appendChild(wrap);
+  panel.appendChild(controls);
 }
+
+
 
 function renderZgadnijBoard(list){
   list.innerHTML = "";
-
   const shell = document.createElement("div");
   shell.className = "zgBoardShell";
+
+  if(!__zgGame){
+    const hint = document.createElement("div");
+    hint.className = "zgBoardHint";
+    hint.textContent = (getLang()==="en") ? "Loading phrase..." : "Ładowanie hasła...";
+    shell.appendChild(hint);
+    list.appendChild(shell);
+    return;
+  }
 
   const frame = document.createElement("div");
   frame.className = "zgBoardFrame";
@@ -5091,22 +5143,24 @@ function renderZgadnijBoard(list){
   const grid = document.createElement("div");
   grid.className = "zgBoardGrid";
 
-  const phrase = getZgadnijPhraseText();
-  const rows = getZgadnijRows(phrase, 10, 4);
-
-  rows.flat().forEach(ch=>{
-    const cell = document.createElement("div");
-    if(ch == null){
-      cell.className = "zgCell empty";
-      cell.textContent = "";
-    }else if(isZgadnijRevealedChar(ch) || isZgadnijSolved()){
-      cell.className = "zgCell revealed";
-      cell.textContent = ch;
-    }else{
-      cell.className = "zgCell hidden";
-      cell.textContent = "";
-    }
-    grid.appendChild(cell);
+  const rows = zgBuildRows(__zgGame.phrase, 15, 4);
+  rows.forEach(rowText=>{
+    const chars = Array.from(rowText);
+    const leftPad = Math.max(0, Math.floor((15 - chars.length) / 2));
+    const cells = [];
+    for(let i=0;i<leftPad;i++) cells.push({s:"empty",t:""});
+    chars.forEach(ch=>{
+      if(ch === " ") cells.push({s:"empty",t:""});
+      else if(__zgGame.revealed.has(ch)) cells.push({s:"revealed",t:ch});
+      else cells.push({s:"hidden",t:""});
+    });
+    while(cells.length < 15) cells.push({s:"empty",t:""});
+    cells.slice(0,15).forEach(cellData=>{
+      const cell = document.createElement("div");
+      cell.className = "zgCell " + cellData.s;
+      cell.textContent = cellData.t || "";
+      grid.appendChild(cell);
+    });
   });
 
   frame.appendChild(grid);
@@ -5114,34 +5168,27 @@ function renderZgadnijBoard(list){
 
   const category = document.createElement("div");
   category.className = "zgCategory";
-  category.textContent = getZgadnijCategoryText();
+  category.textContent = __zgGame.category || ((getLang()==="en") ? "PHRASE" : "HASŁO");
   shell.appendChild(category);
 
   const hint = document.createElement("div");
   hint.className = "zgBoardHint";
-  hint.textContent = zgadnijBoardMessage || ((getLang()==="en")
-    ? "Spin and choose a letter."
-    : "Zakręć i wybierz literę.");
+  hint.textContent = (getLang()==="en")
+    ? `Letters in phrase: ${zgLetterCount(__zgGame.phrase)}`
+    : `Liczba liter w haśle: ${zgLetterCount(__zgGame.phrase)}`;
   shell.appendChild(hint);
 
   list.appendChild(shell);
 
-  if(el("matchesCount")) el("matchesCount").textContent = String(phrase.replace(/ /g,"").length);
+  if(el("matchesCount")) el("matchesCount").textContent = String(zgLetterCount(__zgGame.phrase));
 }
+
 
 function renderMatches(){
   const list = el("matchesList");
   if(!list) return;
   list.innerHTML = "";
-  if(!zgadnijPhraseLoaded){
-    ensureZgadnijPhrases().then(()=>{ if(!zgadnijCurrent) startZgadnijRound(true); renderMatches(); }).catch(()=>{});
-    const info = document.createElement("div");
-    info.className = "sub";
-    info.textContent = (getLang()==="en") ? "Loading phrases..." : "Ładowanie haseł...";
-    list.appendChild(info);
-    return;
-  }
-  if(!zgadnijCurrent) startZgadnijRound(true);
+  if(!__zgGame){ zgEnsureGame().then(()=>{ try{renderMatches();}catch(e){} }); }
   renderZgadnijBoard(list);
   if(el("matchActionsPanel")) renderZgadnijAlphabet(el("matchActionsPanel"));
   updateSaveButtonState();
