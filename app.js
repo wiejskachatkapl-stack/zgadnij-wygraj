@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3020;
+const BUILD = 3021;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4857,6 +4857,84 @@ function createLogoImg(teamName){
 const ZG_VOWELS = new Set(["A","Ą","E","Ę","I","O","Ó","U","Y"]);
 let __zgData = null;
 let __zgGame = null;
+
+const ZG_WHEEL_SEGMENTS = [
+  {label:"50", value:50, type:"money"},
+  {label:"100", value:100, type:"money"},
+  {label:"150", value:150, type:"money"},
+  {label:"200", value:200, type:"money"},
+  {label:"250", value:250, type:"money"},
+  {label:"300", value:300, type:"money"},
+  {label:"350", value:350, type:"money"},
+  {label:"400", value:400, type:"money"},
+  {label:"450", value:450, type:"money"},
+  {label:"500", value:500, type:"money"},
+  {label:"600", value:600, type:"money"},
+  {label:"700", value:700, type:"money"},
+  {label:"800", value:800, type:"money"},
+  {label:"900", value:900, type:"money"},
+  {label:"1000", value:1000, type:"money"},
+  {label:"1100", value:1100, type:"money"},
+  {label:"1200", value:1200, type:"money"},
+  {label:"1400", value:1400, type:"money"},
+  {label:"BANKRUT", value:"BANKRUT", type:"bankrupt"},
+  {label:"STOP", value:"STOP", type:"stop"}
+];
+let __zgWheelRotation = 0;
+let __zgWheelBusy = false;
+
+function buildZgWheelSvg(){
+  const colors = ["#4cc3ff","#3be08a","#ffd84c","#ff9f40","#ff5b5b","#b25cff","#6de27a","#f3d24e","#4a8cff","#4cd6d0"];
+  const segs = ZG_WHEEL_SEGMENTS.length;
+  const step = (Math.PI * 2) / segs;
+  const cx = 250, cy = 250, r = 245;
+  const textR = 178;
+
+  function polar(a, rr){
+    return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
+  }
+  function pathFor(i){
+    const a0 = -Math.PI/2 + i*step;
+    const a1 = a0 + step;
+    const [x0,y0] = polar(a0, r);
+    const [x1,y1] = polar(a1, r);
+    return `M ${cx} ${cy} L ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`;
+  }
+
+  let slices = "";
+  let labels = "";
+  for(let i=0;i<segs;i++){
+    const mid = -Math.PI/2 + i*step + step/2;
+    const [tx,ty] = polar(mid, textR);
+    const angleDeg = (mid * 180 / Math.PI) + 90;
+    slices += `<path d="${pathFor(i)}" fill="${colors[i % colors.length]}" stroke="rgba(255,255,255,.28)" stroke-width="2"/>`;
+    labels += `<text class="zgWheelSvgText" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${angleDeg.toFixed(2)} ${tx.toFixed(1)} ${ty.toFixed(1)})">${ZG_WHEEL_SEGMENTS[i].label}</text>`;
+  }
+  return `<svg viewBox="0 0 500 500" width="100%" height="100%" aria-hidden="true">${slices}${labels}</svg>`;
+}
+
+function ensureZgWheelBuilt(){
+  const disc = document.getElementById("zgWheelDisc");
+  if(disc && !disc.dataset.built){
+    disc.innerHTML = buildZgWheelSvg();
+    disc.dataset.built = "1";
+  }
+}
+
+function zgApplyWheelOutcome(seg){
+  if(!__zgGame) return;
+  if(seg.type === "money"){
+    __zgGame.currentAmount = seg.value;
+  }else if(seg.type === "bankrupt"){
+    __zgGame.currentAmount = 0;
+    __zgGame.total = 0;
+  }else if(seg.type === "stop"){
+    __zgGame.currentAmount = 0;
+  }
+}
+
+
+
 
 function zgNotify(msg){
   try{ if(typeof showToast === "function") showToast(msg); else alert(msg); }catch(e){}
