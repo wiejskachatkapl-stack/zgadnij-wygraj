@@ -1,4 +1,4 @@
-// ZGADNIJ PWA Service Worker (BUILD 3009)
+// ZGADNIJ PWA Service Worker (BUILD 3010)
 const CACHE_NAME = 'typer-cache-8037';
 
 // Core assets to pre-cache (keep minimal to avoid stale UI)
