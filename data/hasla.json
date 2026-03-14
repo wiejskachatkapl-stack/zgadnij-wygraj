@@ -1,0 +1,72 @@
+[
+  {
+    "category": {
+      "pl": "PRZYSŁOWIE",
+      "en": "PROVERB"
+    },
+    "phrase": {
+      "pl": "CO MA BYĆ TO BĘDZIE",
+      "en": "WHAT WILL BE WILL BE"
+    }
+  },
+  {
+    "category": {
+      "pl": "ZWROT",
+      "en": "PHRASE"
+    },
+    "phrase": {
+      "pl": "CZAS TO PIENIĄDZ",
+      "en": "TIME IS MONEY"
+    }
+  },
+  {
+    "category": {
+      "pl": "TYTUŁ",
+      "en": "TITLE"
+    },
+    "phrase": {
+      "pl": "ZGADNIJ I WYGRAJ",
+      "en": "GUESS AND WIN"
+    }
+  },
+  {
+    "category": {
+      "pl": "POWIEDZENIE",
+      "en": "SAYING"
+    },
+    "phrase": {
+      "pl": "RAZ NA WOZIE RAZ POD WOZEM",
+      "en": "ONCE ON TOP ONCE BELOW"
+    }
+  },
+  {
+    "category": {
+      "pl": "ZWROT",
+      "en": "PHRASE"
+    },
+    "phrase": {
+      "pl": "NIE MA RÓŻY BEZ KOLCÓW",
+      "en": "NO ROSE WITHOUT THORNS"
+    }
+  },
+  {
+    "category": {
+      "pl": "POWIEDZENIE",
+      "en": "SAYING"
+    },
+    "phrase": {
+      "pl": "MILCZENIE JEST ZŁOTEM",
+      "en": "SILENCE IS GOLDEN"
+    }
+  },
+  {
+    "category": {
+      "pl": "ZWROT",
+      "en": "PHRASE"
+    },
+    "phrase": {
+      "pl": "APETYT ROŚNIE W MIARĘ JEDZENIA",
+      "en": "APPETITE GROWS WITH EATING"
+    }
+  }
+]
