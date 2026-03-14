@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3019;
+const BUILD = 3020;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4918,6 +4918,7 @@ async function zgNewPuzzle(){
     revealed: new Set(),
     guessMode: false,
     guessChars: Array.from(phrase).map(ch => (ch === " " ? " " : "")),
+    guessIndex: 0,
   };
 }
 async function zgEnsureGame(){
@@ -4928,6 +4929,22 @@ async function zgEnsureGame(){
 function zgResetGuessChars(){
   if(!__zgGame) return;
   __zgGame.guessChars = Array.from(__zgGame.phrase).map(ch => (ch === " " ? " " : ""));
+  __zgGame.guessIndex = 0;
+  while(__zgGame.guessIndex < __zgGame.guessChars.length && __zgGame.guessChars[__zgGame.guessIndex] === " ") __zgGame.guessIndex++;
+}
+function zgNextWritableFrom(idx){
+  if(!__zgGame) return -1;
+  for(let i=Math.max(0, idx); i<__zgGame.guessChars.length; i++){
+    if(__zgGame.guessChars[i] !== " ") return i;
+  }
+  return -1;
+}
+function zgPrevWritableFrom(idx){
+  if(!__zgGame) return -1;
+  for(let i=Math.min(idx, __zgGame.guessChars.length-1); i>=0; i--){
+    if(__zgGame.guessChars[i] !== " ") return i;
+  }
+  return -1;
 }
 function zgNextEmptyIndex(){
   if(!__zgGame) return -1;
@@ -4952,9 +4969,11 @@ function zgSpinAmount(){
 function zgHandleLetterClick(letter){
   if(!__zgGame) return;
   if(__zgGame.guessMode){
-    const idx = zgNextEmptyIndex();
+    const idx = zgNextWritableFrom(__zgGame.guessIndex);
     if(idx === -1) return;
     __zgGame.guessChars[idx] = letter;
+    const next = zgNextWritableFrom(idx + 1);
+    __zgGame.guessIndex = (next === -1) ? idx : next;
     renderMatches();
     return;
   }
@@ -5009,8 +5028,22 @@ function zgToggleGuessMode(){
 }
 function zgBackspaceGuess(){
   if(!__zgGame || !__zgGame.guessMode) return;
-  const idx = zgLastFilledIndex();
-  if(idx >= 0) __zgGame.guessChars[idx] = "";
+  let idx = __zgGame.guessIndex;
+  if(idx >= __zgGame.guessChars.length || __zgGame.guessChars[idx] === " "){
+    idx = zgPrevWritableFrom(idx);
+  }
+  if(idx >= 0){
+    if(__zgGame.guessChars[idx]){
+      __zgGame.guessChars[idx] = "";
+      __zgGame.guessIndex = idx;
+    }else{
+      const prev = zgPrevWritableFrom(idx - 1);
+      if(prev >= 0){
+        __zgGame.guessChars[prev] = "";
+        __zgGame.guessIndex = prev;
+      }
+    }
+  }
   renderMatches();
 }
 function renderZgGuessArea(parent){
@@ -5026,8 +5059,14 @@ function renderZgGuessArea(parent){
       slot.textContent = "";
     }else{
       const val = __zgGame.guessChars[i] || "";
-      slot.className = "zgGuessSlot " + (val ? "filled" : "empty");
+      let cls = "zgGuessSlot " + (val ? "filled" : "empty");
+      if(i === __zgGame.guessIndex) cls += " active";
+      slot.className = cls;
       slot.textContent = val;
+      slot.onclick = ()=>{
+        __zgGame.guessIndex = i;
+        renderMatches();
+      };
     }
     grid.appendChild(slot);
   });
@@ -5035,8 +5074,8 @@ function renderZgGuessArea(parent){
   const hint = document.createElement("div");
   hint.className = "zgGuessHint";
   hint.textContent = (getLang()==="en")
-    ? "Click letters below. Filling goes from the first free slot to the last."
-    : "Klikaj litery poniżej. Uzupełnianie idzie od pierwszego wolnego pola do ostatniego.";
+    ? "Click a slot above, then click letters below to fill the phrase."
+    : "Kliknij pole powyżej, a potem klikaj litery poniżej, aby uzupełniać hasło.";
   wrap.appendChild(hint);
   parent.appendChild(wrap);
 }
@@ -5107,7 +5146,7 @@ function renderZgadnijAlphabet(panel){
     btn.className = "zgKey" + (__zgGame.guessed.has(ch) ? " used" : "");
     btn.type = "button";
     btn.textContent = ch;
-    btn.disabled = __zgGame.guessed.has(ch);
+    btn.disabled = false;
     btn.onclick = ()=> zgHandleLetterClick(ch);
     grid.appendChild(btn);
   });
