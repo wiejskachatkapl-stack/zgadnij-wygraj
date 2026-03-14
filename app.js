@@ -1,10 +1,10 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3006;
+const BUILD = 3007;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
 const BG_HOME = "grafic/img_tlo_start.png";
-const BG_ROOM = "img_tlo.png";
+const BG_ROOM = "grafic/img_tlo_start.png";
 
 const KEY_NICK = "typer_nick_v3";
 const KEY_ACTIVE_ROOM = "typer_active_room_v3";
