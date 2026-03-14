@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3007</title>
+  <title>ZGADNIJ v3008</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1892,6 +1892,18 @@
         -webkit-overflow-scrolling:touch;
       }
     }
+
+
+/* ZGADNIJ v3008 UI adjustments */
+.spotkaniaHeader, .seasonInfo, .matchesInfo, .pointsInfo {display:none !important;}
+.substituteRow {display:none !important;}
+.rankAllTime {display:none !important;}
+
+/* move selected buttons to the right side visually */
+.leftPanel .imgBtn.keepMove {
+  margin-left:auto;
+  display:block;
+}
 
 </style>
 </head>
