@@ -1,442 +1,2426 @@
 <!DOCTYPE html>
+
 <html lang="pl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZGADNIJ I WYGRAJ</title>
-  <style>
-    :root{--text:#eef5ff;--sub:#d0ddff;--shadow:0 20px 60px rgba(0,0,0,.45);}
-    *{box-sizing:border-box}
-    body{margin:0;min-height:100vh;font-family:Arial,Helvetica,sans-serif;color:var(--text);background:radial-gradient(circle at 50% 35%, #173d98 0%, #0a265d 28%, #04193e 60%, #02122b 100%);overflow:hidden}
-    .app{width:min(1400px,calc(100vw - 36px));height:min(92vh,820px);margin:14px auto;position:relative;border:1px solid rgba(150,190,255,.25);border-radius:32px;overflow:hidden;box-shadow:0 0 0 2px rgba(20,40,90,.22) inset,0 20px 50px rgba(0,0,0,.35);background:#04142f}
-    .start-art{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center center;display:block;background:#04142f}
-    .overlay{position:absolute;inset:0;pointer-events:none;background:radial-gradient(circle at 50% 50%, transparent 40%, rgba(2,10,26,.25) 100%)}
-    .top-badge,.lang-btn,.version{position:absolute;z-index:4;border:1px solid rgba(255,255,255,.16);background:rgba(2,14,37,.7);color:#f3f7ff;border-radius:999px;box-shadow:0 0 0 1px rgba(88,130,255,.12) inset;backdrop-filter:blur(3px);font-weight:700;letter-spacing:.3px}
-    .top-badge{top:18px;left:18px;padding:14px 18px;font-size:18px}
-    .lang-btn{top:18px;right:18px;padding:14px 18px;font-size:18px;cursor:pointer}
-    .version{right:20px;bottom:14px;padding:11px 18px;font-size:14px;z-index:7}
-    .play-hotspot{position:absolute;left:50%;bottom:8%;transform:translateX(-50%);width:min(23vw,330px);height:min(12vw,120px);cursor:pointer;z-index:3;background:transparent;border:none}
-    .play-hotspot:hover{filter:brightness(1.06)}
-    .play-hotspot:active{transform:translateX(-50%) scale(.985)}
-    .backdrop{position:absolute;inset:0;background:rgba(2,10,25,.52);backdrop-filter:blur(8px);z-index:10;display:none;align-items:center;justify-content:center;padding:18px}
-    .backdrop.show{display:flex}
-    .modal{width:min(760px,calc(100vw - 52px));max-height:min(86vh,760px);background:linear-gradient(180deg, rgba(34,68,150,.96), rgba(11,31,78,.96));border:1px solid rgba(150,190,255,.18);border-radius:34px;box-shadow:var(--shadow),0 0 0 1px rgba(120,165,255,.14) inset;padding:26px 28px 22px;overflow:auto;position:relative}
-    .modal.compact{width:min(650px,calc(100vw - 52px))}
-    .modal.room-screen{width:min(1180px,calc(100vw - 48px));max-height:min(90vh,820px);padding:20px 22px 18px}
-    .pill{display:inline-block;padding:10px 16px;border-radius:999px;background:rgba(12,34,85,.6);border:1px solid rgba(180,210,255,.18);font-weight:700;margin-bottom:14px;font-size:18px}
-    h1{margin:8px 0 12px;font-size:clamp(32px,4vw,66px);line-height:.95}
-    .desc{margin:0 0 18px;color:var(--sub);font-size:18px;line-height:1.35}
-    .button-col{display:flex;flex-direction:column;gap:14px;align-items:center;margin-top:18px;padding-bottom:4px}
-    .img-btn{background:none;border:none;padding:0;cursor:pointer;display:block}
-    .img-btn img{display:block;width:min(54vw,420px);max-width:100%;max-height:92px;object-fit:contain;transition:transform .15s ease,filter .15s ease}
-    .img-btn:hover img{transform:translateY(-1px) scale(1.01);filter:brightness(1.05)}
-    .img-btn:active img{transform:scale(.985)}
-    .fallback{min-width:250px;padding:16px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.18);background:linear-gradient(180deg,#2b67ff,#1645c6);color:white;font-size:24px;font-weight:700;box-shadow:0 12px 30px rgba(0,0,0,.22)}
-    .form-grid{display:grid;gap:14px;margin-top:14px}
-    label{font-size:15px;color:#d7e4ff;font-weight:700;display:block;margin-bottom:6px}
-    input{width:100%;border-radius:16px;padding:14px 16px;border:1px solid rgba(255,255,255,.18);background:rgba(4,18,52,.7);color:#fff;font-size:18px;outline:none}
-    .row-actions{display:flex;gap:18px;align-items:center;justify-content:center;margin-top:18px;flex-wrap:wrap}
-    .room-card{margin-top:16px;background:rgba(5,18,52,.52);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}
-    .section-label{margin-top:16px;font-size:16px;font-weight:700;color:#dfe8ff;letter-spacing:.3px}
-    .player-list{margin-top:10px;display:grid;gap:10px}
-    .player{padding:12px 14px;border-radius:16px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.08);display:flex;justify-content:space-between;align-items:center;gap:14px;font-size:18px}
-    .system-note{margin-top:14px;padding:14px 16px;border-radius:18px;background:rgba(255,210,90,.12);border:1px solid rgba(255,210,90,.28);color:#fff3c5;font-size:15px;line-height:1.45;white-space:pre-line}
-    .hidden{display:none !important}
+<meta charset="utf-8"/>
+<meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
+<meta content="#08122a" name="theme-color"/>
+  <title>ZGADNIJ I WYGRAJ (BUILD 3000)</title>
+<link href="manifest.json" rel="manifest"/>
+<style>
+.roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
+.roomCodeRow .imgBtn{flex:0 0 auto;}
 
-    .room-top{display:flex;justify-content:space-between;gap:16px;align-items:flex-start;flex-wrap:wrap}
-    .room-title-big{font-size:clamp(34px,5vw,62px);font-weight:900;line-height:.95;margin:6px 0 0}
-    .room-code-badge{padding:14px 18px;border-radius:18px;background:rgba(7,24,63,.7);border:1px solid rgba(255,255,255,.14);font-size:20px;font-weight:800}
-    .room-layout{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;margin-top:18px}
-    .panel{background:rgba(7,24,63,.62);border:1px solid rgba(255,255,255,.12);border-radius:24px;padding:18px}
-    .panel h3{margin:0 0 12px;font-size:28px}
-    .big-board{height:280px;border-radius:20px;border:1px dashed rgba(150,190,255,.35);background:linear-gradient(180deg, rgba(19,52,127,.55), rgba(7,26,74,.4));display:flex;align-items:center;justify-content:center;text-align:center;padding:24px;color:#dbe7ff;font-size:28px;font-weight:800}
-    .room-actions{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;margin-top:18px}
-    .room-text-btn{padding:14px 22px;border-radius:18px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg,#2b67ff,#1645c6);color:#fff;font-size:22px;font-weight:800;cursor:pointer}
-    .room-text-btn.secondary{background:rgba(255,255,255,.1)}
-    .room-meta-line{font-size:20px;color:#dce6ff;line-height:1.5}
-    .room-sub{color:#d0ddff;font-size:18px;line-height:1.4}
-    @media (max-width:900px){
-      .top-badge,.lang-btn{font-size:15px;padding:11px 14px}
-      .play-hotspot{width:min(38vw,300px);height:min(17vw,110px);bottom:7%}
-      .modal{padding:22px 18px 18px}
-      .desc{font-size:16px}
-      .img-btn img{width:min(62vw,350px);max-height:82px}
-      .fallback{font-size:20px;min-width:220px}
-      .player{font-size:16px}
-      .room-layout{grid-template-columns:1fr}
-      .big-board{height:180px;font-size:22px}
-      .room-text-btn{font-size:18px}
-      .room-code-badge{font-size:17px}
+/* 7036: nick obok avatara + minimalne odstępy */
+.leftTopProfile{display:flex;align-items:center;gap:14px;}
+.profileNickTop{font-weight:1000;font-size:26px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:150px;}
+.substituteRow{display:flex;justify-content:center;align-items:center;margin-top:6px;}
+
+:root{
+      --bg:#071229;
+      --glass: rgba(8, 22, 52, .58);
+      --glass2: rgba(8, 22, 52, .42);
+      --stroke: rgba(255,255,255,.12);
+      --stroke2: rgba(255,255,255,.16);
+      --text: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --shadow: 0 14px 50px rgba(0,0,0,.45);
+      --r: 22px;
     }
-  </style>
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+      color:var(--text);
+      background:var(--bg);
+      overflow:hidden;
+    }
+
+    #bg{
+      position:fixed; inset:0;
+      background:#071229 center/cover no-repeat;
+      z-index:0;
+    }
+
+    #app{
+      position:fixed; inset:0;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:14px;
+      z-index:1;
+    }
+
+    #rotateOverlay{
+      position:fixed; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      padding:18px;
+      background:rgba(0,0,0,.65);
+      z-index:9999;
+    }
+    .rotateCard{
+      width:min(560px,92vw);
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      background:var(--glass);
+      padding:18px 16px;
+      text-align:center;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+    .rotateTitle{font-size:20px;font-weight:1000;margin:0 0 8px 0;}
+    .rotateSub{color:var(--muted);font-weight:800;white-space:pre-line;line-height:1.25;}
+    body.lockedPortrait #app{filter:blur(6px);pointer-events:none;}
+
+    /* ===== MOBILE SCROLL FIX (BUILD 8022) =====
+       Na telefonach pozwalamy przewijać zawartość (np. Profil),
+       bo stałe overflow:hidden + fixed potrafi blokować scroll po obrocie. */
+    @media (max-width: 900px){
+      body{ overflow:auto; }
+      #app{
+        position:relative;
+        inset:auto;
+        min-height:100vh;
+        height:auto;
+        align-items:flex-start;
+        justify-content:center;
+      }
+      .frame{
+        height:auto;
+        min-height:94vh;
+        overflow-y:auto;
+        overflow-x:hidden;
+        -webkit-overflow-scrolling:touch;
+      }
+    }
+
+    @media (max-width: 900px) and (orientation: landscape){
+      #app{padding:8px;}
+      .frame{width:98vw;height:96vh;border-radius:18px;}
+    }
+
+
+    .frame{
+      width:min(1580px,96vw);
+      height:min(920px,94vh);
+      border:1px solid var(--stroke);
+      border-radius:26px;
+      background:rgba(0,0,0,.10);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(10px);
+      -webkit-backdrop-filter:blur(10px);
+      overflow:hidden;
+      position:relative;
+    }
+
+    .screen{display:none;height:100%;width:100%}
+    .screen.active{display:flex}
+
+    /* ===== SPLASH ===== */
+    #splash{align-items:center;justify-content:center;padding:24px}
+    .splashCard{
+      width:min(820px,92%);
+      border:1px solid var(--stroke);
+      border-radius:22px;
+      background:var(--glass2);
+      padding:22px;
+    }
+    .spinner{
+      width:26px;height:26px;border-radius:50%;
+      border:3px solid rgba(255,255,255,.25);
+      border-top-color:rgba(255,255,255,.9);
+      animation:spin 1s linear infinite;margin-top:12px;
+    }
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .hint{margin-top:8px;color:var(--muted);font-weight:800;white-space:pre-wrap}
+    .err{
+      margin-top:10px;padding:10px 12px;border-radius:14px;
+      border:1px solid rgba(255,120,120,.35);
+      background:rgba(255,60,60,.12);
+      display:none;white-space:pre-wrap
+    }
+
+    /* ===== COMMON ===== */
+    .panel{
+      border:1px solid var(--stroke);
+      border-radius:var(--r);
+      background:var(--glass);
+      box-shadow:0 10px 30px rgba(0,0,0,.30);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .btn{
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.10);
+      color:var(--text);
+      padding:10px 14px;
+      border-radius:16px;
+      font-weight:900;
+      cursor:pointer;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:hover{background:rgba(255,255,255,.14)}
+    .btn:disabled{opacity:.45;cursor:not-allowed}
+
+    /* ===== MESSAGES BADGE (red exclamation) ===== */
+    .msgBadge{
+      position:absolute;
+      top:-6px;
+      right:-6px;
+      width:22px;
+      height:22px;
+      border-radius:999px;
+      background:rgba(255,40,40,.95);
+      border:1px solid rgba(255,255,255,.35);
+      color:#fff;
+      font-weight:1000;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      box-shadow:0 8px 18px rgba(0,0,0,.45);
+      pointer-events:none;
+      z-index:3;
+    }
+
+    .btnSmall{padding:8px 12px;border-radius:14px;font-weight:900}
+
+    .chip{
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      padding:10px 14px;
+      border-radius:18px;
+      background:rgba(0,0,0,.20);
+      border:1px solid rgba(255,255,255,.12);
+      font-weight:900;
+    }
+
+    /* ===== LEAGUE: dropdown w chipie "Po kolejce" ===== */
+    .chip select{
+      background:rgba(0,0,0,.18);
+      border:1px solid rgba(255,255,255,.14);
+      color:var(--text);
+      font-weight:1000;
+      border-radius:12px;
+      padding:6px 10px;
+      outline:none;
+    }
+    .chip select:focus{border-color:rgba(255,255,255,.24)}
+
+    /* ===== PLAYER STATS (BUILD 8009): bez linii statusu + ciaśniejsze kolejki ===== */
+    .statsAwardsRow{gap:4px !important;}
+    .statsRightRow{gap:4px !important; align-items:center;}
+
+    .statsChip{
+      flex:0 0 auto !important;
+      width:fit-content !important;
+      min-width:0 !important;
+      padding:6px 8px !important;
+      gap:6px !important;
+      border-radius:14px !important;
+      white-space:nowrap;
+    }
+
+    /* Punkty w formie wąskiego "pionowego" chipu: etykieta + wartość */
+    .statsPointsChip{
+      flex-direction:column !important;
+      align-items:center !important;
+      justify-content:center !important;
+      width:58px !important;
+      padding:6px 6px !important;
+      line-height:1.05;
+      text-align:center;
+    }
+    .statsPtsLabel{font-size:11px;opacity:.85;font-weight:900;}
+    .statsPtsVal{font-size:16px;font-weight:1000;}
+
+    /* Rzędy kolejek w Statystykach nie mogą używać siatki (.matchCard ma grid w innych oknach) */
+    .statsRoundCard{
+      display:flex !important;
+      grid-template-columns:none !important;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px !important;
+      padding:6px 10px !important;
+    }
+
+
+    /* BUILD 7024: usuń napisy "KOLEJKA" i "PUNKTY (kolejka)" w chipach (zostaje sama wartość) */
+    #t_round, #sep_round{display:none;}
+
+    /* BUILD 7024: usuń debug/placeholder "dummyAdOne"/"dummyAdTwo" (z lewej strony) */
+    #dummyAdOne, #dummyAdTwo,
+    img[alt="dummyAdOne"], img[alt="dummyAdTwo"],
+    img[src*="dummyAdOne"], img[src*="dummyAdTwo"]{
+      display:none !important;
+    }
+
+    .title{font-size:22px;font-weight:1000;margin:0 0 6px 0}
+    .sub{color:var(--muted);font-weight:700;font-size:13px}
+
+    .row{display:flex;gap:10px;align-items:center}
+    .col{display:flex;flex-direction:column;gap:10px}
+    .spacer{flex:1}
+
+    input{
+      border:1px solid rgba(255,255,255,.15);
+      background:rgba(0,0,0,.22);
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:14px;
+      outline:none;
+      font-weight:900;
+    }
+    input::placeholder{color:rgba(255,255,255,.55);font-weight:800}
+
+    .toast{
+      position:absolute;left:18px;bottom:14px;
+      background:rgba(0,0,0,.35);
+      border:1px solid rgba(255,255,255,.12);
+      color:rgba(255,255,255,.85);
+      padding:10px 14px;border-radius:16px;font-weight:800;
+      display:none;
+      z-index:60;
+    }
+    .footerRight{
+      position:absolute;right:18px;bottom:14px;
+      color:rgba(255,255,255,.55);
+      font-size:12px;font-weight:900;
+      z-index:10;
+    }
+
+    /* ===== HOME (MENU PNG) ===== */
+    #home{
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    /* HOME buttons layout (start screen)
+       - prevents overlaps when PNG buttons are very wide
+       - 2 columns on desktop; Exit spans full width
+       - switches to 1 column on smaller screens */
+    .homeBtns{
+      position:absolute;
+      left:50%;
+      top:52%;
+      transform:translate(-50%,-50%);
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      justify-items:center;
+      align-items:center;
+      column-gap: clamp(24px, 4vw, 80px);
+      row-gap: clamp(18px, 3.5vw, 44px);
+      padding:10px;
+      width: min(1500px, 94vw);
+    }
+    #btnHomeExit{ grid-column: 1 / -1; }
+
+    @media (max-width:900px){
+      .homeBtns{ grid-template-columns: 1fr; width: min(900px, 94vw); }
+      #btnHomeExit{ grid-column:auto; }
+    }
+    .imgBtn{
+      appearance:none;
+      border:0;
+      background:transparent;
+      cursor:pointer;
+      padding:0;
+      line-height:0;
+      filter: drop-shadow(0 10px 22px rgba(0,0,0,.35));
+      transform: translateZ(0);
+    }
+    .imgBtn img{
+      display:block;
+      width: clamp(220px, 28vw, 420px);
+      height:auto;
+      max-height: clamp(120px, 20vh, 220px);
+      border-radius: 0;
+    }
+
+/* HOME: bigger main menu buttons */
+.homeBtns .imgBtn img{
+  width: clamp(340px, 36vw, 600px);
+  max-height: clamp(150px, 22vh, 280px);
+}
+
+@media (max-width: 900px){
+  .homeBtns .imgBtn img{
+    width: clamp(260px, 70vw, 520px);
+    max-height: clamp(120px, 18vh, 220px);
+  }
+}
+    .imgBtn:hover{filter: drop-shadow(0 14px 28px rgba(0,0,0,.45))}
+    .imgBtn:active{transform: translateY(1px)}
+    .imgBtn:disabled{opacity:.45;filter:grayscale(1) brightness(.85) drop-shadow(0 6px 14px rgba(0,0,0,.25));cursor:not-allowed;}
+    .imgBtn:disabled:hover{filter:grayscale(1) brightness(.85) drop-shadow(0 6px 14px rgba(0,0,0,.25));}
+
+    
+
+
+    /* ===== ROOMS ===== */
+    #rooms{padding:22px;gap:14px}
+    .roomsBox{
+      width:min(980px,100%);
+      margin:auto;
+      padding:22px;
+      display:flex;
+      flex-direction:column;
+      gap:14px
+    }
+    .block{padding:14px}
+    .block h2{margin:0 0 8px 0;font-size:20px;font-weight:1000}
+    .help{color:var(--muted);font-weight:800;font-size:13px}
+
+    /* ===== CONTINUE ===== */
+    #continue{
+      padding:22px;
+      align-items:center;
+      justify-content:center;
+    }
+    .continueBox{
+      width:min(980px,100%);
+      margin:auto;
+      padding:22px;
+    }
+    .continueCard{
+      padding:22px;
+      border-radius:22px;
+      border:1px solid var(--stroke2);
+      background:rgba(8,22,52,.62);
+      box-shadow:0 20px 70px rgba(0,0,0,.45);
+    }
+    .continueTop{
+      display:flex;
+      gap:14px;
+      align-items:center;
+      justify-content:space-between;
+      padding-bottom:12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      margin-bottom:12px;
+    }
+    .pill{
+      padding:8px 12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      font-weight:1000;
+    }
+    .continueGrid{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:12px;
+      margin-top:10px;
+    }
+    .miniCard{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+      border-radius:18px;
+      padding:12px;
+    }
+    .bigQ{
+      margin-top:12px;
+      font-weight:1000;
+    }
+    .continueBtns{
+      display:flex;
+      gap:10px;
+      margin-top:14px;
+      align-items:center;
+    }
+
+    /* ===== ROOM ===== */
+    #room{padding:22px;gap:14px;align-items:stretch}
+    /* 7019: minimalne odstępy między lewymi kontenerami (stykanie się paneli) */
+    .leftBar{width:320px;min-width:300px;height:100%;display:flex;flex-direction:column;gap:0;padding:14px}
+    .mid{flex:1;height:100%;display:flex;flex-direction:column;gap:12px;min-width:0}
+    .rightBar{width:340px;min-width:320px;height:100%;display:flex;flex-direction:column;gap:12px;padding:14px;position:relative}
+
+    /* 6028: górny kontener - większy avatar; teksty przeniesione do osobnego kontenera poniżej */
+    .leftTopProfile{
+      padding:16px;
+      display:flex;
+      align-items:flex-start;
+      justify-content:flex-start;
+      gap:14px;
+      min-height:170px;
+    }
+    .profileTopText{display:flex;flex-direction:column;gap:8px;min-width:0;flex:1;margin-top:6px}
+    .profileTopText .profileNick{font-weight:1000;font-size:20px;line-height:1.05;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
+    .profileTopText .profileMeta{display:block;font-weight:900;font-size:15px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leftTopProfile .avatarBox{
+      width:132px;height:132px;border-radius:28px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      display:flex;align-items:center;justify-content:center;
+      overflow:hidden;
+      flex:0 0 132px;
+    }
+    .leftTopProfile .avatarBox img{width:100%;height:100%;object-fit:cover;display:block}
+
+    /* 6028: nowy kontener na nick/kraj/klub (zielony kwadrat na screenie) */
+    .leftProfileInfo{
+      padding:12px 16px;
+      display:flex;
+      flex-direction:column;
+      gap:0;
+      min-height:92px;
+      justify-content:center;
+    }
+    /* 6029: większe napisy w profilowym kontenerze */
+    .leftProfileInfo .profileNick{font-weight:1000;font-size:22px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .leftProfileInfo .profileMeta{display:block;font-weight:900;font-size:16px;color:rgba(255,255,255,.78);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    /* 7009/7019: kontener na przycisk usuwania pokoju */
+    .leftDeleteRoomCard{padding:12px 0;display:flex;justify-content:center;align-items:center;min-height:74px;width:100%}
+    /* 7019: pewne centrowanie samego buttona */
+    #btnDeleteRoom{margin:0 auto;}
+    /* 6029: większe napisy w kontenerze pokoju (DOM/TESTOWY) */
+    #room .leftBottomStack #roomName{font-size:26px;}
+    #room .leftBottomStack .sub{font-size:15px;}
+    /* 7019: minimalne odstępy również w dolnym stacku po lewej */
+    .leftBottomStack{margin-top:auto;display:flex;flex-direction:column;gap:0}
+
+    /* 6016: prawy dół - osobny kontener na Wyjście */
+    .rightBottomExit{padding:14px;display:flex;justify-content:center;align-items:center}
+    .rightBottomStack{display:flex;flex-direction:column;gap:12px}
+    .rightBottomMessages{padding:14px;display:flex;justify-content:center;align-items:center}
+
+    /* ===== ROOM (RESPONSIVE) =====
+       Na telefonie/przy wąskim ekranie układ 3-kolumnowy nie może wypychać elementów poza ekran.
+       Składamy panele w kolumnę i pozwalamy na przewijanie treści.
+    */
+    #roomLayout{display:flex;width:100%;height:100%;gap:14px;padding:16px;min-width:0}
+    @media (max-width: 980px){
+      #room{padding:14px;}
+      #roomLayout{flex-direction:column;height:100%;overflow:auto;padding:10px;}
+      .leftBar,.mid,.rightBar{width:100% !important;min-width:0 !important;height:auto;}
+      .rightBar{padding-bottom:18px;}
+      .matchesWrap{overflow:auto;}
+      .rightFooterBtn{position:static;left:auto;right:auto;bottom:auto;margin-top:10px;}
+      .rightExitContainer{position:static;left:auto;right:auto;bottom:auto;margin-top:10px;display:flex;justify-content:center;}
+      .rightFooterBtn{justify-content:center}
+      .rightFooterBtn .imgBtn img{width:min(300px,80vw);height:auto}
+      .matchActionsPanel{flex-wrap:wrap;gap:12px;}
+      .midHead .row{flex-wrap:wrap}
+    }
+    @media (max-width: 560px){
+      .matchRow{grid-template-columns: 1fr 92px 128px;gap:8px;padding:6px 8px;}
+
+/* 6033: porządek w oknie „Wpisz wyniki” (admin) */
+.matchCard{
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.16);
+  border-radius:14px;
+  padding:10px 12px;
+  display:grid;
+  grid-template-columns: 1fr 92px 1fr 36px;
+  gap:12px;
+  align-items:center;
+  min-width:0;
+}
+.matchCard .team{flex:unset;min-width:0;}
+.matchCard .scoreBox{justify-content:center;}
+      .team{font-size:13px;}
+      .scoreInput{width:34px;height:26px;font-size:13px;}
+      .matchResultCol,.matchDateCol{height:30px;font-size:11px;}
+    }
+
+
+    /* 6010: MOBILE - dolne przyciski nie mogą wyjeżdżać poza ekran */
+    @media (max-width: 560px){
+      .matchActionsPanel{flex-direction:column;gap:10px;min-height:unset;}
+      .matchActionsPanel .sysBtn{max-width:92vw;}
+      .matchActionsPanel .sysBtn img{height:64px;max-width:92vw;width:auto;}
+
+      /* 6011: MOBILE - górny pasek (kolejka/mecze/punkty) ma się zawijać w ekran */
+      .midHead .row{flex-wrap:wrap;justify-content:flex-start}
+      .midHead .title{font-size:18px}
+      .midHead .chip{padding:6px 10px;border-radius:14px;font-size:12px}
+      .roomTopBtns{margin-left:0}
+      .roomTopBtns .imgBtn img{width:min(210px,58vw);max-height:64px}
+
+      /* 6011: MOBILE - przycisk 'Tabela ligi typerów' nie może wyjeżdżać poza panel */
+      .rightFooterBtn{justify-content:center}
+      .rightFooterBtn .imgBtn img{width:min(260px,78vw);height:auto}
+
+    }
+
+    .midHead{padding:10px}
+    /* lista meczów ma się zmieścić w wyznaczonym obszarze (bez przewijania) */
+    .matchesWrap{flex:1;min-height:0;display:flex;flex-direction:column;gap:6px;padding:10px;overflow:hidden}
+    .matchActionsPanel{padding:12px;display:flex;justify-content:center;gap:18px;align-items:center;min-height:74px}
+
+    /* 5208: okno typowania w 3 kolumnach: typy / wynik / data+godzina */
+    .matchRow{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+      border-radius:14px;
+      padding:6px 10px;
+      display:grid;
+      grid-template-columns: 1fr 110px 160px;
+      gap:10px;
+      align-items:center;
+      min-width:0;
+    }
+/* 6034: układ listy w oknie 'Wpisz wyniki' (desktop + mobile) */
+    .matchCard{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+      border-radius:14px;
+      padding:10px 12px;
+      display:grid;
+      grid-template-columns: 1fr 92px 1fr 36px;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+    }
+    .matchCard .team{flex:unset;min-width:0;}
+    .matchCard .scoreBox{justify-content:center;}
+
+    .matchPickCol{display:flex;align-items:center;gap:12px;min-width:0;}
+    .matchResultCol,
+    .matchDateCol{
+      height:32px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      font-size:12px;
+      color:rgba(255,255,255,.88);
+      padding:0 8px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+    }
+    .matchJudgeCol{gap:10px;justify-content:center;}
+    .matchJudgeDot{width:18px;height:18px;min-width:18px;min-height:18px;flex:0 0 18px;box-shadow:0 0 0 2px rgba(0,0,0,.22),0 0 12px rgba(255,255,255,.12);}
+    .matchJudgePts{font-weight:1000;font-size:12px;color:rgba(255,255,255,.96);}
+    .settledPointsBox{
+      min-width:150px;
+      height:40px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-weight:1000;
+      font-size:13px;
+      color:rgba(255,255,255,.96);
+      padding:0 12px;
+      white-space:nowrap;
+    }
+    .team{
+      display:flex;align-items:center;gap:10px;min-width:0;flex:1;
+      font-weight:1000;
+      font-size:14px;
+    }
+    .teamName{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .logo{
+      width:20px;height:20px;flex:0 0 20px;border-radius:6px;
+      background:rgba(255,255,255,.10);
+      object-fit:contain;
+    }
+    .scoreBox{display:flex;align-items:center;gap:8px}
+    .scoreInput{width:40px;text-align:center;height:28px;padding:4px 6px;font-size:14px}
+    .sep{font-weight:1000;opacity:.85}
+    .resultPill{
+      margin-left:8px;
+      padding:6px 8px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.18);
+      font-weight:1000;
+      font-size:12px;
+      white-space:nowrap;
+    }
+
+    /* 6029: scroll pojawia się dopiero gdy brakuje miejsca; węższe wiersze graczy */
+    .playersList{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;display:flex;flex-direction:column;gap:4px}
+
+    
+
+/* v8051: players panel fills to bottom; show scrollbar only on overflow; hide bar itself */
+.rightBar .spacer{display:none !important;}
+#playersList{flex:1;min-height:0;}
+#playersList::-webkit-scrollbar{width:0;height:0;}
+#playersList{scrollbar-width:none;-ms-overflow-style:none;}
+#playersList::-webkit-scrollbar-thumb{background:transparent;}
+/* hide players hint text (t_players_sub) */
+#t_players_sub{display:none !important;}
+
+.playersHeader{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+    .playersHeader .sub{max-width:260px}
+    .playersHeader #btnDeletePlayer{flex:0 0 auto}
+    .delChk{width:18px;height:18px;accent-color:#ff4d4d;cursor:pointer}
+
+    .playerRow{
+      padding:8px 10px;border-radius:14px;
+      background:rgba(0,0,0,.16);
+      border:1px solid rgba(255,255,255,.12);
+      display:flex;gap:8px;align-items:center;justify-content:space-between;
+      font-weight:900;
+      font-size:13px;
+      min-width:0;
+    }
+    .badge{
+      padding:5px 8px;border-radius:11px;background:rgba(255,255,255,.10);
+      border:1px solid rgba(255,255,255,.12);
+      font-weight:1000;font-size:11px
+    }
+    .eyeBtn{
+      width:32px;height:26px;
+      border-radius:11px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(255,255,255,.08);
+      color:rgba(255,255,255,.85);
+      font-weight:1000;
+      cursor:pointer;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .eyeBtn:disabled{opacity:.35;cursor:not-allowed}
+
+    .rightFooterBtn{
+      position:absolute;
+      left:14px;
+      right:14px;
+      bottom:14px;
+      display:flex;
+      gap:14px;
+      justify-content:space-between;
+      align-items:center;
+    }
+    .rightFooterBtn .btn{width:auto}
+
+
+    
+
+    /* 6016: legacy container (Wyjście jest w osobnym panelu) */
+    .rightExitContainer{display:none;}
+/* ===== ADD QUEUE MENU (modal) ===== */
+    #addQueueOverlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index:90;
+    }
+    .aqModal{
+      width:min(620px,92vw);
+      padding:18px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(8, 22, 52, .72);
+      box-shadow:0 18px 60px rgba(0,0,0,.55);
+      display:flex;
+      flex-direction:column;
+      gap:14px;
+      align-items:center;
+      justify-content:center;
+    }
+    .aqBtns{
+      display:flex;
+      gap:18px;
+      flex-wrap:wrap;
+      justify-content:center;
+      align-items:center;
+    }
+    .aqBtns .imgBtn img{
+      width:220px;
+      height:auto;
+      display:block;
+      object-fit:contain;
+    }
+    @media (max-width:720px){
+      .aqBtns .imgBtn img{ width: min(240px, 70vw); }
+    }
+
+    /* ===== MANUAL QUEUE (modal) ===== */
+    #manualQueueOverlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index:91;
+    }
+    .mqModal{
+      width:min(940px,94vw);
+      max-height:92vh;
+      padding:14px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(8, 22, 52, .78);
+      box-shadow:0 18px 60px rgba(0,0,0,.55);
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      align-items:stretch;
+      overflow:hidden;
+    }
+    .mqTitle{
+      font-weight:900;
+      font-size:18px;
+      color:rgba(255,255,255,.95);
+      padding:2px 6px;
+    }
+    .mqLeagueWrap{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      padding:4px 6px;
+    }
+    .mqLeagueLabel{
+      font-weight:900;
+      color:rgba(255,255,255,.90);
+    }
+    .mqLeagueSelect{
+      height:40px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.25);
+      background:#ffffff;
+      color:#000000;
+      font-weight:900;
+      padding:0 12px;
+      outline:none;
+    }
+
+    .mqBuilder{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      padding:4px 6px;
+    }
+    .mqBuilderRow{
+      display:flex;
+      align-items:center;
+      gap:8px;
+    }
+    .mqBuilderLabel{
+      width:110px;
+      font-weight:900;
+      color:rgba(255,255,255,.90);
+    }
+    .mqClubSelect{
+      flex:1;
+      height:40px;
+      border-radius:12px;
+      border:1px solid rgba(0,0,0,.25);
+      background:#ffffff;
+      color:#000000;
+      font-weight:900;
+      padding:0 12px;
+      outline:none;
+    }
+    .mqAddMatchBtn{
+      height:40px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.08);
+      color:rgba(255,255,255,.95);
+      font-weight:900;
+      cursor:pointer;
+    }
+    .mqAddMatchBtn:hover{ background:rgba(255,255,255,.12); }
+    .mqMatchesList{
+      display:flex;
+      flex-direction:column;
+      gap:6px;
+      padding:4px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+      max-height:48vh;
+      overflow:auto;
+    }
+
+    .mqCount{
+      padding:0 6px;
+      font-weight:1000;
+      color:rgba(255,255,255,.92);
+      text-align:right;
+      letter-spacing:.3px;
+    }
+    /* 7030: "Cofnij" ma być zawsze widoczny w ręcznym dodawaniu kolejki */
+    .mqFooter{display:flex;}
+    .mqMatchRow{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:8px;
+      padding:6px 10px;
+      border-radius:12px;
+      background:rgba(0,0,0,.16);
+      border:1px solid rgba(255,255,255,.10);
+    }
+    .mqMatchTxt{
+      font-weight:900;
+      font-size:13px;
+      line-height:1.15;
+      color:rgba(255,255,255,.92);
+    }
+    .mqDelBtn{
+      height:30px;
+      padding:0 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(255,255,255,.06);
+      color:rgba(255,255,255,.92);
+      font-weight:900;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .mqDelBtn:hover{ background:rgba(255,255,255,.10); }
+    .mqEmpty{
+      padding:10px 12px;
+      color:rgba(255,255,255,.75);
+      font-weight:800;
+    }
+
+    .mqList{
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+      max-height:56vh;
+      overflow:auto;
+      padding:6px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.10);
+      background:rgba(255,255,255,.04);
+    }
+    .mqRow{
+      display:grid;
+      grid-template-columns: 34px 220px 1fr 44px 1fr 210px;
+      gap:10px;
+      align-items:center;
+    }
+    .mqIdx{ color:rgba(255,255,255,.85); font-weight:900; text-align:right; padding-right:2px; }
+    .mqSep{ color:rgba(255,255,255,.65); font-weight:900; text-align:center; }
+    .mqSel{
+      height:34px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      padding:0 10px;
+      outline:none;
+    }
+
+    .mqDt{
+      height:34px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:rgba(255,255,255,.92);
+      font-weight:800;
+      padding:0 10px;
+      outline:none;
+    }
+    .mqFooter{
+      display:flex;
+      gap:16px;
+      justify-content:center;
+      align-items:center;
+      padding-top:4px;
+    }
+    .mqFooter .imgBtn img{ width:220px; height:auto; display:block; object-fit:contain; }
+    @media (max-width:920px){
+      .mqRow{ grid-template-columns: 26px 1fr 1fr 34px 1fr; }
+    }
+    @media (max-width:640px){
+      .mqRow{ grid-template-columns: 26px 1fr; grid-template-rows:auto auto auto; }
+      .mqRow .mqLeague{ grid-column:1 / -1; }
+      .mqRow .mqHome{ grid-column:1 / -1; }
+      .mqRow .mqSep{ display:none; }
+      .mqRow .mqAway{ grid-column:1 / -1; }
+      .mqFooter .imgBtn img{ width:min(240px, 70vw); }
+    }
+
+    /* ===== MESSAGES (modal) ===== */
+    #messagesOverlay{
+      position:absolute;
+      inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.55);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index:92;
+      padding:16px;
+    }
+    #messagesOverlay.show{display:flex;}
+
+    /* ===== SUBSTITUTE OVERLAYS (BUILD 8004) ===== */
+    #substituteOverlay, #substitutePickOverlay{
+      position:absolute; inset:0;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      background:rgba(0,0,0,.55);
+      z-index:80;
+    }
+    #substituteOverlay.show, #substitutePickOverlay.show{display:flex;}
+    .subModal{
+      width:min(560px,92vw);
+      padding:18px 18px 16px;
+      border-radius:22px;
+    }
+    .subTitle{font-size:20px;font-weight:1000;margin:0 0 10px 0;}
+    .subBtns{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;}
+    .subPickRow{margin-top:10px;display:flex;gap:10px;align-items:center;justify-content:center;}
+    .subPickRow select{
+      width:min(420px,86vw);
+      background:#fff;
+      color:#000;
+      border-radius:12px;
+      padding:10px 12px;
+      font-weight:900;
+      border:1px solid rgba(0,0,0,.15);
+    }
+    .msgModal{
+      width:min(780px,94vw);
+      padding:16px;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(8, 22, 52, .78);
+      box-shadow:0 18px 60px rgba(0,0,0,.55);
+      display:flex;
+      flex-direction:column;
+      gap:12px;
+      align-items:stretch;
+    }
+    .msgTitle{
+      font-weight:1000;
+      font-size:18px;
+      color:rgba(255,255,255,.95);
+      padding:2px 6px;
+    }
+    .msgRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:0 6px;}
+    .msgLabel{font-weight:900;color:rgba(255,255,255,.85)}
+    .msgSel{
+      height:36px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:rgba(255,255,255,.92);
+      font-weight:900;
+      padding:0 10px;
+      outline:none;
+      min-width:260px;
+    }
+    .msgText{
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.20);
+      color:rgba(255,255,255,.92);
+      font-weight:900;
+      padding:12px;
+      min-height:150px;
+      outline:none;
+      resize:none;
+      margin:0 6px;
+    }
+    .msgFooter{display:flex;gap:16px;justify-content:center;align-items:center;flex-wrap:wrap;padding-top:4px;}
+    .msgSendBtn{min-width:220px}
+    .msgFooter .imgBtn img{ width:220px; height:auto; display:block; object-fit:contain; }
+    @media (max-width:640px){
+      .msgSel{min-width: min(420px, 88vw); width:100%;}
+      .msgSendBtn{min-width:min(240px, 70vw)}
+      .msgFooter .imgBtn img{ width:min(240px, 70vw); }
+      .msgBtnImg{ width:min(240px, 70vw); }
+      .msgDeleteBtn .msgBtnImg{ width:min(180px, 55vw); }
+    }
+
+    
+    .msgHeader{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:0 6px;}
+
+    .msgDeleteBtn{
+      height:34px;
+      padding:0 14px;
+      border-radius:12px;
+      border:1px solid rgba(255,90,90,.35);
+      background:rgba(255,40,40,.18);
+      color:rgba(255,255,255,.95);
+      font-weight:1000;
+      cursor:pointer;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      white-space:nowrap;
+    }
+    .msgDeleteBtn.show{display:inline-flex;}
+
+    /* obrazkowe przyciski w wiadomościach */
+    .msgBtnImg{display:block; width:220px; height:auto; object-fit:contain;}
+    .msgSendBtn{background:transparent; border:none; padding:0; min-width:auto;}
+    .msgDeleteBtn{background:transparent; border:none; padding:0; height:auto; position:relative;}
+    .msgDeleteBtn .msgBtnImg{width:160px;}
+    .msgDeleteCount{
+      position:absolute;
+      top:-6px;
+      right:-6px;
+      min-width:22px;
+      height:22px;
+      padding:0 6px;
+      border-radius:999px;
+      background:#ff2b2b;
+      color:#fff;
+      font-size:12px;
+      font-weight:900;
+      display:none;
+      align-items:center;
+      justify-content:center;
+      line-height:22px;
+      box-shadow:0 0 10px rgba(0,0,0,.35);
+    }
+    .msgChk{
+      width:18px;height:18px;
+      accent-color:#ff3b3b;
+      cursor:pointer;
+    }
+    .msgItemSel{
+      outline:2px solid rgba(255,80,80,.35);
+      background:rgba(90,10,10,.25) !important;
+    }
+
+    .msgTabs{display:flex;gap:8px;flex-wrap:wrap;padding:0 6px;}
+    .msgTab{
+      height:34px;
+      padding:0 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.14);
+      background:rgba(0,0,0,.22);
+      color:rgba(255,255,255,.92);
+      font-weight:1000;
+      cursor:pointer;
+    }
+    .msgTab.active{
+      background:rgba(30,110,255,.22);
+      border-color:rgba(120,190,255,.35);
+    }
+    .msgBody{padding:0 6px 6px 6px;}
+    .msgPane{display:none;}
+    .msgPane.show{display:block;}
+    .msgSplit{display:grid;grid-template-columns: 1fr 1.2fr;gap:12px;}
+    .msgList{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      background:rgba(0,0,0,.16);
+      max-height:min(420px,52vh);
+      overflow:auto;
+      padding:8px;
+      display:flex;
+      flex-direction:column;
+      gap:8px;
+    }
+    .msgItem{
+      border:1px solid rgba(255,255,255,.10);
+      border-radius:14px;
+      background:rgba(8,22,52,.35);
+      padding:10px 10px;
+      display:flex;
+      flex-direction:column;
+      gap:4px;
+      cursor:pointer;
+    }
+    .msgItem:hover{background:rgba(8,22,52,.55)}
+    .msgItemTop{display:flex;align-items:center;justify-content:space-between;gap:10px;}
+    .msgItemWho{font-weight:1000;color:rgba(255,255,255,.95);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:70%;}
+    .msgItemTime{font-weight:900;color:rgba(255,255,255,.70);font-size:12px;white-space:nowrap;}
+    .msgItemPrev{font-weight:900;color:rgba(255,255,255,.80);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+    .msgDot{
+      width:10px;height:10px;border-radius:999px;background:rgba(255,40,40,.95);
+      border:1px solid rgba(255,255,255,.35);display:inline-block;margin-right:8px;flex:0 0 auto;
+    }
+    .msgView{
+      border:1px solid rgba(255,255,255,.12);
+      border-radius:16px;
+      background:rgba(0,0,0,.16);
+      padding:12px;
+      min-height:220px;
+    }
+    .msgViewEmpty{font-weight:1000;color:rgba(255,255,255,.70);}
+    .msgViewMeta{font-weight:1000;color:rgba(255,255,255,.85);margin-bottom:10px;}
+    .msgViewText{white-space:pre-wrap;font-weight:900;color:rgba(255,255,255,.92);line-height:1.35;}
+    .msgCompose{display:flex;flex-direction:column;gap:12px;}
+    @media (max-width:640px){
+      .msgSplit{grid-template-columns:1fr; }
+      .msgList{max-height:min(280px,35vh);}
+    }
+
+/* ===== RESULTS SCREEN ===== */
+    #results{
+      padding:22px;
+      align-items:center;
+      justify-content:center;
+    }
+    .resultsWrap{
+      width:min(1100px,100%);
+      margin:auto;
+      padding:14px;
+    }
+    .resultsTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .resultsList{
+      max-height:min(680px,70vh);
+      overflow:auto;
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    
+    /* 7030: porządek w oknie „Wpisz wyniki” (admin) + checkbox po prawej */
+    .matchCard{
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.16);
+      border-radius:14px;
+      padding:10px 12px;
+      display:grid;
+      grid-template-columns: 1fr 120px 1fr 44px;
+      gap:12px;
+      align-items:center;
+      min-width:0;
+    }
+    .matchCard .team{min-width:0;}
+    .matchCard .scoreBox{display:flex;align-items:center;justify-content:center;gap:6px;}
+    .matchCard .cancelCol{display:flex;align-items:center;justify-content:flex-end;}
+    .matchCard.cancelledRow{opacity:.45;filter:saturate(.7);}
+    .cancelledPill{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding:6px 10px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.22);
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+
+    .cancelledLabel{font-weight:950;}
+    .matchRow.cancelledRow{opacity:.45;filter:saturate(.7);}
+}
+
+    /* ===== LEAGUE ===== */
+    #league{
+      padding:22px;
+      align-items:center;
+      justify-content:center;
+    }
+    .leagueWrap{
+      width:min(1100px,100%);
+      margin:auto;
+      padding:14px;
+    }
+    .leagueTop{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      margin-bottom:10px;
+    }
+    .leagueTopLeft{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+    table{
+      width:100%;
+      border-collapse:collapse;
+      overflow:hidden;
+      border-radius:18px;
+    }
+    th,td{
+      padding:12px 12px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      font-weight:900;
+    }
+    th{color:rgba(255,255,255,.80);text-align:left;font-size:12px;letter-spacing:.2px}
+    tr:hover td{background:rgba(255,255,255,.04)}
+    .linkRow{cursor:pointer}
+
+        /* ===== MODAL ===== */
+    .modal{
+      position:absolute; inset:0;
+      display:none;
+      align-items:center; justify-content:center;
+      z-index:80;
+      background:rgba(0,0,0,.42);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      animation: modalFade .16s ease-out;
+    }
+    .modal.active{display:flex}
+    @keyframes modalFade{from{opacity:0}to{opacity:1}}
+    .modalCard{
+      width:min(860px,94%);
+      min-height:360px;
+      max-height:min(820px,92%);
+      overflow:hidden;
+      border-radius:24px;
+      position:relative;
+      display:flex;
+      flex-direction:column;
+      background:rgba(8,22,52,.78);
+      border:1px solid rgba(255,255,255,.14);
+      box-shadow:0 26px 110px rgba(0,0,0,.62);
+      transform: translateY(6px) scale(.985);
+      animation: modalPop .18s ease-out forwards;
+    }
+    @keyframes modalPop{to{transform:translateY(0) scale(1)}}
+    .modalCard::before{
+      content:"";
+      position:absolute; inset:-2px;
+      background: radial-gradient(60% 80% at 50% 0%,
+        rgba(55,170,255,.28),
+        rgba(55,170,255,0) 60%),
+        radial-gradient(60% 80% at 0% 100%,
+        rgba(43,255,136,.18),
+        rgba(43,255,136,0) 60%),
+        radial-gradient(60% 80% at 100% 100%,
+        rgba(255,210,74,.12),
+        rgba(255,210,74,0) 60%);
+      pointer-events:none;
+      filter: blur(18px);
+      opacity:.55;
+    }
+    .modalCard > *{position:relative}
+    .modalHead{
+      padding:14px 14px 12px 14px;
+      display:flex; align-items:center; gap:10px;
+      border-bottom:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(0,0,0,.18), rgba(0,0,0,0));
+    }
+    .modalBody{
+      padding:22px;
+      overflow:auto;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .dot{
+      width:16px;height:16px;border-radius:999px;
+      display:inline-block;
+      flex:0 0 16px;
+      min-width:16px;min-height:16px;
+      border:2px solid rgba(255,255,255,.42);
+      box-shadow:0 0 0 2px rgba(0,0,0,.18), 0 0 10px rgba(255,255,255,.10);
+      vertical-align:middle;
+    }
+    .dot.green{background:#2bff88}
+    .dot.yellow{background:#ffd24a}
+    .dot.red{background:#ff4d4d}
+    .dot.gray{background:rgba(255,255,255,.35)}
+
+    /* ===== SETTINGS (modal) ===== */
+    .flagBtn{
+      width:64px;
+      height:44px;
+      border-radius:14px;
+      border:1px solid rgba(255,255,255,.16);
+      background:rgba(0,0,0,.22);
+      cursor:pointer;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:26px;
+      font-weight:1000;
+      user-select:none;
+    }
+.flagImg{width:32px;height:22px;display:block;object-fit:cover;border-radius:4px;}
+
+    .flagBtn:hover{background:rgba(0,0,0,.28)}
+    .flagBtn.active{
+      outline:2px solid rgba(43,255,136,.55);
+      background:rgba(43,255,136,.14);
+    }
+  
+    /* ===== HOME language flags ===== */
+    .homeLang{
+      position:absolute;
+      right:22px;
+      top:22px;
+      display:flex;
+      gap:10px;
+      z-index:5;
+    }
+    .homeLang .flagBtn{
+      width:76px;
+      height:52px;
+      border-radius:16px;
+      font-size:28px;
+      line-height:1;
+    }
+    .flagBtn.inactive{
+      opacity:.35;
+      filter:grayscale(100%);
+    }
+
+    /* Profile (modal) – rozmiar jak na przykładzie + węższe pola */
+    .modal.profileMode .modalCard{
+      /* węższe okno Profil (jak na przykładzie) */
+      width:min(840px, 78vw) !important;
+      max-height:min(700px, 88vh) !important;
+    }
+    .modal.profileMode .modalBody{
+      overflow:hidden !important; /* bez scrolli na desktop */
+    }
+    .profileRow{ display:flex; gap:26px; align-items:flex-start; }
+    .profileAvatarBox{ width:140px; height:140px; border-radius:18px; background:rgba(0,0,0,.20); border:1px solid rgba(255,255,255,.12); display:flex; align-items:center; justify-content:center; }
+    .profileAvatarPlaceholder{ font-size:54px; opacity:.9; }
+    .profileLeftCol{ display:flex; flex-direction:column; align-items:center; gap:12px; min-width:300px; }
+    .profileAvatarBtn img{ width:140px; height:48px; object-fit:contain; }
+
+    /* Prawa kolumna bliżej środka + węższe pola (zielone zaznaczenia) */
+    .profileFields{ flex:0 0 420px; min-width:0; }
+    .profileDesc{ opacity:.9; margin:2px 0 10px; }
+    .profileLabel{ display:block; font-weight:700; margin:10px 0 6px; }
+
+    .profileInput{
+      width:280px;
+      max-width:280px;
+      box-sizing:border-box;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.18);
+      color:#fff;
+      outline:none;
+    }
+
+    /* Kraj: taka sama szerokość jak pozostałe pola (równe i krótsze) */
+    .profileSelect{
+      width:280px;
+      max-width:280px;
+      box-sizing:border-box;
+      padding:10px 12px;
+      border-radius:12px;
+      border:1px solid rgba(255,255,255,.18);
+      background:#fff !important;
+      color:#000 !important;
+      outline:none;
+    }
+    .profileSelect option{ background:#fff; color:#000; }
+
+    .profileBtns{ display:flex; justify-content:center; gap:18px; margin-top:16px; }
+
+    /* v2031: wszystkie listy rozwijane białe z czarnymi literami */
+    select,
+    select option,
+    option{
+      background:#ffffff !important;
+      color:#000000 !important;
+    }
+
+
+  
+        /* ===== Nick modal (Add player profile) ===== */
+    .nickWrap{display:flex; flex-direction:column; gap:14px; padding:6px 2px;}
+    .nickHero{
+      display:flex; align-items:center; gap:12px;
+      padding:16px 16px;
+      border-radius:20px;
+      border:1px solid rgba(255,255,255,.14);
+      background:
+        radial-gradient(80% 120% at 20% 0%, rgba(55,170,255,.20), rgba(55,170,255,0) 60%),
+        radial-gradient(70% 120% at 100% 0%, rgba(43,255,136,.14), rgba(43,255,136,0) 60%),
+        rgba(255,255,255,.06);
+      box-shadow:0 18px 60px rgba(0,0,0,.35);
+    }
+    .nickIcon{
+      width:50px; height:50px; flex:0 0 50px;
+      border-radius:16px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:22px;
+      background:rgba(55,170,255,.18);
+      border:1px solid rgba(55,170,255,.32);
+      box-shadow:0 14px 40px rgba(0,0,0,.30);
+    }
+    .nickTitle{
+      font-weight:1100;
+      letter-spacing:.9px;
+      text-transform:uppercase;
+      font-size:15px;
+      opacity:.98;
+    }
+    .nickSub{
+      font-weight:800;
+      font-size:12px;
+      opacity:.78;
+      margin-top:3px;
+    }
+    .nickRow{display:flex; gap:10px; align-items:center}
+    .nickInput{
+      flex:1;
+      padding:14px 14px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.18);
+      background:rgba(0,0,0,.22);
+      color:#fff;
+      font-weight:900;
+      outline:none;
+      font-size:15px;
+      letter-spacing:.2px;
+      box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+    }
+    .nickInput:focus{
+      border-color: rgba(55,170,255,.72);
+      box-shadow:
+        0 0 0 3px rgba(55,170,255,.20),
+        inset 0 0 0 1px rgba(255,255,255,.06);
+    }
+    .nickMeta{
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      margin-top:-6px;
+      color:rgba(255,255,255,.72);
+      font-weight:800;
+      font-size:12px;
+    }
+    .nickCount{
+      padding:6px 10px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(0,0,0,.18);
+      font-weight:1000;
+      color:rgba(255,255,255,.82);
+      letter-spacing:.2px;
+    }
+    .nickBtns{display:flex; justify-content:flex-end; gap:10px; margin-top:2px}
+    .btnDanger{
+      background:rgba(255,80,80,.16);
+      border:1px solid rgba(255,80,80,.28);
+      color:#fff;
+    }
+    .btnPrimary{
+      background:rgba(55,170,255,.18);
+      border:1px solid rgba(55,170,255,.34);
+    }
+    .btnPrimary:hover{background:rgba(55,170,255,.24)}
+
+  
+
+
+/* ROOMS choice modals (ładniejsze) */
+.roomsChoice{display:flex;flex-direction:column;gap:14px}
+.roomsChoice .muted{
+  opacity:.92;
+  font-size:14px;
+  font-weight:900;
+  margin:0;
+}
+.roomsChoiceBtns{
+  display:flex;
+  flex-wrap:wrap;
+  gap:18px;
+  margin-top:4px;
+  align-items:center;
+  justify-content:center;
+}
+.roomsChoiceBtns .sysBtn{
+  flex:1 1 240px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.roomsChoiceBtns .sysBtn img{
+  height:104px;
+  width:auto;
+}
+.roomsChoiceActions{
+  display:flex;
+  justify-content:center;
+  margin-top:6px;
+}
+.roomsChoiceActions .sysBtn img{ height:72px; }
+
+.btnGhost{
+  background:rgba(0,0,0,.16)!important;
+  border:1px solid rgba(255,255,255,.14)!important;
+}
+.rowRight{ display:flex; justify-content:flex-end; gap:10px; margin-top:12px; align-items:center; }
+.input{
+  width:100%;
+  padding:13px 12px;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(0,0,0,.22);
+  color:#fff;
+  outline:none;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.04);
+}
+.input:focus{
+  border-color: rgba(96,165,250,.75);
+  box-shadow: 0 0 0 3px rgba(96,165,250,.18);
+}
+.muted{ opacity:.85; font-size:13px; margin-bottom:8px; }
+
+
+    /* Systemowe przyciski jako grafiki (buttons/pl|en) */
+    .sysBtn{
+      padding:0;
+      background:transparent;
+      border:none;
+      box-shadow:none;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+    }
+    .sysBtnBig img{height:120px;width:auto;display:block;}
+
+    .sysBtn img{
+      height:76px;
+      width:auto;
+      display:block;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.35));
+      transition: transform .12s ease, filter .12s ease, opacity .12s ease;
+    }
+    .sysBtn.small img{ height:52px; }
+    .sysBtn:active img{ transform: translateY(1px) scale(.98); filter: drop-shadow(0 6px 10px rgba(0,0,0,.28)); }
+    .sysBtn:disabled img{ opacity:.45; filter: drop-shadow(0 0 0 rgba(0,0,0,0)); }
+
+
+    @media (max-width: 720px){
+      .homeBtns{top:55%;}
+      .imgBtn img{width: min(86vw, 420px); max-height: none;}
+    }
+  
+/* Nick modal image buttons */
+.nickBtns{display:flex;gap:14px;justify-content:flex-end;align-items:center;}
+.nickImgBtn img{height:64px;width:auto;display:block;}
+@media (max-width:700px){.nickImgBtn img{height:56px;}}
+
+    /* Na mniejszych ekranach profil przechodzi w układ pionowy (bez poziomego scrolla) */
+    @media (max-width: 980px){
+      .profileRow{ flex-direction:column; }
+      .profileLeftCol{ min-width:0; width:100%; }
+      .profileFields{ min-width:0; width:100%; }
+    }
+
+/* --- BUILD 7024 UI FIT tweaks --- */
+.roomHeaderActionsRow{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  flex-wrap:wrap;
+}
+.roomHeaderActionsRow .imgBtn img{
+  height:56px;
+}
+.actionsButtonsFit{
+  display:flex;
+  flex-direction:column;
+  gap:14px;
+  align-items:center;
+}
+/* wyśrodkuj same przyciski (elementy button), niezależnie od ich szerokości */
+.actionsButtonsFit .imgBtn{
+  width:100%;
+  display:flex;
+  justify-content:center;
+}
+.actionsButtonsFit .imgBtn img{
+  height:78px; /* smaller to fit */
+  width:auto;
+  max-width: 100%;
+}
+@media (max-width: 900px){
+  .roomHeaderActionsRow .imgBtn img{ height:52px; }
+  .actionsButtonsFit .imgBtn img{ height:72px; }
+}
+
+
+/* --- BUILD 7024 tweaks --- */
+.roomTopBtns{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+.sysBtn.actionSmall img{
+  height:64px !important;
+}
+@media (max-width: 520px){
+  .sysBtn.actionSmall img{ height:58px !important; }
+}
+
+
+/* ACTIONS: make buttons smaller and equal width */
+/* Actions column: keep all action buttons perfectly centered */
+#roomActionsCol{ display:flex; flex-direction:column; align-items:center; }
+#roomActionsCol .sysBtn{
+  width: 100%;
+  max-width: 100%;
+  margin: 8px auto 0;
+}
+#roomActionsCol .sysBtn:first-child{ margin-top: 10px; }
+#roomActionsCol .sysBtn img{
+  height: 72px;
+  width: auto;
+  max-width: 100%;
+}
+@media (max-width: 520px){
+  #roomActionsCol .sysBtn{ max-width: 100%; }
+  #roomActionsCol .sysBtn img{ height: 64px; }
+}
+
+    /* language flags (top-right) */
+    .homeLang{position:absolute; right:26px; top:18px; display:flex; gap:14px; z-index:50;}
+    #btnLangPL, #btnLangEN{
+      border:none !important;
+      outline:none !important;
+      box-shadow:none !important;
+      background:transparent !important;
+      padding:0 !important;
+      margin:0 !important;
+      cursor:pointer;
+    }
+    .flagBtn img, .flagImg{
+      width: 58px;
+      height: 40px;
+      border-radius:6px;
+      display:block;
+      border:none !important;
+      outline:none !important;
+      box-shadow:none !important;
+    }
+
+
+    /* HOME settings button (bottom-left) */
+    .homeGear{
+      position:absolute;
+      left:26px;
+      bottom:26px;
+      top:auto;
+      transform:none;
+      width:auto;
+      height:auto;
+      border:none;
+      background:transparent;
+      box-shadow:none;
+      backdrop-filter:none;
+      -webkit-backdrop-filter:none;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      cursor:pointer;
+      z-index:50;
+    }
+    .homeGearImg{
+      width: 110px;
+      height:auto;
+      display:block;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.45));
+    }
+
+
+    /* BUILD corner (bottom-right): logo + version */
+    #buildCorner{
+      position:fixed;
+      right:18px;
+      bottom:14px;
+      display:flex !important;
+      flex-direction:column;
+      align-items:center;
+      gap:6px;
+      z-index:9999;
+      pointer-events:none;
+      user-select:none;
+    }
+    #buildCornerLogo{
+      width:150px;
+      height:auto;
+      display:block !important;
+      filter: drop-shadow(0 10px 18px rgba(0,0,0,.45));
+    }
+    #buildCornerText{
+      color:rgba(255,255,255,.9);
+      font-size:14px;
+      font-weight:900;
+      text-shadow:0 2px 6px rgba(0,0,0,.55);
+      letter-spacing:.5px;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      white-space:nowrap;
+    }
+    #buildCornerText .ownerName{font-weight:1000;}
+    #buildCornerText .ownerVersion{opacity:.96;}
+    .footerRight{display:none !important;}
+
+
+    /* Profile modal layout – przywrócenie układu jak na screenie (zielone zaznaczenie) */
+    .modal.profileMode .modalHead{
+      position:relative;
+      justify-content:flex-start !important;
+      padding:16px 18px !important;
+      gap:12px;
+    }
+    .modal.profileMode #modalTitle{
+      margin:0 !important;
+      /* mniejszy napis "Profil" */
+      font-size: clamp(34px, 4.2vw, 54px);
+      font-weight: 1000;
+      padding: 10px 18px;
+      border-radius: 18px;
+    }
+    .modal.profileMode #modalBack,
+    .modal.profileMode #modalClose{
+      position:static !important;
+      top:auto !important;
+      right:auto !important;
+    }
+
+    /* Przesuń przyciski Cofnij/Wyjście bliżej napisu "Profil" */
+    .modal.profileMode .modalHead{ padding-right: 18px !important; }
+    .modal.profileMode .spacer{ flex: 0 0 18px !important; }
+    .modal.profileMode #modalBack,
+    .modal.profileMode #modalClose{ margin-left: 6px !important; }
+    .modal.profileMode .modalBody{ padding-top: 18px; }
+
+    /* Przycisk "Dodaj profil" obok Avatara, a "Mam profil" pod spodem */
+    .modal.profileMode .profileAddBtn{ margin-top: 0 !important; }
+
+
+
+/* Profile: Avatar + Dodaj profil obok siebie */
+.profileAvatarBtnSlot{ display:flex; gap:14px; align-items:center; justify-content:center; flex-wrap:wrap; }
+
+
+/* ===== Manual queue deadline modal ===== */
+#mqDeadlineOverlay{
+  position:fixed; inset:0;
+  display:none;
+  align-items:center; justify-content:center;
+  background:rgba(0,0,0,.55);
+  z-index:9999;
+}
+.mqDeadlineModal{
+  width:min(720px, 92vw);
+  padding:22px 26px;
+}
+.mqDeadlineTitle{
+  font-size:22px;
+  font-weight:900;
+  margin-bottom:10px;
+}
+.mqDeadlineDesc{
+  opacity:.9;
+  margin-bottom:14px;
+}
+.mqDeadlineRow{
+  display:flex;
+  justify-content:center;
+  margin-bottom:16px;
+}
+.mqDeadlineInput{
+  width:min(420px, 86vw);
+  padding:10px 12px;
+  border-radius:10px;
+  border:1px solid rgba(0,0,0,.25);
+  background:#fff;
+  color:#000;
+  font-weight:700;
+}
+.mqDeadlineBtns{
+  display:flex;
+  justify-content:center;
+  gap:22px;
+}
+
+    /* ===== PROFILE MOBILE FIT (BUILD 8022) ===== */
+    @media (max-width: 900px){
+      .modal.profileMode .modalCard{
+        width: min(96vw, 980px) !important;
+        max-height: 92vh !important;
+      }
+      .modal.profileMode .modalBody{
+        overflow-y:auto !important;
+        -webkit-overflow-scrolling:touch;
+      }
+      .profileFields{ flex: 1 1 auto; }
+      .profileInput{ width: min(86vw, 340px); max-width: min(86vw, 340px); }
+      .profileSelect{ width: min(86vw, 380px); max-width: min(86vw, 380px); }
+    }
+
+    /* ===== MOBILE SCROLL FOR RANKINGS (BUILD 8082) ===== */
+    @media (max-width: 900px){
+      #league,
+      #results{
+        padding:10px;
+        align-items:stretch;
+        justify-content:flex-start;
+        overflow:auto;
+        -webkit-overflow-scrolling:touch;
+      }
+      .leagueWrap,
+      .resultsWrap{
+        width:100%;
+        max-height:none;
+      }
+      .leagueTop,
+      .resultsTop{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+      #league .row,
+      #results .row{
+        width:100%;
+        justify-content:flex-end;
+      }
+      #league .panel[style*="overflow:auto"],
+      .resultsList{
+        overflow:auto !important;
+        -webkit-overflow-scrolling:touch;
+      }
+    }
+
+</style>
 </head>
 <body>
-  <div class="app">
-    <img class="start-art" src="grafic/img_startowa.png" alt="ZGADNIJ I WYGRAJ - ekran startowy" onerror="this.onerror=null; this.src='img_startowa.png';">
-    <div class="overlay"></div>
-    <div class="top-badge" id="homeBadge">STRONA STARTOWA</div>
-    <button class="lang-btn" id="langBtn" type="button">PL / EN</button>
-    <button class="play-hotspot" id="playBtn" type="button" aria-label="Graj"></button>
-    <div class="version">ZGADNIJ v1017</div>
+<div id="bg"></div>
+<div aria-live="polite" id="rotateOverlay">
+<div class="rotateCard">
+<div class="rotateTitle">Obróć telefon poziomo</div>
+<div class="rotateSub">Ta część gry działa w trybie poziomym.
+Gdy obrócisz ekran, wrócisz do typowania.</div>
+</div>
+</div>
+<div id="app">
+<div class="frame">
+<!-- SPLASH -->
+<section class="screen active" id="splash">
+<div class="splashCard">
+<div style="font-size:22px;font-weight:1000;">ZGADNIJ I WYGRAJ</div>
+<div class="hint" id="splashHint">Ładowanie…</div>
+<div class="err" id="splashErr"></div>
+<div class="spinner"></div>
+</div>
+</section>
+<!-- HOME -->
+<section class="screen" id="home">
+<!-- Language flags (HOME) -->
+<div aria-label="Language" class="homeLang">
+<button class="flagBtn" id="btnLangPL" title="Polski" type="button"><img alt="PL" class="flagImg" src="ui/flags/pl.png"/></button>
+<button class="flagBtn" id="btnLangEN" title="English" type="button"><img alt="EN" class="flagImg" src="ui/flags/gb.png"/></button>
+</div>
+<!-- NOWE: zębatka ustawień -->
+<div class="homeGear" id="btnHomeSettings" title="Ustawienia">
+<img alt="Ustawienia" class="homeGearImg" src="ui/logo/btn_ustawienia.png"/>
+</div>
+<div aria-label="Menu" class="homeBtns">
+<button class="imgBtn" data-btn="btn_tipster_room.png" id="btnHomeRooms" title="Pokoje gry">
+<img alt="Pokoje gry" data-btn="btn_tipster_room.png" src="ui/buttons/pl/btn_tipster_room.png"/>
+</button>
+<button class="imgBtn" data-btn="btn_statistics.png" id="btnHomeStats" title="Statystyki">
+<img alt="Statystyki" data-btn="btn_statistics.png" src="ui/buttons/pl/btn_statistics.png"/>
+</button>
+</div>
+</section>
+<!-- CONTINUE -->
+<section class="screen" id="continue">
+<div class="continueBox panel">
+<div class="continueCard">
+<div class="continueTop">
+<div>
+<div class="title" id="t_continue_title" style="margin:0">Kontynuować?</div>
+<div class="sub" id="t_continue_sub">Wykryto wcześniejszą rozgrywkę</div>
+</div>
+<div class="pill">ZGADNIJ</div>
+</div>
+<div class="continueGrid">
+<div class="miniCard">
+<div class="sub" id="t_continue_hello">Witaj ponownie</div>
+<div id="contNick" style="font-size:18px;font-weight:1000;margin-top:6px">—</div>
+</div>
+<div class="miniCard">
+<div class="sub" id="t_continue_room">Grasz w pokoju</div>
+<div id="contRoomName" style="font-size:18px;font-weight:1000;margin-top:6px">—</div>
+</div>
+</div>
+<div class="bigQ" id="t_continue_q">Czy chcesz kontynuować grę w tym pokoju?</div>
+<div class="continueBtns">
+<button class="imgBtn sysBtn" data-btn="btn_tak.png" id="btnContYes" type="button"><img alt="btnContYes" data-btn="btn_tak.png" src="ui/buttons/pl/btn_tak.png"/></button>
+<button class="imgBtn sysBtn" data-btn="btn_nie.png" id="btnContNo" type="button"><img alt="btnContNo" data-btn="btn_nie.png" src="ui/buttons/pl/btn_nie.png"/></button>
+<div class="spacer"></div>
+<button class="imgBtn sysBtn small" data-btn="btn_zamknij_pokoj.png" id="btnContForget" type="button"><img alt="btnContForget" data-btn="btn_zamknij_pokoj.png" src="ui/buttons/pl/btn_opusc.png"/></button>
+</div>
+</div>
+</div>
+</section>
+<!-- ROOMS -->
+<section class="screen" id="rooms">
+<div class="roomsBox panel">
+<div class="row">
+<div class="chip" id="t_rooms_title">Pokoje zgadywanek</div>
+<div class="spacer"></div>
+<div class="chip"><span id="t_nick">Nick</span>: <span id="nickLabelRooms">—</span></div>
+<button class="imgBtn sysBtn small" data-btn="btn_dodaj_profil.png" id="btnChangeNickRooms" type="button"><img alt="btnChangeNickRooms" data-btn="btn_dodaj_profil.png" src="ui/buttons/pl/btn_dodaj_profil.png"/></button>
+<button class="imgBtn sysBtn small" data-btn="btn_cofnij.png" id="btnBackHomeFromRooms" type="button"><img alt="btnBackHomeFromRooms" data-btn="btn_cofnij.png" src="ui/buttons/pl/btn_cofnij.png"/></button>
+</div>
+<div class="panel block">
+<h2 id="t_join_title">Dołącz do pokoju</h2>
+<div class="row" style="margin-top:10px"><input id="inpJoinCode" placeholder="Wpisz kod (np. AB12CD)" style="flex:1;text-transform:uppercase"/>
+<button class="imgBtn sysBtn" data-btn="btn_wejdz_pokoj.png" id="btnJoinRoom" type="button"><img alt="btnJoinRoom" data-btn="btn_wejdz_pokoj.png" src="ui/buttons/pl/btn_wejdz_pokoj.png"/></button>
+</div>
+<div class="help" id="t_join_help" style="margin-top:8px">Wpisz kod od admina.</div>
+</div>
+<div class="panel block">
+<h2 id="t_create_title">Utwórz nowy pokój</h2>
+<div class="row" style="margin-top:10px">
+<input id="inpRoomName" placeholder="Nazwa pokoju (np. Domowy)" style="flex:1"/>
+<button class="imgBtn sysBtn" data-btn="btn_zaloz.png" id="btnCreateRoom" type="button"><img alt="btnCreateRoom" data-btn="btn_zaloz.png" src="ui/buttons/pl/btn_zaloz.png"/></button>
+</div>
+<div class="help" id="t_create_help" style="margin-top:8px">Kod pokoju ma 6 znaków. Adminem będzie osoba, która tworzy pokój.</div>
+</div>
+<div class="panel block">
+<h2>Debug</h2>
+<div class="help" id="debugRooms">—</div>
+</div>
+</div>
+</section>
+<!-- ROOM -->
+<section class="screen" id="room">
+<div id="roomLayout">
+<!-- LEFT -->
+<div class="leftBar panel">
+  <!-- 6016: profil gracza (avatar + nick + kraj + klub) na górze -->
+  <div class="panel leftTopProfile" id="roomProfileCard">
+    <div class="avatarBox">
+      <img id="roomAvatarImg" alt="avatar" style="display:none" />
+      <div id="roomAvatarFallback" style="font-weight:1000;opacity:.75">🙂</div>
+    </div>
+    <div class="profileTopText">
+      <div class="profileNick profileNickTop" id="roomProfileNick">—</div>
+      <div class="profileMeta" id="roomProfileCountry">—</div>
+      <div class="profileMeta" id="roomProfileFav">—</div>
+    </div>
+</div>
 
-    <div class="backdrop" id="backdrop">
-      <div class="modal compact" id="modalProfile">
-        <div class="pill" id="profilePill">PROFIL</div>
-        <h1 id="profileTitle">Dodaj profil gracza</h1>
-        <p class="desc" id="profileDesc">Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.</p>
-        <div class="form-grid">
-          <div><label id="labelPlayerNo" for="playerNo">Nr gracza</label><input id="playerNo" readonly /></div>
-          <div><label id="labelNick" for="nickInput">Nick</label><input id="nickInput" maxlength="20" /></div>
-          <div><label id="labelCountry" for="countryInput">Kraj</label><input id="countryInput" maxlength="24" /></div>
-        </div>
-        <div class="row-actions">
-          <button class="img-btn" id="addProfileBtn" type="button"></button>
-          <button class="img-btn" id="backFromProfileBtn" type="button"></button>
-        </div>
-      </div>
-
-      <div class="modal compact hidden" id="modalRoomMenu">
-        <div class="pill" id="roomPill">POKÓJ GRY</div>
-        <h1 id="roomMenuTitle">Wybierz akcję pokoju</h1>
-        <p class="desc" id="roomMenuDesc">Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.</p>
-        <div class="button-col">
-          <button class="img-btn" id="createRoomBtn" type="button"></button>
-          <button class="img-btn" id="enterRoomBtn" type="button"></button>
-          <button class="img-btn" id="newLoginBtn" type="button"></button>
-          <button class="img-btn" id="exitBtn" type="button"></button>
-        </div>
-      </div>
-
-      <div class="modal compact hidden" id="modalCreateRoom">
-        <div class="pill" id="createPill">TWORZENIE POKOJU</div>
-        <h1 id="createTitle">Załóż nowy pokój</h1>
-        <p class="desc" id="createDesc">Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.</p>
-        <div class="form-grid">
-          <div><label id="labelRoomName" for="roomNameInput">Nazwa pokoju</label><input id="roomNameInput" maxlength="30" /></div>
-        </div>
-        <div class="row-actions">
-          <button class="img-btn" id="okCreateBtn" type="button"></button>
-          <button class="img-btn" id="backFromCreateBtn" type="button"></button>
-        </div>
-      </div>
-
-      <div class="modal compact hidden" id="modalEnterRoom">
-        <div class="pill" id="joinPill">DOŁĄCZANIE</div>
-        <h1 id="joinTitle">Dołącz do pokoju</h1>
-        <p class="desc" id="joinDesc">Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.</p>
-        <div class="form-grid">
-          <div><label id="labelRoomCode" for="roomCodeInput">Kod pokoju</label><input id="roomCodeInput" maxlength="10" /></div>
-        </div>
-        <div class="row-actions">
-          <button class="img-btn" id="okJoinBtn" type="button"></button>
-          <button class="img-btn" id="backFromJoinBtn" type="button"></button>
-        </div>
-      </div>
-
-      <div class="modal room-screen hidden" id="modalOpenRoom">
-        <div class="room-top">
-          <div>
-            <div class="pill" id="openPill">POKÓJ GRY</div>
-            <div class="room-title-big" id="openRoomName">Pokój: ---</div>
-            <div class="room-sub" id="openDesc">Lobby pokoju zostało otwarte. Tutaj będziemy budować dalszą rozgrywkę.</div>
-          </div>
-          <div class="room-code-badge"><span id="openCodeLabel">Kod pokoju:</span> <span id="openRoomCode">------</span></div>
-        </div>
-
-        <div class="room-layout">
-          <div class="panel">
-            <h3 id="boardTitle">Strefa pokoju</h3>
-            <div class="big-board" id="roomBoard">
-              Lobby pokoju jest już otwarte.<br>
-              Następny krok to ekran właściwej gry.
-            </div>
-            <div class="room-actions">
-              <button class="room-text-btn" id="btnStartGameText">START GRY</button>
-              <button class="room-text-btn secondary" id="btnBackLobbyText">COFNIJ</button>
-              <button class="room-text-btn secondary" id="btnExitLobbyText">WYJŚCIE</button>
-            </div>
-          </div>
-
-          <div class="panel">
-            <h3 id="playersTitle">Gracze online</h3>
-            <div class="room-meta-line"><strong id="openHostLabel">Gracz:</strong> <span id="openPlayerName">---</span></div>
-            <div class="player-list" id="onlinePlayersList" style="margin-top:14px"></div>
-            <div class="system-note" id="firebaseNote" style="margin-top:16px"></div>
-          </div>
-        </div>
-
-        <div class="row-actions">
-          <button class="img-btn" id="backFromOpenRoomBtn" type="button"></button>
-          <button class="img-btn" id="exitFromOpenRoomBtn" type="button"></button>
-        </div>
-      </div>
+  <!-- 6028: osobny kontener na Kraj/Klub + przycisk Podmiana -->
+  <div class="panel leftProfileInfo" id="roomProfileInfoCard">
+    <div class="substituteRow" id="roomSubstituteRow">
+      <button aria-label="Podmiana" class="imgBtn sysBtn small" data-btn="btn_substitute.png" id="btnSubstitute" title="Podmiana" type="button">
+        <img alt="Podmiana" data-btn="btn_substitute.png" src="ui/buttons/pl/btn_substitute.png"/>
+      </button>
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getDatabase, ref, set, get, onValue, onDisconnect, remove } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+    <!-- 7009: osobny kontener na przycisk usuwania pokoju (ADMIN) -->
+  <div class="panel leftDeleteRoomCard" id="leftDeleteRoomCard" style="display:none">
+    <button aria-label="Usuń pokój" class="imgBtn sysBtn small" data-btn="btn_delete_room.png" id="btnDeleteRoom" title="Usuń pokój" type="button">
+      <img alt="Usuń pokój" data-btn="btn_delete_room.png" src="ui/buttons/pl/btn_delete_room.png"/>
+    </button>
+  </div>
 
-    const t = {
-      pl:{
-        homeBadge:'STRONA STARTOWA', profilePill:'PROFIL', profileTitle:'Dodaj profil gracza',
-        profileDesc:'Przy pierwszym wejściu utwórz profil, aby przejść dalej do pokoju gry.',
-        labelPlayerNo:'Nr gracza', labelNick:'Nick', labelCountry:'Kraj',
-        roomPill:'POKÓJ GRY', roomMenuTitle:'Wybierz akcję pokoju',
-        roomMenuDesc:'Po utworzeniu profilu wybierz, czy chcesz utworzyć pokój, wejść do pokoju, zalogować nowego gracza albo wyjść.',
-        createPill:'TWORZENIE POKOJU', createTitle:'Załóż nowy pokój',
-        createDesc:'Wpisz nazwę pokoju. Po zatwierdzeniu otworzy się pokój gry.', labelRoomName:'Nazwa pokoju',
-        joinPill:'DOŁĄCZANIE', joinTitle:'Dołącz do pokoju',
-        joinDesc:'Wpisz kod pokoju. Po poprawnym wpisaniu otworzy się pokój gry.', labelRoomCode:'Kod pokoju',
-        openPill:'POKÓJ GRY', openDesc:'Lobby pokoju zostało otwarte. Tutaj będziemy budować dalszą rozgrywkę.',
-        openCodeLabel:'Kod pokoju:', openHostLabel:'Gracz:', playersTitle:'Gracze online', boardTitle:'Strefa pokoju',
-        boardText:'Lobby pokoju jest już otwarte.<br>Następny krok to ekran właściwej gry.',
-        saveProfileMissing:'Uzupełnij Nick i Kraj.', roomNameMissing:'Wpisz nazwę pokoju.',
-        enterRoomMissing:'Podaj kod pokoju.', enterRoomNotFound:'Nie znaleziono pokoju o takim kodzie.',
-        firebaseReady:'Firebase działa. Lista graczy online odświeża się na żywo.',
-        host:'Gospodarz', player:'Gracz', online:'online', none:'Brak graczy online',
-        startGame:'START GRY', back:'COFNIJ', exit:'WYJŚCIE', room:'Pokój'
-      },
-      en:{
-        homeBadge:'HOME SCREEN', profilePill:'PROFILE', profileTitle:'Create player profile',
-        profileDesc:'At first entry, create a profile to continue to the game room.',
-        labelPlayerNo:'Player No.', labelNick:'Nick', labelCountry:'Country',
-        roomPill:'GAME ROOM', roomMenuTitle:'Choose room action',
-        roomMenuDesc:'After creating a profile, choose whether you want to create a room, enter a room, log in a new player, or exit.',
-        createPill:'ROOM CREATION', createTitle:'Create new room',
-        createDesc:'Enter a room name. After confirmation, the game room will open.', labelRoomName:'Room name',
-        joinPill:'JOIN ROOM', joinTitle:'Join a room',
-        joinDesc:'Enter the room code. If valid, the game room will open.', labelRoomCode:'Room code',
-        openPill:'GAME ROOM', openDesc:'The room lobby is open. Here we will build the next gameplay screens.',
-        openCodeLabel:'Room code:', openHostLabel:'Player:', playersTitle:'Online players', boardTitle:'Room area',
-        boardText:'The room lobby is already open.<br>The next step is the actual gameplay screen.',
-        saveProfileMissing:'Fill in Nick and Country.', roomNameMissing:'Enter room name.',
-        enterRoomMissing:'Enter room code.', enterRoomNotFound:'No room found with this code.',
-        firebaseReady:'Firebase is working. The online players list refreshes live.',
-        host:'Host', player:'Player', online:'online', none:'No players online',
-        startGame:'START GAME', back:'BACK', exit:'EXIT', room:'Room'
-      }
-    };
+<!-- 6016: dwa dolne kontenery dociśnięte do dołu -->
+  <div class="leftBottomStack">
+  <div class="panel" style="padding:14px">
+<div class="title" id="roomName">—</div>
+<div class="sub"><span id="t_admin">Admin</span>: <span id="roomAdmin">—</span></div>
+<div class="roomCodeBlock" style="margin-top:10px">
+<div class="row roomCodeRow">
+<div class="chip" style="flex:1;justify-content:space-between;">
+<span id="t_code">Kod</span>: <span id="roomCode">—</span>
+</div>
+</div>
+<div class="row roomCodeActions" style="margin-top:10px; gap:12px; justify-content:center;">
+<button aria-label="Opuść" class="imgBtn sysBtn small" data-btn="btn_opusc.png" id="btnLeave" title="Opuść" type="button"><img alt="Opuść" data-btn="btn_opusc.png" src="ui/buttons/pl/btn_opusc.png"/></button> </div>
+</div>
+</div>
+  <div class="panel" style="padding:14px">
 
-    const firebaseConfig = {
-      apiKey: "AIzaSyAnUo249YUpm2cLtA90Wy9PHMF9IkYcAPE",
-      authDomain: "zgadnij-96db8.firebaseapp.com",
-      databaseURL: "https://zgadnij-96db8-default-rtdb.europe-west1.firebasedatabase.app",
-      projectId: "zgadnij-96db8",
-      storageBucket: "zgadnij-96db8.firebasestorage.app",
-      messagingSenderId: "542527336518",
-      appId: "1:542527336518:web:88bb8c23b34d5a7a501a47"
-    };
 
-    const app = initializeApp(firebaseConfig);
-    const db = getDatabase(app);
+<div class="col" id="roomActionsCol" style="margin-top:10px">
+<!-- BUILD 7024: przeniesiono "Wyjście" z prawej strony do sekcji Akcje -->
 
-    let lang = localStorage.getItem('zgadnij_lang') || 'pl';
-    let currentRoomCode = null;
-    let currentPlayersUnsub = null;
-    let currentConnectedUnsub = null;
+<button class="imgBtn sysBtn small" data-btn="btn_tabela_typerow.png" id="btnLeagueFromRoom" type="button"><img alt="btnLeagueFromRoom" data-btn="btn_tabela_typerow.png" src="ui/buttons/pl/btn_tabela_typerow.png"/></button>
 
-    const profileKey = 'zgadnij_profile';
+<!-- 6015: dodatkowe przyciski w lewym kontenerze (później podepniemy kodem) -->
+<button class="imgBtn sysBtn small" data-btn="btn_all_ranking.png" id="btnAllRankingFromRoom" type="button"><img alt="btnAllRankingFromRoom" data-btn="btn_all_ranking.png" src="ui/buttons/pl/btn_all_ranking.png"/></button>
+</div>
+</div>
+  </div>
+  <!-- back button removed (back is now on the right as "Wyjście") -->
+</div>
+<!-- MIDDLE -->
+<div class="mid">
+<div class="panel midHead">
+<div class="row">
+<div>
+<div class="title" id="t_matches">Plansza hasła</div>
+</div>
+<!-- ADMIN: przeniesione z lewego panelu (Akcje) na górę, obok nagłówka Spotkań -->
+<div class="roomTopBtns">
+<button class="imgBtn sysBtn actionSmall" data-btn="btn_dodaj_kolejke.png" id="btnAddQueue" style="display:none" type="button"><img alt="btnAddQueue" data-btn="btn_dodaj_kolejke.png" src="ui/buttons/pl/btn_add_queue.png"/></button>
+</div>
+<div class="spacer"></div>
+<div class="chip"><span id="t_round">KOLEJKA</span><span class="chipSep" id="sep_round">: </span><span id="roundLabel">—</span></div>
+<div class="chip"><span id="t_games">Mecze</span>: <span id="matchesCount">0</span></div>
+<div class="chip"><span id="t_points_round">PUNKTY</span><span class="chipSep" id="sep_points_round">: </span><span id="myPointsLabel">—</span></div>
+</div>
+</div>
+<div class="panel matchesWrap" id="matchesList"></div>
+<!-- 6001: panel pod meczami na przyciski (Wpisz Wyniki / Zakończ kolejkę) -->
+<div class="panel matchActionsPanel" id="matchActionsPanel">
+<!-- 6004: przeniesiono "Zapisz typy" (btn_save_picks.png / #btnSaveAll) z lewego panelu do dolnego kontenera -->
+<button class="imgBtn sysBtn" data-btn="btn_zapisz_typy.png" disabled="" id="btnSaveAll" type="button">
+<img alt="btnSaveAll" data-btn="btn_zapisz_typy.png" src="ui/buttons/pl/btn_save_picks.png"/>
+</button>
+<button class="imgBtn sysBtn" data-btn="btn_dodaj_wyniki.png" id="btnEnterResults" style="display:none" type="button">
+<img alt="btnEnterResults" data-btn="btn_dodaj_wyniki.png" src="ui/buttons/pl/btn_enter_results.png"/>
+</button>
+<button class="imgBtn sysBtn" data-btn="btn_zakoncz_kolejke.png" disabled="" id="btnEndRound" style="display:none" type="button">
+<img alt="btnEndRound" data-btn="btn_zakoncz_kolejke.png" src="ui/buttons/pl/btn_zakoncz_kolejke.png"/>
+</button>
+</div>
+</div>
+<!-- RIGHT -->
+<div class="rightBar panel">
+<div class="playersHeader">
+  <div>
+    <div class="title" id="t_players">Gracze</div>
+    <div class="sub" id="t_players_sub"></div>
+  </div>
+  <button class="imgBtn sysBtn actionSmall" data-btn="btn_delete_player.png" id="btnDeletePlayer" style="display:none" type="button">
+    <img alt="btnDeletePlayer" data-btn="btn_delete_player.png" src="ui/buttons/pl/btn_delete_player.png"/>
+  </button>
+</div>
+<div class="playersList" id="playersList"></div>
+<div class="spacer"></div>
+<!-- 6017: dwa osobne kontenery na dole po prawej (Wyjście + Wiadomości) -->
+<div class="rightBottomStack">
+  <div class="panel rightBottomMessages">
+    <button class="imgBtn sysBtn" data-btn="btn_messages.png" id="btnMessagesFromRoom" style="position:relative" type="button">
+      <span class="msgBadge" id="msgBadge">!</span>
+      <img alt="btnMessagesFromRoom" data-btn="btn_messages.png" src="ui/buttons/pl/btn_messages.png"/>
+    </button>
+  </div>
+  <div class="panel rightBottomExit">
+    <button class="imgBtn sysBtn" data-btn="btn_exit.png" id="btnExitFromRoomRight" type="button">
+      <img alt="btnExitFromRoomRight" data-btn="btn_exit.png" src="ui/buttons/pl/btn_exit.png"/>
+    </button>
+  </div>
+</div>
+</div>
+</div>
+<!-- ADD QUEUE MENU OVERLAY (BUILD 7024) -->
+<div aria-hidden="true" id="addQueueOverlay">
+<div aria-label="Add queue menu" class="aqModal panel" role="dialog">
+<div class="aqBtns">
+<button class="imgBtn sysBtn" data-btn="btn_random.png" id="btnAQRandom" type="button">
+<img alt="btn_random" data-btn="btn_random.png" src="ui/buttons/pl/btn_random.png"/>
+</button>
+<button class="imgBtn sysBtn" data-btn="btn_manual.png" id="btnAQManual" type="button">
+<img alt="btn_manual" data-btn="btn_manual.png" src="ui/buttons/pl/btn_manual.png"/>
+</button>
+<button class="imgBtn sysBtn" data-btn="btn_back.png" id="btnAQBack" type="button">
+<img alt="btn_back" data-btn="btn_back.png" src="ui/buttons/pl/btn_back.png"/>
+</button>
+</div>
+</div>
+</div>
+<!-- MANUAL QUEUE OVERLAY (BUILD 7024) -->
+<div aria-hidden="true" id="manualQueueOverlay">
+<div aria-label="Manual queue" class="mqModal panel" role="dialog">
+<div class="mqTitle" id="mqTitle">Ręczne dodawanie kolejki</div>
+<div class="mqLeagueWrap">
+  <div class="mqLeagueLabel">Liga:</div>
+  <select class="mqLeagueSelect" id="manualLeagueSelect"></select>
+</div>
 
-    const homeBadge = document.getElementById('homeBadge');
-    const langBtn = document.getElementById('langBtn');
-    const playBtn = document.getElementById('playBtn');
-    const backdrop = document.getElementById('backdrop');
-    const modalProfile = document.getElementById('modalProfile');
-    const modalRoomMenu = document.getElementById('modalRoomMenu');
-    const modalCreateRoom = document.getElementById('modalCreateRoom');
-    const modalEnterRoom = document.getElementById('modalEnterRoom');
-    const modalOpenRoom = document.getElementById('modalOpenRoom');
-    const playerNo = document.getElementById('playerNo');
-    const nickInput = document.getElementById('nickInput');
-    const countryInput = document.getElementById('countryInput');
-    const roomNameInput = document.getElementById('roomNameInput');
-    const roomCodeInput = document.getElementById('roomCodeInput');
-    const onlinePlayersList = document.getElementById('onlinePlayersList');
-    const firebaseNote = document.getElementById('firebaseNote');
+<div class="mqBuilder">
+  <div class="mqBuilderRow">
+    <div class="mqBuilderLabel">Gospodarz:</div>
+    <select class="mqClubSelect" id="manualHomeSelect"></select>
+  </div>
+  <div class="mqBuilderRow">
+    <div class="mqBuilderLabel">Gość:</div>
+    <select class="mqClubSelect" id="manualAwaySelect"></select>
+  </div>
+  <button class="mqAddMatchBtn" id="btnMQAddMatch" type="button">+ Dodaj mecz</button>
+</div>
 
-    function randPlayerNo(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out=''; for(let i=0;i<7;i++) out+=chars[Math.floor(Math.random()*chars.length)]; return out; }
-    function randRoomCode(){ const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let out=''; for(let i=0;i<6;i++) out+=chars[Math.floor(Math.random()*chars.length)]; return out; }
-    function getProfile(){ try{return JSON.parse(localStorage.getItem(profileKey)||'null')}catch(e){return null} }
-    function setProfile(p){ localStorage.setItem(profileKey, JSON.stringify(p)); }
-    function getSessionId(){ let sid=sessionStorage.getItem('zgadnij_session_id'); if(!sid){ sid='tab_' + Math.random().toString(36).slice(2,10); sessionStorage.setItem('zgadnij_session_id',sid); } return sid; }
-    function btnPath(file){ return `ui/buttons/${lang}/${file}`; }
+<div class="mqCount" id="manualMatchesCount">Mecze: 0/10</div>
 
-    function makeImgButton(el, file, fallbackText, onClick){
-      const img = new Image();
-      img.alt = fallbackText;
-      img.src = btnPath(file);
-      img.onerror = () => { el.innerHTML = `<span class="fallback">${fallbackText}</span>`; };
-      img.onload = () => { el.innerHTML = ''; el.appendChild(img); };
-      el.onclick = onClick;
+<div class="mqMatchesList" id="manualMatchesList"></div>
+
+<div class="mqFooter" id="manualQueueFooter">
+<button class="imgBtn sysBtn" data-btn="btn_save_queue.png" id="btnMQSave" type="button">
+<img alt="btnMQSave" data-btn="btn_save_queue.png" src="ui/buttons/pl/btn_save_queue.png"/>
+</button>
+<button class="imgBtn sysBtn" data-btn="btn_back.png" id="btnMQBack" type="button">
+<img alt="btnMQBack" data-btn="btn_back.png" src="ui/buttons/pl/btn_back.png"/>
+</button>
+</div>
+</div>
+</div>
+
+
+<!-- MANUAL QUEUE DEADLINE OVERLAY (BUILD 7033) -->
+<div aria-hidden="true" id="mqDeadlineOverlay">
+  <div aria-label="Deadline" class="mqDeadlineModal panel" role="dialog">
+    <div class="mqDeadlineTitle" id="mqDeadlineTitle">Ustaw czas końca typowania</div>
+    <div class="mqDeadlineDesc" id="mqDeadlineDesc">Ustaw datę i godzinę (z minutami), do której będzie można typować tę kolejkę.</div>
+    <div class="mqDeadlineRow">
+      <input class="mqDeadlineInput" id="mqDeadlineInput" type="datetime-local"/>
+    </div>
+    <div class="mqDeadlineBtns">
+      <button class="imgBtn sysBtn" data-btn="btn_yes.png" id="btnMQDeadlineYes" type="button">
+        <img alt="btn_yes" data-btn="btn_yes.png" src="ui/buttons/pl/btn_yes.png"/>
+      </button>
+      <button class="imgBtn sysBtn" data-btn="btn_no.png" id="btnMQDeadlineNo" type="button">
+        <img alt="btn_no" data-btn="btn_no.png" src="ui/buttons/pl/btn_no.png"/>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBSTITUTE MENU OVERLAY (BUILD 8004) -->
+<div aria-hidden="true" id="substituteOverlay">
+  <div aria-label="Zastępstwo" class="subModal panel" role="dialog">
+    <div class="subTitle" id="subTitle">Zastępstwo</div>
+    <div class="subBtns">
+      <button class="imgBtn sysBtn" data-btn="btn_admin.png" id="btnSubAdmin" type="button">
+        <img alt="btn_admin" data-btn="btn_admin.png" src="ui/buttons/pl/btn_admin.png"/>
+      </button>
+      <button class="imgBtn sysBtn" data-btn="btn_player.png" id="btnSubPlayer" type="button">
+        <img alt="btn_player" data-btn="btn_player.png" src="ui/buttons/pl/btn_player.png"/>
+      </button>
+      <button class="imgBtn sysBtn" data-btn="btn_back.png" id="btnSubBack" type="button">
+        <img alt="btn_back" data-btn="btn_back.png" src="ui/buttons/pl/btn_back.png"/>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- SUBSTITUTE PICK OVERLAY (BUILD 8004) -->
+<div aria-hidden="true" id="substitutePickOverlay">
+  <div aria-label="Wybierz zastępcę" class="subModal panel" role="dialog">
+    <div class="subTitle" id="subPickTitle">Wybierz gracza, który będzie mógł Cię zastąpić</div>
+    <div class="subPickRow">
+      <select id="substitutePlayerSelect"></select>
+    </div>
+    <div class="subBtns" style="margin-top:14px">
+      <button class="imgBtn sysBtn" data-btn="btn_yes.png" id="btnSubYes" type="button">
+        <img alt="btn_yes" data-btn="btn_yes.png" src="ui/buttons/pl/btn_yes.png"/>
+      </button>
+      <button class="imgBtn sysBtn" data-btn="btn_no.png" id="btnSubNo" type="button">
+        <img alt="btn_no" data-btn="btn_no.png" src="ui/buttons/pl/btn_no.png"/>
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- MESSAGES OVERLAY (BUILD 7024) -->
+<div aria-hidden="true" id="messagesOverlay">
+  <div aria-label="Messages" class="msgModal panel" role="dialog">
+    <div class="msgHeader">
+      <div class="msgTitle" id="msgTitle">Wiadomości</div>
+      <button class="msgDeleteBtn" id="btnMsgDelete" type="button">Usuń</button>
+      <button class="imgBtn sysBtn" data-btn="btn_back.png" id="btnMsgBack" type="button">
+        <img alt="btnMsgBack" data-btn="btn_back.png" src="ui/buttons/pl/btn_back.png"/>
+      </button>
+    </div>
+
+    <div class="msgTabs" role="tablist">
+      <button class="msgTab active" id="tabInbox" type="button" data-tab="inbox">Odebrane</button>
+      <button class="msgTab" id="tabSent" type="button" data-tab="sent">Wysłane</button>
+      <button class="msgTab" id="tabSystem" type="button" data-tab="system">Systemowe</button>
+      <button class="msgTab" id="tabCompose" type="button" data-tab="compose">Nowa</button>
+    </div>
+
+    <div class="msgBody">
+      <div class="msgPane show" id="paneInbox">
+        <div class="msgSplit">
+          <div class="msgList" id="msgInboxList"></div>
+          <div class="msgView" id="msgInboxView">
+            <div class="msgViewEmpty" id="msgViewEmpty">Wybierz wiadomość z listy.</div>
+            <div class="msgViewCard" id="msgViewCard" style="display:none">
+              <div class="msgViewMeta" id="msgViewMeta"></div>
+              <div class="msgViewText" id="msgViewText"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msgPane" id="paneSent">
+        <div class="msgSplit">
+          <div class="msgList" id="msgSentList"></div>
+          <div class="msgView" id="msgSentView">
+            <div class="msgViewEmpty" id="msgSentEmpty">Wybierz wiadomość z listy.</div>
+            <div class="msgViewCard" id="msgSentCard" style="display:none">
+              <div class="msgViewMeta" id="msgSentMeta"></div>
+              <div class="msgViewText" id="msgSentText"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msgPane" id="paneSystem">
+        <div class="msgSplit">
+          <div class="msgList" id="msgSystemList"></div>
+          <div class="msgView" id="msgSystemView">
+            <div class="msgViewEmpty" id="msgSystemEmpty">Wybierz wiadomość z listy.</div>
+            <div class="msgViewCard" id="msgSystemCard" style="display:none">
+              <div class="msgViewMeta" id="msgSystemMeta"></div>
+              <div class="msgViewText" id="msgSystemText"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="msgPane" id="paneCompose">
+        <div class="msgCompose">
+          <div class="msgRow">
+            <div class="msgLabel" id="msgToLabel">Do:</div>
+            <select class="msgSel" id="msgToSelect"></select>
+          </div>
+          <textarea class="msgText" id="msgText" placeholder="Napisz wiadomość..."></textarea>
+          <div class="msgFooter">
+            <button class="btn msgSendBtn" id="btnMsgSend" type="button">Wyślij</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</section>
+<!-- RESULTS (ADMIN) -->
+<section class="screen" id="results">
+<div class="resultsWrap panel">
+<div class="resultsTop">
+<div class="row" style="gap:10px;flex-wrap:wrap">
+<div class="chip" id="t_results">Wyniki</div>
+<div class="chip"><span id="t_room">Pokój</span>: <span id="resRoomName">—</span></div>
+<div class="chip"><span id="t_round2">KOLEJKA</span>: <span id="resRound">—</span></div>
+</div>
+<div class="row">
+<button class="imgBtn sysBtn" data-btn="btn_cofnij.png" id="btnResBack" type="button"><img alt="btnResBack" data-btn="btn_cofnij.png" src="ui/buttons/pl/btn_cofnij.png"/></button>
+<button class="imgBtn sysBtn" data-btn="btn_matches_cancel.png" id="btnResCancelMatches" type="button"><img alt="btnResCancelMatches" data-btn="btn_matches_cancel.png" src="ui/buttons/pl/btn_matches_cancel.png"/></button>
+<button class="imgBtn sysBtn" data-btn="btn_save_wynik.png" id="btnResSave" type="button"><img alt="btnResSave" data-btn="btn_save_wynik.png" src="ui/buttons/pl/btn_save_wynik.png"/></button>
+</div>
+</div>
+<div class="panel resultsList" id="resultsList"></div>
+<div class="sub" id="t_results_hint" style="padding:10px 14px">
+            Podpowiedź: wpisz wszystkie wyniki i kliknij „Zapisz wyniki”.
+          </div>
+</div>
+</section>
+<!-- LEAGUE -->
+<section class="screen" id="league">
+<div class="leagueWrap panel">
+<div class="leagueTop">
+<div class="leagueTopLeft">
+<div class="chip" id="t_league">Tabela ligi typerów</div>
+<div class="chip"><span id="t_room3">Pokój</span>: <span id="leagueRoomName">—</span></div>
+<div class="chip"><span id="t_nick3">Nick</span>: <span id="leagueNick">—</span></div>
+<div class="chip"><span id="t_after_round">Po kolejce</span>: <select id="leagueAfterRound"></select></div>
+</div>
+<div class="row">
+<button class="imgBtn sysBtn small" data-btn="btn_cofnij.png" id="btnLeagueBack" type="button"><img alt="btnLeagueBack" data-btn="btn_cofnij.png" src="ui/buttons/pl/btn_cofnij.png"/></button>
+</div>
+</div>
+<div class="panel" style="padding:14px">
+<div class="title" id="t_ranking" style="margin:0 0 10px 0">Ranking</div>
+<div class="sub" id="leagueHint" style="margin-bottom:10px">
+              Kliknij gracza, aby zobaczyć statystyki (kolejki + podgląd typów).
+            </div>
+<div style="overflow:auto;border-radius:18px;border:1px solid rgba(255,255,255,.10)">
+<table id="leagueTable">
+<thead>
+<tr>
+<th style="width:60px">#</th>
+<th id="t_player_col">Gracz</th>
+<th id="t_rounds_col" style="width:120px">Kolejki</th>
+<th id="t_points_col" style="width:120px">Punkty</th>
+</tr>
+</thead>
+<tbody id="leagueBody">
+<tr><td colspan="4" style="color:rgba(255,255,255,.75)">Brak danych…</td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</section>
+<!-- MODAL -->
+<div class="modal" id="modal">
+<div class="modalCard">
+<div class="modalHead">
+<div class="chip" id="modalTitle">—</div>
+<div class="spacer"></div>
+<button class="imgBtn sysBtn small" data-btn="btn_exit.png" id="modalClose" type="button"><img alt="modalClose" data-btn="btn_exit.png" src="ui/buttons/pl/btn_exit.png"/></button>
+</div>
+<div class="modalBody" id="modalBody"></div>
+</div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="footerRight" id="footerRight">—</div>
+</div>
+</div>
+<script>
+    const hint = document.getElementById("splashHint");
+    const errBox = document.getElementById("splashErr");
+    function showErr(title, msg){
+      hint.textContent = "STOP: wykryto błąd.";
+      errBox.style.display = "block";
+      errBox.textContent = title + "\n\n" + msg;
     }
-
-    function applyLang(){
-      localStorage.setItem('zgadnij_lang', lang);
-      homeBadge.textContent=t[lang].homeBadge;
-      document.getElementById('profilePill').textContent=t[lang].profilePill;
-      document.getElementById('profileTitle').textContent=t[lang].profileTitle;
-      document.getElementById('profileDesc').textContent=t[lang].profileDesc;
-      document.getElementById('labelPlayerNo').textContent=t[lang].labelPlayerNo;
-      document.getElementById('labelNick').textContent=t[lang].labelNick;
-      document.getElementById('labelCountry').textContent=t[lang].labelCountry;
-      document.getElementById('roomPill').textContent=t[lang].roomPill;
-      document.getElementById('roomMenuTitle').textContent=t[lang].roomMenuTitle;
-      document.getElementById('roomMenuDesc').textContent=t[lang].roomMenuDesc;
-      document.getElementById('createPill').textContent=t[lang].createPill;
-      document.getElementById('createTitle').textContent=t[lang].createTitle;
-      document.getElementById('createDesc').textContent=t[lang].createDesc;
-      document.getElementById('labelRoomName').textContent=t[lang].labelRoomName;
-      document.getElementById('joinPill').textContent=t[lang].joinPill;
-      document.getElementById('joinTitle').textContent=t[lang].joinTitle;
-      document.getElementById('joinDesc').textContent=t[lang].joinDesc;
-      document.getElementById('labelRoomCode').textContent=t[lang].labelRoomCode;
-      document.getElementById('openPill').textContent=t[lang].openPill;
-      document.getElementById('openCodeLabel').textContent=t[lang].openCodeLabel;
-      document.getElementById('openHostLabel').textContent=t[lang].openHostLabel;
-      document.getElementById('playersTitle').textContent=t[lang].playersTitle;
-      document.getElementById('boardTitle').textContent=t[lang].boardTitle;
-      document.getElementById('openDesc').textContent=t[lang].openDesc;
-      document.getElementById('roomBoard').innerHTML=t[lang].boardText;
-      document.getElementById('btnStartGameText').textContent=t[lang].startGame;
-      document.getElementById('btnBackLobbyText').textContent=t[lang].back;
-      document.getElementById('btnExitLobbyText').textContent=t[lang].exit;
-      firebaseNote.textContent=t[lang].firebaseReady;
-
-      makeImgButton(document.getElementById('addProfileBtn'),'btn_add_profile.png',lang==='pl'?'Dodaj profil':'Add profile',saveProfile);
-      makeImgButton(document.getElementById('backFromProfileBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',closeAll);
-      makeImgButton(document.getElementById('createRoomBtn'),'btn_create_room.png',lang==='pl'?'Załóż nowy pokój':'Create new room',()=>showModal(modalCreateRoom));
-      makeImgButton(document.getElementById('enterRoomBtn'),'btn_enter_room.png',lang==='pl'?'Dołącz do pokoju':'Enter room',()=>showModal(modalEnterRoom));
-      makeImgButton(document.getElementById('newLoginBtn'),'btn_new_login.png',lang==='pl'?'Dołącz na innym urządzeniu':'New login',newLogin);
-      makeImgButton(document.getElementById('exitBtn'),'btn_exit.png',lang==='pl'?'Wyjście':'Exit',closeAll);
-      makeImgButton(document.getElementById('okCreateBtn'),'btn_ok.png','OK',createRoom);
-      makeImgButton(document.getElementById('backFromCreateBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',()=>showModal(modalRoomMenu));
-      makeImgButton(document.getElementById('okJoinBtn'),'btn_ok.png','OK',joinRoom);
-      makeImgButton(document.getElementById('backFromJoinBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',()=>showModal(modalRoomMenu));
-      makeImgButton(document.getElementById('backFromOpenRoomBtn'),'btn_back.png',lang==='pl'?'Powrót':'Back',leaveCurrentPresenceAndBack);
-      makeImgButton(document.getElementById('exitFromOpenRoomBtn'),'btn_exit.png',lang==='pl'?'Wyjście':'Exit',leaveCurrentPresenceAndClose);
-    }
-
-    function showModal(which){ [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); backdrop.classList.add('show'); which.classList.remove('hidden'); if(which===modalRoomMenu){ roomNameInput.value=''; roomCodeInput.value=''; } }
-    function closeAll(){ backdrop.classList.remove('show'); [modalProfile,modalRoomMenu,modalCreateRoom,modalEnterRoom,modalOpenRoom].forEach(m=>m.classList.add('hidden')); }
-    function saveProfile(){
-      const nick=nickInput.value.trim(); const country=countryInput.value.trim();
-      if(!nick||!country){ alert(t[lang].saveProfileMissing); return; }
-      const playerNoValue = playerNo.value || randPlayerNo();
-      playerNo.value = playerNoValue;
-      setProfile({playerNo:playerNoValue,nick,country});
-      showModal(modalRoomMenu);
-    }
-    function newLogin(){ localStorage.removeItem(profileKey); playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); }
-
-    async function createRoom(){
-      const name=roomNameInput.value.trim();
-      if(!name){ alert(t[lang].roomNameMissing); return; }
-      const profile=getProfile();
-      const code=randRoomCode();
-      await set(ref(db, `rooms/${code}`), {name,code,hostNick:profile?profile.nick:'---',createdAt:Date.now()});
-      await openRoom({code,name,hostNick:profile?profile.nick:'---'});
-    }
-
-    async function joinRoom(){
-      const code=roomCodeInput.value.trim().toUpperCase();
-      if(!code){ alert(t[lang].enterRoomMissing); return; }
-      const snap=await get(ref(db, `rooms/${code}`));
-      if(!snap.exists()){ alert(t[lang].enterRoomNotFound); return; }
-      await openRoom(snap.val());
-    }
-
-    async function attachPresence(room){
-      const profile=getProfile() || {};
-      const sessionId=getSessionId();
-      const playerRef=ref(db, `rooms/${room.code}/players/${sessionId}`);
-      const playersRef=ref(db, `rooms/${room.code}/players`);
-      const connectedRef=ref(db, '.info/connected');
-
-      if(currentPlayersUnsub) currentPlayersUnsub();
-      currentPlayersUnsub = onValue(playersRef, (snap) => {
-        renderPlayers(snap.val() || {}, room);
-      });
-
-      if(currentConnectedUnsub) currentConnectedUnsub();
-      currentConnectedUnsub = onValue(connectedRef, async (snap) => {
-        if (snap.val() !== true) return;
-        try{
-          await onDisconnect(playerRef).remove();
-          await set(playerRef, {
-            sessionId: sessionId || '',
-            nick: profile.nick || '---',
-            country: profile.country || '',
-            playerNo: profile.playerNo || '',
-            online: true,
-            joinedAt: Date.now()
-          });
-          firebaseNote.textContent=t[lang].firebaseReady;
-        }catch(err){
-          firebaseNote.textContent='Firebase error: ' + (err?.message || err);
-        }
-      });
-
-      currentRoomCode = room.code;
-    }
-
-    function renderPlayers(playersObj, room){
-      onlinePlayersList.innerHTML='';
-      const players=Object.values(playersObj||{});
-      if(players.length===0){
-        const row=document.createElement('div');
-        row.className='player';
-        row.innerHTML=`<span>${t[lang].none}</span><span>—</span>`;
-        onlinePlayersList.appendChild(row);
-        return;
-      }
-      players.sort((a,b)=>(a.joinedAt||0)-(b.joinedAt||0));
-      players.forEach((p)=>{
-        const row=document.createElement('div');
-        row.className='player';
-        const role = p.nick === room.hostNick ? t[lang].host : t[lang].player;
-        row.innerHTML=`<span>${role}: ${p.nick || '---'}${p.country ? ' • ' + p.country : ''}</span><span>${t[lang].online}</span>`;
-        onlinePlayersList.appendChild(row);
-      });
-    }
-
-    async function openRoom(room){
-      const profile=getProfile();
-      document.getElementById('openRoomName').textContent=`${t[lang].room}: ${room.name}`;
-      document.getElementById('openRoomCode').textContent=room.code;
-      document.getElementById('openPlayerName').textContent=profile ? profile.nick : room.hostNick || '---';
-      firebaseNote.textContent=t[lang].firebaseReady;
-      showModal(modalOpenRoom);
-      await attachPresence(room);
-    }
-
-    async function leavePresence(){
-      if(!currentRoomCode) return;
-      const sessionId=getSessionId();
-      try { await remove(ref(db, `rooms/${currentRoomCode}/players/${sessionId}`)); } catch(e) {}
-      if(currentPlayersUnsub){ currentPlayersUnsub(); currentPlayersUnsub=null; }
-      if(currentConnectedUnsub){ currentConnectedUnsub(); currentConnectedUnsub=null; }
-      currentRoomCode=null;
-    }
-    async function leaveCurrentPresenceAndBack(){ await leavePresence(); showModal(modalRoomMenu); }
-    async function leaveCurrentPresenceAndClose(){ await leavePresence(); closeAll(); }
-
-    document.getElementById('btnStartGameText').addEventListener('click', () => {
-      document.getElementById('roomBoard').innerHTML = lang === 'pl'
-        ? 'Pokój został otwarty poprawnie.<br>Tu podepniemy teraz właściwy ekran gry.'
-        : 'The room opened correctly.<br>Next we will connect the actual gameplay screen.';
+    window.addEventListener("error", (e) => {
+      showErr("window.error", (e?.message || "unknown") + "\n" + (e?.filename || "") + ":" + (e?.lineno || "?"));
     });
-    document.getElementById('btnBackLobbyText').addEventListener('click', leaveCurrentPresenceAndBack);
-    document.getElementById('btnExitLobbyText').addEventListener('click', leaveCurrentPresenceAndClose);
-
-    playBtn.addEventListener('click', ()=>{
-      const profile=getProfile();
-      if(profile){ showModal(modalRoomMenu); }
-      else { playerNo.value=randPlayerNo(); nickInput.value=''; countryInput.value=''; showModal(modalProfile); }
+    window.addEventListener("unhandledrejection", (e) => {
+      showErr("unhandledrejection", String(e?.reason?.message || e?.reason || e));
     });
-    backdrop.addEventListener('click',(e)=>{ if(e.target===backdrop) closeAll(); });
-    langBtn.addEventListener('click', ()=>{ lang = lang === 'pl' ? 'en' : 'pl'; applyLang(); });
-    applyLang();
   </script>
+<script src="./app.js?v=8037" type="module"></script>
+<script>
+  // BUILD 7024: usuń placeholdery reklam ("dummyAdOne"/"dummyAdTwo") jeśli gdziekolwiek się pojawią
+  document.addEventListener('DOMContentLoaded', () => {
+    const kill = (key) => {
+      const nodes = document.querySelectorAll(
+        `#${key}, img[alt="${key}"], img[src*="${key}"], [data-btn="${key}"]`
+      );
+      nodes.forEach((n) => {
+        const btn = n.closest && n.closest('button');
+        (btn || n).remove();
+      });
+    };
+    kill('dummyAdOne');
+    kill('dummyAdTwo');
+  });
+</script>
+<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('./sw.js?v=8037').catch(() => {});
+    });
+  }
+</script>
+<!-- BUILD corner -->
+<div aria-hidden="true" id="buildCorner">
+<img alt="" id="buildCornerLogo" src="ui/logo/logo_RNAPP.png"/>
+<div id="buildCornerText"><span class="ownerName">Mariusz Gębka</span><span class="ownerVersion">v1.8037</span></div>
+</div>
 </body>
 </html>
