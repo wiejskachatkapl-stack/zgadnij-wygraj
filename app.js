@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3015;
+const BUILD = 3016;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4876,15 +4876,6 @@ function renderZgadnijAlphabet(panel){
     grid.appendChild(btn);
   });
 
-  // fill grid a bit more evenly on desktop
-  for(let i=0;i<1;i++){
-    const dummy = document.createElement("button");
-    dummy.className = "zgKey hiddenKey";
-    dummy.type = "button";
-    dummy.textContent = "•";
-    dummy.disabled = true;
-    grid.appendChild(dummy);
-  }
 
   wrap.appendChild(grid);
   panel.appendChild(wrap);
