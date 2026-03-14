@@ -1,25 +1,24 @@
 // BUILD number shown under the logo (cache-bust + version label)
-// ZGADNIJ starter built on the TYPER core
-const BUILD = 3000;
+const BUILD = 8037;
 const SEASON_ROUNDS = 12;
-const KEY_SEEN_EVENT_PREFIX = "zgadnij_seen_event_v1";
+const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
-const BG_HOME = "img_menu_pc.png";
-const BG_ROOM = "img_tlo.png";
+const BG_HOME = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201600%20900%22%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23cffff4%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2235%25%22%20stop-color%3D%22%238ef4df%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2270%25%22%20stop-color%3D%22%234ed7cf%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23157aa0%22/%3E%0A%20%20%3C/linearGradient%3E%0A%20%20%3CradialGradient%20id%3D%22glow%22%20cx%3D%2250%25%22%20cy%3D%2245%25%22%20r%3D%2255%25%22%3E%0A%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23ffffff%22%20stop-opacity%3D%220.75%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2255%25%22%20stop-color%3D%22%23d6fff5%22%20stop-opacity%3D%220.18%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23d6fff5%22%20stop-opacity%3D%220%22/%3E%0A%20%20%3C/radialGradient%3E%0A%20%20%3Cfilter%20id%3D%22blur%22%20x%3D%22-20%25%22%20y%3D%22-20%25%22%20width%3D%22140%25%22%20height%3D%22140%25%22%3E%3CfeGaussianBlur%20stdDeviation%3D%2216%22/%3E%3C/filter%3E%0A%3C/defs%3E%0A%3Crect%20width%3D%221600%22%20height%3D%22900%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%3Crect%20width%3D%221600%22%20height%3D%22900%22%20fill%3D%22url%28%23glow%29%22/%3E%0A%3Cg%20opacity%3D%220.18%22%20stroke%3D%22%23f7fffe%22%20stroke-width%3D%2210%22%20fill%3D%22none%22%3E%0A%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22180%22%20r%3D%22190%22/%3E%0A%20%20%3Ccircle%20cx%3D%22260%22%20cy%3D%22180%22%20r%3D%22240%22/%3E%0A%20%20%3Ccircle%20cx%3D%221330%22%20cy%3D%22170%22%20r%3D%22170%22/%3E%0A%20%20%3Ccircle%20cx%3D%221330%22%20cy%3D%22170%22%20r%3D%22220%22/%3E%0A%20%20%3Ccircle%20cx%3D%22810%22%20cy%3D%22700%22%20r%3D%22230%22/%3E%0A%20%20%3Ccircle%20cx%3D%22810%22%20cy%3D%22700%22%20r%3D%22290%22/%3E%0A%3C/g%3E%0A%3Cg%20opacity%3D%220.24%22%3E%0A%20%20%3Cpath%20d%3D%22M120%20640%20A300%20300%200%200%201%20720%20640%22%20stroke%3D%22%23fff7d6%22%20stroke-width%3D%2220%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%20%20%3Cpath%20d%3D%22M880%20650%20A290%20290%200%200%201%201460%20650%22%20stroke%3D%22%23fff7d6%22%20stroke-width%3D%2218%22%20fill%3D%22none%22%20stroke-linecap%3D%22round%22/%3E%0A%3C/g%3E%0A%3Cg%20transform%3D%22translate%28255%20180%29%22%20opacity%3D%220.28%22%3E%0A%20%20%3Ccircle%20r%3D%22150%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.12%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.35%22%20stroke-width%3D%2210%22/%3E%0A%20%20%3Cg%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.45%22%20stroke-width%3D%228%22%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%22-145%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22102%22%20y2%3D%22-102%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22145%22%20y2%3D%220%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22102%22%20y2%3D%22102%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%22145%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22-102%22%20y2%3D%22102%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22-145%22%20y2%3D%220%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22-102%22%20y2%3D%22-102%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3Ccircle%20r%3D%2222%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.8%22/%3E%0A%3C/g%3E%0A%3Cg%20transform%3D%22translate%281320%20170%29%20scale%280.85%29%22%20opacity%3D%220.24%22%3E%0A%20%20%3Ccircle%20r%3D%22150%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.10%22%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.35%22%20stroke-width%3D%2210%22/%3E%0A%20%20%3Cg%20stroke%3D%22%23ffffff%22%20stroke-opacity%3D%220.45%22%20stroke-width%3D%228%22%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%22-145%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22102%22%20y2%3D%22-102%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22145%22%20y2%3D%220%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22102%22%20y2%3D%22102%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%220%22%20y2%3D%22145%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22-102%22%20y2%3D%22102%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22-145%22%20y2%3D%220%22/%3E%0A%20%20%20%20%3Cline%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%22-102%22%20y2%3D%22-102%22/%3E%0A%20%20%3C/g%3E%0A%20%20%3Ccircle%20r%3D%2222%22%20fill%3D%22%23ffffff%22%20fill-opacity%3D%220.8%22/%3E%0A%3C/g%3E%0A%3Cg%20opacity%3D%220.3%22%20filter%3D%22url%28%23blur%29%22%3E%0A%20%20%3Cellipse%20cx%3D%22530%22%20cy%3D%22150%22%20rx%3D%22240%22%20ry%3D%2290%22%20fill%3D%22%23fff8cc%22/%3E%0A%20%20%3Cellipse%20cx%3D%221160%22%20cy%3D%22360%22%20rx%3D%22290%22%20ry%3D%22120%22%20fill%3D%22%23d8fff8%22/%3E%0A%20%20%3Cellipse%20cx%3D%22760%22%20cy%3D%22740%22%20rx%3D%22370%22%20ry%3D%22130%22%20fill%3D%22%23fff0be%22/%3E%0A%3C/g%3E%0A%3Cg%20opacity%3D%220.6%22%20fill%3D%22%23ffffff%22%3E%0A%20%20%3Ccircle%20cx%3D%22110%22%20cy%3D%2298%22%20r%3D%225%22/%3E%3Ccircle%20cx%3D%22180%22%20cy%3D%2290%22%20r%3D%223%22/%3E%3Ccircle%20cx%3D%22340%22%20cy%3D%22120%22%20r%3D%224%22/%3E%0A%20%20%3Ccircle%20cx%3D%221240%22%20cy%3D%22108%22%20r%3D%225%22/%3E%3Ccircle%20cx%3D%221380%22%20cy%3D%22120%22%20r%3D%224%22/%3E%3Ccircle%20cx%3D%221500%22%20cy%3D%2284%22%20r%3D%223%22/%3E%0A%20%20%3Ccircle%20cx%3D%22270%22%20cy%3D%22700%22%20r%3D%224%22/%3E%3Ccircle%20cx%3D%22410%22%20cy%3D%22770%22%20r%3D%223%22/%3E%3Ccircle%20cx%3D%221220%22%20cy%3D%22760%22%20r%3D%225%22/%3E%0A%3C/g%3E%0A%3C/svg%3E";
+const BG_ROOM = "data:image/svg+xml;charset=UTF-8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%201600%20900%22%3E%0A%3Cdefs%3E%0A%20%20%3ClinearGradient%20id%3D%22bg%22%20x1%3D%220%22%20y1%3D%220%22%20x2%3D%221%22%20y2%3D%221%22%3E%0A%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230b6f86%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%2240%25%22%20stop-color%3D%22%230b4f74%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2308233d%22/%3E%0A%20%20%3C/linearGradient%3E%0A%20%20%3CradialGradient%20id%3D%22glow%22%20cx%3D%2250%25%22%20cy%3D%2235%25%22%20r%3D%2265%25%22%3E%0A%20%20%20%20%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2391fff0%22%20stop-opacity%3D%220.30%22/%3E%0A%20%20%20%20%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%2391fff0%22%20stop-opacity%3D%220%22/%3E%0A%20%20%3C/radialGradient%3E%0A%3C/defs%3E%0A%3Crect%20width%3D%221600%22%20height%3D%22900%22%20fill%3D%22url%28%23bg%29%22/%3E%0A%3Crect%20width%3D%221600%22%20height%3D%22900%22%20fill%3D%22url%28%23glow%29%22/%3E%0A%3Cg%20opacity%3D%220.12%22%20stroke%3D%22%23d9fff8%22%20stroke-width%3D%228%22%20fill%3D%22none%22%3E%0A%20%20%3Ccircle%20cx%3D%22220%22%20cy%3D%22120%22%20r%3D%22120%22/%3E%0A%20%20%3Ccircle%20cx%3D%221360%22%20cy%3D%22130%22%20r%3D%22120%22/%3E%0A%20%20%3Ccircle%20cx%3D%22800%22%20cy%3D%22760%22%20r%3D%22180%22/%3E%0A%3C/g%3E%0A%3Cg%20opacity%3D%220.09%22%20stroke%3D%22%23fff7d2%22%20stroke-width%3D%2214%22%20fill%3D%22none%22%3E%0A%20%20%3Cpath%20d%3D%22M220%20740%20A280%20280%200%200%201%20780%20740%22/%3E%0A%20%20%3Cpath%20d%3D%22M820%20740%20A280%20280%200%200%201%201380%20740%22/%3E%0A%3C/g%3E%0A%3C/svg%3E";
 
-const KEY_NICK = "zgadnij_nick_v3";
-const KEY_ACTIVE_ROOM = "zgadnij_active_room_v3";
-const KEY_ROOMS_HISTORY = "zgadnij_rooms_history_v3";
+const KEY_NICK = "typer_nick_v3";
+const KEY_ACTIVE_ROOM = "typer_active_room_v3";
+const KEY_ROOMS_HISTORY = "typer_rooms_history_v3";
 
 // Profil (avatar / kraj / ulubiony klub)
-const KEY_PROFILE = "zgadnij_profile_v1"; // JSON
+const KEY_PROFILE = "typer_profile_v1"; // JSON
 
 // Id gracza (bezpieczne logowanie na innym urządzeniu)
 // Format: 1 litera kraju + 6 cyfr, np. P123456
-const KEY_PLAYER_NO = "zgadnij_player_no_v1";
+const KEY_PLAYER_NO = "typer_player_no_v1";
 
 // NOWE: język
-const KEY_LANG = "zgadnij_lang_v1"; // "pl" | "en"
+const KEY_LANG = "typer_lang_v1"; // "pl" | "en"
 
 const firebaseConfig = {
   apiKey: "AIzaSyCE-uY6HnDWdfKW03hioAlLM8BLj851fco",
@@ -217,7 +216,7 @@ const I18N = {
     clearFailed: "Nie udało się wyczyścić profilu.",
     language: "Język",
     close: "Zamknij",
-    roomsTitle: "Pokoje zgadywanek",
+    roomsTitle: "Pokoje typerów",
     stats: "Statystyki",
     exit: "Wyjście",
 
@@ -248,30 +247,30 @@ const I18N = {
     refresh: "Odśwież",
     actions: "Akcje",
     actionsSub: "Zapisz typy dopiero, gdy uzupełnisz wszystkie mecze.",
-    savePicks: "Zapisz rundę",
-    enterResults: "Panel admina",
+    savePicks: "Zapisz typy",
+    enterResults: "Wpisz wyniki",
     endRound: "Zakończ kolejkę",
     myQueue: "Własna kolejka",
     addQueue: "Dodaj kolejkę (test)",
 
-    matches: "Plansza hasła",
-    matchesSub: "Tutaj podepniemy planszę, litery i kolejkę graczy.",
+    matches: "Spotkania",
+    matchesSub: "Uzupełnij typy (0–20). Wyniki admin wpisze osobno.",
     round: "KOLEJKA",
     games: "Mecze",
     pointsRound: "PUNKTY (kolejka)",
 
     players: "Gracze",
     playersSub: "",
-    leagueBtn: "Ranking graczy",
+    leagueBtn: "Tabela ligi typerów",
 
     results: "Wyniki",
     hintResults: "Podpowiedź: wpisz wszystkie wyniki i kliknij „Zapisz wyniki”.",
     saveResults: "Zapisz wyniki",
 
-    league: "Ranking graczy",
+    league: "Tabela ligi typerów",
     afterRound: "Po kolejce",
     ranking: "Ranking",
-    leagueHint: "Kliknij gracza, aby zobaczyć statystyki i osiągnięcia.",
+    leagueHint: "Kliknij gracza, aby zobaczyć statystyki (kolejki + podgląd typów).",
     playerCol: "Gracz",
     roundsCol: "Kolejki",
     pointsCol: "Punkty",
@@ -293,7 +292,7 @@ const I18N = {
     clearFailed: "Failed to clear profile.",
     language: "Language",
     close: "Close",
-    roomsTitle: "Guess rooms",
+    roomsTitle: "Typer rooms",
     stats: "Stats",
     exit: "Exit",
 
@@ -324,30 +323,30 @@ const I18N = {
     refresh: "Refresh",
     actions: "Actions",
     actionsSub: "Save picks only after you fill all matches.",
-    savePicks: "Save round",
-    enterResults: "Admin panel",
+    savePicks: "Save picks",
+    enterResults: "Enter results",
     endRound: "End round",
     myQueue: "My fixture",
     addQueue: "Add fixture (test)",
 
-    matches: "Puzzle board",
-    matchesSub: "Here we will connect the puzzle board, letters and turn order.",
+    matches: "Matches",
+    matchesSub: "Fill picks (0–20). Admin enters results separately.",
     round: "ROUND",
     games: "Games",
     pointsRound: "POINTS (round)",
 
     players: "Players",
     playersSub: "",
-    leagueBtn: "Player ranking",
+    leagueBtn: "League table",
 
     results: "Results",
     hintResults: "Tip: fill all results and click “Save results”.",
     saveResults: "Save results",
 
-    league: "Player ranking",
+    league: "League table",
     afterRound: "After round",
     ranking: "Ranking",
-    leagueHint: "Click a player to view stats and achievements.",
+    leagueHint: "Click a player to view stats (rounds + picks preview).",
     playerCol: "Player",
     roundsCol: "Rounds",
     pointsCol: "Points",
@@ -1540,9 +1539,9 @@ function getPlayerNo(){
 }
 
 // ===== PIN LOGIN (local per device) =====
-const KEY_SESSION_AUTH = "zgadnij_session_auth_v1";
-const KEY_LAST_PLAYERNO = "zgadnij_last_playerno_v1";
-const KEY_PINHASH_PREFIX = "zgadnij_pinhash_"; // + playerNo
+const KEY_SESSION_AUTH = "typer_session_auth_v1";
+const KEY_LAST_PLAYERNO = "typer_last_playerno_v1";
+const KEY_PINHASH_PREFIX = "typer_pinhash_"; // + playerNo
 
 function __pinKey(playerNo){
   return KEY_PINHASH_PREFIX + String(playerNo||"").trim().toUpperCase();
@@ -3576,7 +3575,7 @@ function bindUI(){
   // ADMIN
   el("btnEnterResults").onclick = async ()=>{
     if(!isAdmin()) { showToast(getLang()==="en" ? "Admin only" : "Tylko admin"); return; }
-    if(!matchesCache.length){ showToast(getLang()==="en" ? "Puzzle board coming soon" : "Plansza hasła w przygotowaniu"); return; }
+    if(!matchesCache.length){ showToast(getLang()==="en" ? "No matches" : "Brak meczów"); return; }
     openResultsScreen();
   };
 
@@ -3766,7 +3765,7 @@ function renderRandomPreviewMatches(){
   if(!ms.length){
     const empty = document.createElement("div");
     empty.className = "mqEmpty";
-    empty.textContent = getLang()==="en" ? "Puzzle board will appear here." : "Tutaj pojawi się plansza hasła.";
+    empty.textContent = getLang()==="en" ? "No matches generated." : "Nie wygenerowano meczów.";
     box.appendChild(empty);
     return;
   }
@@ -3877,7 +3876,7 @@ async function confirmMQDeadline(){
     const draft = window.__randomQueueDraft;
     if(!draft || !Array.isArray(draft.matches) || draft.matches.length !== 10){
       closeMQDeadlineOverlay();
-      showToast(getLang()==="en" ? "No puzzle data yet" : "Brak jeszcze danych gry");
+      showToast(getLang()==="en" ? "No draft matches" : "Brak meczów do zapisania");
       return;
     }
     draft.deadlineMs = ms;
@@ -4190,7 +4189,7 @@ function renderManualMatchesList(){
   if(!ms.length){
     const empty = document.createElement("div");
     empty.className = "mqEmpty";
-    empty.textContent = getLang()==="en" ? "No puzzle rounds yet." : "Nie dodano jeszcze rund gry.";
+    empty.textContent = getLang()==="en" ? "No matches added yet." : "Nie dodano jeszcze meczów.";
     box.appendChild(empty);
     return;
   }
@@ -4687,7 +4686,7 @@ async function saveAllPicks(){
   }
 
   if(!matchesCache.length){
-    showToast(getLang()==="en" ? "Puzzle board coming soon" : "Plansza hasła w przygotowaniu");
+    showToast(getLang()==="en" ? "No matches" : "Brak meczów");
     return;
   }
   if(!allMyPicksFilled()){
@@ -5424,7 +5423,7 @@ function renderResultsList(){
 async function saveResults(){
   if(!currentRoomCode) return;
   if(!isAdmin()) { showToast(getLang()==="en" ? "Admin only" : "Tylko admin"); return; }
-  if(!matchesCache.length) { showToast(getLang()==="en" ? "Puzzle board coming soon" : "Plansza hasła w przygotowaniu"); return; }
+  if(!matchesCache.length) { showToast(getLang()==="en" ? "No matches" : "Brak meczów"); return; }
 
   // 7030: jeśli zaznaczono mecze do odwołania – potwierdź i oznacz je jako cancelled
   if(resultsCancelSelected.size){
@@ -5872,7 +5871,7 @@ async function deleteRoomConfirmAndDelete(){
 async function endRoundConfirmAndArchive(){
   if(!currentRoomCode) return;
   if(!isAdmin()) { showToast(getLang()==="en" ? "Admin only" : "Tylko admin"); return; }
-  if(!matchesCache.length){ showToast(getLang()==="en" ? "Puzzle board coming soon" : "Plansza hasła w przygotowaniu"); return; }
+  if(!matchesCache.length){ showToast(getLang()==="en" ? "No matches" : "Brak meczów"); return; }
   if(!allResultsComplete()){ showToast(getLang()==="en" ? "Enter all results first" : "Najpierw wpisz komplet wyników"); return; }
 
   const ok = await customConfirmEndRound();
@@ -6117,7 +6116,7 @@ async function commitRandomQueueDraft(){
 
   const draft = window.__randomQueueDraft;
   if(!draft || !Array.isArray(draft.matches) || draft.matches.length !== 10){
-    showToast(getLang()==="en" ? "No puzzle data yet" : "Brak jeszcze danych gry");
+    showToast(getLang()==="en" ? "No draft matches" : "Brak meczów do zapisania");
     return;
   }
 
@@ -6766,8 +6765,8 @@ window.addEventListener("orientationchange", ()=>{ setTimeout(()=>{ try{ updateL
 (async()=>{
   try{
     setBg(BG_HOME);
-    setFooter(`ZGADNIJ v${BUILD}`);
-    setSplash(`ZGADNIJ v${BUILD}\nŁadowanie Firebase…`);
+    setFooter(`BUILD ${BUILD}`);
+    setSplash(`BUILD ${BUILD}\nŁadowanie Firebase…`);
 
     await initFirebase();
     bindUI();

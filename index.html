@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ I WYGRAJ (BUILD 3000)</title>
+  <title>Typer (BUILD 8037)</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -32,13 +32,13 @@
       margin:0;
       font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
       color:var(--text);
-      background:var(--bg);
+      background:linear-gradient(135deg,#d4fff6 0%,#86eed8 35%,#3ec8c3 68%,#105c7e 100%);
       overflow:hidden;
     }
 
     #bg{
       position:fixed; inset:0;
-      background:#071229 center/cover no-repeat;
+      background:linear-gradient(135deg,#d4fff6 0%,#86eed8 35%,#3ec8c3 68%,#105c7e 100%) center/cover no-repeat;
       z-index:0;
     }
 
@@ -1909,7 +1909,7 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <!-- SPLASH -->
 <section class="screen active" id="splash">
 <div class="splashCard">
-<div style="font-size:22px;font-weight:1000;">ZGADNIJ I WYGRAJ</div>
+<div style="font-size:22px;font-weight:1000;">Typer</div>
 <div class="hint" id="splashHint">Ładowanie…</div>
 <div class="err" id="splashErr"></div>
 <div class="spinner"></div>
@@ -1927,8 +1927,8 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <img alt="Ustawienia" class="homeGearImg" src="ui/logo/btn_ustawienia.png"/>
 </div>
 <div aria-label="Menu" class="homeBtns">
-<button class="imgBtn" data-btn="btn_tipster_room.png" id="btnHomeRooms" title="Pokoje gry">
-<img alt="Pokoje gry" data-btn="btn_tipster_room.png" src="ui/buttons/pl/btn_tipster_room.png"/>
+<button class="imgBtn" data-btn="btn_tipster_room.png" id="btnHomeRooms" title="Pokoje typerów">
+<img alt="Pokoje typerów" data-btn="btn_tipster_room.png" src="ui/buttons/pl/btn_tipster_room.png"/>
 </button>
 <button class="imgBtn" data-btn="btn_statistics.png" id="btnHomeStats" title="Statystyki">
 <img alt="Statystyki" data-btn="btn_statistics.png" src="ui/buttons/pl/btn_statistics.png"/>
@@ -1944,7 +1944,7 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div class="title" id="t_continue_title" style="margin:0">Kontynuować?</div>
 <div class="sub" id="t_continue_sub">Wykryto wcześniejszą rozgrywkę</div>
 </div>
-<div class="pill">ZGADNIJ</div>
+<div class="pill">Typer</div>
 </div>
 <div class="continueGrid">
 <div class="miniCard">
@@ -1970,7 +1970,7 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <section class="screen" id="rooms">
 <div class="roomsBox panel">
 <div class="row">
-<div class="chip" id="t_rooms_title">Pokoje zgadywanek</div>
+<div class="chip" id="t_rooms_title">Pokoje typerów</div>
 <div class="spacer"></div>
 <div class="chip"><span id="t_nick">Nick</span>: <span id="nickLabelRooms">—</span></div>
 <button class="imgBtn sysBtn small" data-btn="btn_dodaj_profil.png" id="btnChangeNickRooms" type="button"><img alt="btnChangeNickRooms" data-btn="btn_dodaj_profil.png" src="ui/buttons/pl/btn_dodaj_profil.png"/></button>
@@ -2066,7 +2066,7 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div class="panel midHead">
 <div class="row">
 <div>
-<div class="title" id="t_matches">Plansza hasła</div>
+<div class="title" id="t_matches">Spotkania</div>
 </div>
 <!-- ADMIN: przeniesione z lewego panelu (Akcje) na górę, obok nagłówka Spotkań -->
 <div class="roomTopBtns">
