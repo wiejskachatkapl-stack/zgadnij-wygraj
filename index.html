@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3013</title>
+  <title>ZGADNIJ v3014</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1894,7 +1894,7 @@
     }
 
 
-/* ZGADNIJ v3013 - serce gry: plansza 40 liter */
+/* ZGADNIJ v3014 - serce gry: plansza 40 liter */
 #room .midHead{display:none !important;}
 #room .matchActionsPanel{display:none !important;}
 #room .matchesWrap{
@@ -1980,7 +1980,7 @@
 }
 
 
-/* ZGADNIJ v3013 mobile fill */
+/* ZGADNIJ v3014 mobile fill */
 html, body {
   width: 100%;
   height: 100%;
@@ -2050,6 +2050,76 @@ html, body {
   .zgCategory {
     max-width: 96% !important;
     margin-top: 0 !important;
+  }
+}
+
+
+/* ZGADNIJ v3014 - smaller responsive board on phones */
+.zgBoardFrame{
+  max-width: 980px;
+}
+.zgBoardGrid{
+  width: 100%;
+  max-width: 100%;
+}
+@media (max-width: 900px){
+  #room .matchesWrap {
+    padding: 6px !important;
+  }
+  .zgBoardShell{
+    width: 100%;
+    max-width: 100% !important;
+    gap: 12px !important;
+  }
+  .zgBoardFrame{
+    width: 100% !important;
+    max-width: 100% !important;
+    padding: 10px 10px 14px !important;
+    border-radius: 16px !important;
+  }
+  .zgBoardGlow{
+    inset: 8px !important;
+    border-radius: 14px !important;
+  }
+  .zgBoardGrid{
+    gap: 4px !important;
+  }
+  .zgCell{
+    border-radius: 8px !important;
+    font-size: clamp(14px, 4.2vw, 24px) !important;
+    min-width: 0;
+  }
+  .zgCategory{
+    min-width: 0 !important;
+    width: 92% !important;
+    max-width: 92% !important;
+    padding: 10px 14px !important;
+    font-size: clamp(18px, 5vw, 28px) !important;
+  }
+  .zgBoardHint{
+    font-size: 13px !important;
+    line-height: 1.2 !important;
+    padding: 0 8px !important;
+  }
+}
+@media (max-width: 560px){
+  .zgBoardFrame{
+    padding: 8px 8px 12px !important;
+  }
+  .zgBoardGrid{
+    gap: 3px !important;
+  }
+  .zgCell{
+    font-size: clamp(12px, 3.8vw, 20px) !important;
+    border-radius: 7px !important;
+  }
+  .zgCategory{
+    width: 94% !important;
+    max-width: 94% !important;
+    font-size: clamp(16px, 4.8vw, 24px) !important;
+  }
+  .zgBoardHint{
+    font-size: 12px !important;
   }
 }
 
