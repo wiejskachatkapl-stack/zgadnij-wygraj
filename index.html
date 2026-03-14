@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3014</title>
+  <title>ZGADNIJ v3015</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1894,7 +1894,7 @@
     }
 
 
-/* ZGADNIJ v3014 - serce gry: plansza 40 liter */
+/* ZGADNIJ v3015 - serce gry: plansza 40 liter */
 #room .midHead{display:none !important;}
 #room .matchActionsPanel{display:none !important;}
 #room .matchesWrap{
@@ -1980,7 +1980,7 @@
 }
 
 
-/* ZGADNIJ v3014 mobile fill */
+/* ZGADNIJ v3015 mobile fill */
 html, body {
   width: 100%;
   height: 100%;
@@ -2054,7 +2054,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3014 - smaller responsive board on phones */
+/* ZGADNIJ v3015 - smaller responsive board on phones */
 .zgBoardFrame{
   max-width: 980px;
 }
@@ -2120,6 +2120,86 @@ html, body {
   }
   .zgBoardHint{
     font-size: 12px !important;
+  }
+}
+
+
+/* ZGADNIJ v3015 */
+#roomProfileCard,
+.substituteRow,
+#btnAllRankingFromRoom,
+#btnAllRankingFromRoomBtn,
+.allRankingCard,
+.rankAllTime {
+  display: none !important;
+}
+
+#room .matchActionsPanel{
+  display:flex !important;
+  align-items:center;
+  justify-content:center;
+  padding:18px 16px !important;
+  min-height:120px;
+}
+
+.zgAlphabetWrap{
+  width:100%;
+  max-width:920px;
+  margin:0 auto;
+  border-radius:26px;
+  border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(180deg, rgba(9,30,74,.70), rgba(6,20,56,.70));
+  box-shadow:0 16px 40px rgba(0,0,0,.30), inset 0 0 0 2px rgba(111,255,255,.10);
+  padding:14px 16px;
+}
+.zgAlphabetGrid{
+  display:grid;
+  grid-template-columns:repeat(9, 1fr);
+  gap:8px;
+}
+.zgKey{
+  border:none;
+  border-radius:12px;
+  min-height:44px;
+  background:linear-gradient(180deg,#f7f4eb,#e5dfd0);
+  color:#11234f;
+  font-weight:1000;
+  font-size:clamp(16px,1.3vw,22px);
+  box-shadow:inset 0 0 10px rgba(0,0,0,.08);
+  cursor:pointer;
+}
+.zgKey.hiddenKey{
+  visibility:hidden;
+}
+@media (max-width: 900px){
+  #room .matchActionsPanel{
+    padding:12px 10px !important;
+    min-height:92px;
+  }
+  .zgAlphabetWrap{
+    width:100%;
+    max-width:100% !important;
+    padding:10px;
+    border-radius:18px;
+  }
+  .zgAlphabetGrid{
+    grid-template-columns:repeat(7, 1fr);
+    gap:6px;
+  }
+  .zgKey{
+    min-height:38px;
+    border-radius:10px;
+    font-size:clamp(14px,3.6vw,18px);
+  }
+}
+@media (max-width: 560px){
+  .zgAlphabetGrid{
+    grid-template-columns:repeat(6, 1fr);
+    gap:5px;
+  }
+  .zgKey{
+    min-height:34px;
+    font-size:clamp(12px,3.4vw,16px);
   }
 }
 

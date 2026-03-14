@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3014;
+const BUILD = 3015;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4852,6 +4852,44 @@ function createLogoImg(teamName){
 }
 
 
+
+function renderZgadnijAlphabet(panel){
+  panel.innerHTML = "";
+  const wrap = document.createElement("div");
+  wrap.className = "zgAlphabetWrap";
+  const grid = document.createElement("div");
+  grid.className = "zgAlphabetGrid";
+
+  const letters = [
+    "A","Ą","B","C","Ć","D","E","Ę","F",
+    "G","H","I","J","K","L","Ł","M","N",
+    "Ń","O","Ó","P","Q","R","S","Ś","T",
+    "U","V","W","X","Y","Z","Ź","Ż"
+  ];
+
+  letters.forEach(ch=>{
+    const btn = document.createElement("button");
+    btn.className = "zgKey";
+    btn.type = "button";
+    btn.textContent = ch;
+    btn.disabled = true;
+    grid.appendChild(btn);
+  });
+
+  // fill grid a bit more evenly on desktop
+  for(let i=0;i<1;i++){
+    const dummy = document.createElement("button");
+    dummy.className = "zgKey hiddenKey";
+    dummy.type = "button";
+    dummy.textContent = "•";
+    dummy.disabled = true;
+    grid.appendChild(dummy);
+  }
+
+  wrap.appendChild(grid);
+  panel.appendChild(wrap);
+}
+
 function renderZgadnijBoard(list){
   list.innerHTML = "";
 
@@ -4907,6 +4945,7 @@ function renderMatches(){
   if(!list) return;
   list.innerHTML = "";
   renderZgadnijBoard(list);
+  if(el("matchActionsPanel")) renderZgadnijAlphabet(el("matchActionsPanel"));
   updateSaveButtonState();
   return;
 
