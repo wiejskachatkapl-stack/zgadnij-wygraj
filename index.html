@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3010</title>
+  <title>ZGADNIJ v3011</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1894,7 +1894,7 @@
     }
 
 
-/* ZGADNIJ v3010 */
+/* ZGADNIJ v3011 */
 #room .midHead .row{justify-content:flex-start;gap:12px}
 #room .midHead .spacer{display:none}
 #room .rightMovedActions{padding:14px;display:flex;justify-content:center;align-items:center;margin-top:12px}
@@ -1902,7 +1902,7 @@
 #room .rightMovedActions .col{width:100%}
 
 
-/* ZGADNIJ v3010 */
+/* ZGADNIJ v3011 */
 #roomLayout{gap:14px}
 #room .leftBar{display:none !important}
 #room .mid{flex:1 1 auto; min-width:0}
@@ -2011,6 +2011,50 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <input id="inpRoomName" placeholder="Nazwa pokoju (np. Domowy)" style="flex:1"/>
 <button class="imgBtn sysBtn" data-btn="btn_zaloz.png" id="btnCreateRoom" type="button"><img alt="btnCreateRoom" data-btn="btn_zalo
 <div id="roomLayout">
+<!-- LEFT -->
+<div class="leftBar panel" style="display:none">
+  <!-- 6016: profil gracza (avatar + nick + kraj + klub) na górze -->
+  <div class="panel leftTopProfile" id="roomProfileCard">
+    <div class="avatarBox">
+      <img id="roomAvatarImg" alt="avatar" style="display:none" />
+      <div id="roomAvatarFallback" style="font-weight:1000;opacity:.75">🙂</div>
+    </div>
+    <div class="profileTopText">
+      <div class="profileNick profileNickTop" id="roomProfileNick">—</div>
+      <div class="profileMeta" id="roomProfileCountry">—</div>
+      <div class="profileMeta" id="roomProfileFav">—</div>
+    </div>
+</div>
+
+
+<!-- 6016: dwa dolne kontenery dociśnięte do dołu -->
+  <div class="leftBottomStack">
+  <div class="panel" style="padding:14px">
+<div class="title" id="roomName">—</div>
+<div class="sub"><span id="t_admin">Admin</span>: <span id="roomAdmin">—</span></div>
+<div class="roomCodeBlock" style="margin-top:10px">
+<div class="row roomCodeRow">
+<div class="chip" style="flex:1;justify-content:space-between;">
+<span id="t_code">Kod</span>: <span id="roomCode">—</span>
+</div>
+</div>
+<div class="row roomCodeActions" style="margin-top:10px; gap:12px; justify-content:center;">
+<button aria-label="Opuść" class="imgBtn sysBtn small" data-btn="btn_opusc.png" id="btnLeave" title="Opuść" type="button"><img alt="Opuść" data-btn="btn_opusc.png" src="ui/buttons/pl/btn_opusc.png"/></button> </div>
+</div>
+</div>
+  <div class="panel" style="padding:14px">
+
+
+<div class="col" id="roomActionsCol" style="margin-top:10px">
+<!-- BUILD 7024: przeniesiono "Wyjście" z prawej strony do sekcji Akcje -->
+
+
+</div>
+</div>
+  </div>
+  <!-- back button removed (back is now on the right as "Wyjście") -->
+</div>
+<!-- MIDDLE -->
 <!-- MIDDLE -->
 <div class="mid">
 <div class="panel midHead">
@@ -2052,7 +2096,7 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div class="spacer"></div>
 <!-- 6017: dwa osobne kontenery na dole po prawej (Wyjście + Wiadomości) -->
 
-<!-- ZGADNIJ v3010: przeniesione akcje z lewej strony -->
+<!-- ZGADNIJ v3011: przeniesione akcje z lewej strony -->
 <div class="panel rightMovedActions" id="rightMovedActions">
   <div class="col" style="gap:12px;align-items:center;justify-content:center;">
     <button class="imgBtn sysBtn small" data-btn="btn_tabela_typerow.png" id="btnLeagueFromRoom" type="button"><img alt="btnLeagueFromRoom" data-btn="btn_tabela_typerow.png" src="ui/buttons/pl/btn_tabela_typerow.png"/></button>
