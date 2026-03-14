@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3022;
+const BUILD = 3023;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4931,11 +4931,12 @@ function zgSpinAmount(){
 
   __zgWheelBusy = true;
   const segs = ZG_WHEEL_SEGMENTS.length;
-  const index = Math.floor(Math.random() * segs);
   const segAngle = 360 / segs;
-  const centerAngle = index * segAngle + segAngle / 2;
-  const target = 360 - centerAngle;
-  __zgWheelRotation += 360 * (5 + Math.floor(Math.random()*2)) + target;
+
+  // Spin to a random raw angle first; final segment will be derived from the actual stop angle.
+  const extraTurns = 360 * (5 + Math.floor(Math.random() * 2));
+  const extraAngle = Math.random() * 360;
+  __zgWheelRotation += extraTurns + extraAngle;
 
   result.textContent = (getLang()==="en") ? "Spinning..." : "Losowanie...";
   overlay.classList.add("show");
@@ -4945,7 +4946,8 @@ function zgSpinAmount(){
   disc.style.transform = `rotate(${__zgWheelRotation}deg)`;
 
   window.setTimeout(()=>{
-    const seg = ZG_WHEEL_SEGMENTS[index];
+    const idx = zgSegmentIndexFromRotation(__zgWheelRotation);
+    const seg = ZG_WHEEL_SEGMENTS[idx];
     zgApplyWheelOutcome(seg);
     result.textContent = (getLang()==="en") ? `Result: ${seg.label}` : `Wynik: ${seg.label}`;
     renderMatches();
@@ -4954,6 +4956,16 @@ function zgSpinAmount(){
       __zgWheelBusy = false;
     }, 1200);
   }, 6200);
+}
+
+
+function zgSegmentIndexFromRotation(rotationDeg){
+  const segs = ZG_WHEEL_SEGMENTS.length;
+  const segAngle = 360 / segs;
+  const normalized = ((rotationDeg % 360) + 360) % 360;
+  // Pointer is at top. Determine which segment center is closest to the top after rotation.
+  const wheelAngleAtPointer = (360 - normalized) % 360;
+  return Math.floor(((wheelAngleAtPointer + segAngle / 2) % 360) / segAngle);
 }
 
 function zgApplyWheelOutcome(seg){
