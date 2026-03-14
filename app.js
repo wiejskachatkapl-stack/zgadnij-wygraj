@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3011;
+const BUILD = 3012;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4851,10 +4851,64 @@ function createLogoImg(teamName){
   return img;
 }
 
+
+function renderZgadnijBoard(list){
+  list.innerHTML = "";
+
+  const shell = document.createElement("div");
+  shell.className = "zgBoardShell";
+
+  const frame = document.createElement("div");
+  frame.className = "zgBoardFrame";
+
+  const glow = document.createElement("div");
+  glow.className = "zgBoardGlow";
+  frame.appendChild(glow);
+
+  const grid = document.createElement("div");
+  grid.className = "zgBoardGrid";
+
+  const layout = [
+    [{s:"revealed",t:"Z"},{s:"revealed",t:"G"},{s:"revealed",t:"A"},{s:"revealed",t:"D"},{s:"revealed",t:"N"},{s:"revealed",t:"I"},{s:"revealed",t:"J"},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}],
+    [{s:"revealed",t:"I"},{s:"hidden",t:""},{s:"revealed",t:"W"},{s:"revealed",t:"Y"},{s:"revealed",t:"G"},{s:"revealed",t:"R"},{s:"revealed",t:"A"},{s:"revealed",t:"J"},{s:"hidden",t:""},{s:"hidden",t:""}],
+    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"revealed",t:"H"},{s:"revealed",t:"A"},{s:"revealed",t:"S"},{s:"revealed",t:"Ł"},{s:"revealed",t:"O"},{s:"hidden",t:""},{s:"hidden",t:""}],
+    [{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""},{s:"hidden",t:""}]
+  ];
+
+  layout.flat().forEach(cellData=>{
+    const cell = document.createElement("div");
+    cell.className = "zgCell " + cellData.s;
+    cell.textContent = cellData.t || "";
+    grid.appendChild(cell);
+  });
+
+  frame.appendChild(grid);
+  shell.appendChild(frame);
+
+  const category = document.createElement("div");
+  category.className = "zgCategory";
+  category.textContent = (getLang()==="en") ? "MAIN PHRASE" : "HASŁO GŁÓWNE";
+  shell.appendChild(category);
+
+  const hint = document.createElement("div");
+  hint.className = "zgBoardHint";
+  hint.textContent = (getLang()==="en")
+    ? "Prototype board: 40 tiles (4 x 10). Next step: real letter logic."
+    : "Prototyp planszy: 40 pól (4 x 10). Następny krok: prawdziwa logika liter.";
+  shell.appendChild(hint);
+
+  list.appendChild(shell);
+
+  if(el("matchesCount")) el("matchesCount").textContent = "40";
+}
+
 function renderMatches(){
   const list = el("matchesList");
   if(!list) return;
   list.innerHTML = "";
+  renderZgadnijBoard(list);
+  updateSaveButtonState();
+  return;
 
   recomputeTypingDeadline();
 
