@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3008</title>
+  <title>ZGADNIJ v3009</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1894,16 +1894,12 @@
     }
 
 
-/* ZGADNIJ v3008 UI adjustments */
-.spotkaniaHeader, .seasonInfo, .matchesInfo, .pointsInfo {display:none !important;}
-.substituteRow {display:none !important;}
-.rankAllTime {display:none !important;}
-
-/* move selected buttons to the right side visually */
-.leftPanel .imgBtn.keepMove {
-  margin-left:auto;
-  display:block;
-}
+/* ZGADNIJ v3009 */
+#room .midHead .row{justify-content:flex-start;gap:12px}
+#room .midHead .spacer{display:none}
+#room .rightMovedActions{padding:14px;display:flex;justify-content:center;align-items:center;margin-top:12px}
+#room .rightMovedActions .leftDeleteRoomCard{display:flex !important;min-height:auto;padding:0;border:none;background:transparent;box-shadow:none}
+#room .rightMovedActions .col{width:100%}
 
 </style>
 </head>
@@ -2030,21 +2026,6 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
     </div>
 </div>
 
-  <!-- 6028: osobny kontener na Kraj/Klub + przycisk Podmiana -->
-  <div class="panel leftProfileInfo" id="roomProfileInfoCard">
-    <div class="substituteRow" id="roomSubstituteRow">
-      <button aria-label="Podmiana" class="imgBtn sysBtn small" data-btn="btn_substitute.png" id="btnSubstitute" title="Podmiana" type="button">
-        <img alt="Podmiana" data-btn="btn_substitute.png" src="ui/buttons/pl/btn_substitute.png"/>
-      </button>
-    </div>
-  </div>
-
-    <!-- 7009: osobny kontener na przycisk usuwania pokoju (ADMIN) -->
-  <div class="panel leftDeleteRoomCard" id="leftDeleteRoomCard" style="display:none">
-    <button aria-label="Usuń pokój" class="imgBtn sysBtn small" data-btn="btn_delete_room.png" id="btnDeleteRoom" title="Usuń pokój" type="button">
-      <img alt="Usuń pokój" data-btn="btn_delete_room.png" src="ui/buttons/pl/btn_delete_room.png"/>
-    </button>
-  </div>
 
 <!-- 6016: dwa dolne kontenery dociśnięte do dołu -->
   <div class="leftBottomStack">
@@ -2067,10 +2048,7 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div class="col" id="roomActionsCol" style="margin-top:10px">
 <!-- BUILD 7024: przeniesiono "Wyjście" z prawej strony do sekcji Akcje -->
 
-<button class="imgBtn sysBtn small" data-btn="btn_tabela_typerow.png" id="btnLeagueFromRoom" type="button"><img alt="btnLeagueFromRoom" data-btn="btn_tabela_typerow.png" src="ui/buttons/pl/btn_tabela_typerow.png"/></button>
 
-<!-- 6015: dodatkowe przyciski w lewym kontenerze (później podepniemy kodem) -->
-<button class="imgBtn sysBtn small" data-btn="btn_all_ranking.png" id="btnAllRankingFromRoom" type="button"><img alt="btnAllRankingFromRoom" data-btn="btn_all_ranking.png" src="ui/buttons/pl/btn_all_ranking.png"/></button>
 </div>
 </div>
   </div>
@@ -2080,17 +2058,11 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div class="mid">
 <div class="panel midHead">
 <div class="row">
-<div>
-<div class="title" id="t_matches">Spotkania</div>
-</div>
 <!-- ADMIN: przeniesione z lewego panelu (Akcje) na górę, obok nagłówka Spotkań -->
 <div class="roomTopBtns">
 <button class="imgBtn sysBtn actionSmall" data-btn="btn_dodaj_kolejke.png" id="btnAddQueue" style="display:none" type="button"><img alt="btnAddQueue" data-btn="btn_dodaj_kolejke.png" src="ui/buttons/pl/btn_add_queue.png"/></button>
 </div>
 <div class="spacer"></div>
-<div class="chip"><span id="t_round">KOLEJKA</span><span class="chipSep" id="sep_round">: </span><span id="roundLabel">—</span></div>
-<div class="chip"><span id="t_games">Mecze</span>: <span id="matchesCount">0</span></div>
-<div class="chip"><span id="t_points_round">PUNKTY</span><span class="chipSep" id="sep_points_round">: </span><span id="myPointsLabel">—</span></div>
 </div>
 </div>
 <div class="panel matchesWrap" id="matchesList"></div>
@@ -2122,6 +2094,22 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div class="playersList" id="playersList"></div>
 <div class="spacer"></div>
 <!-- 6017: dwa osobne kontenery na dole po prawej (Wyjście + Wiadomości) -->
+
+<!-- ZGADNIJ v3009: przeniesione akcje z lewej strony -->
+<div class="panel rightMovedActions" id="rightMovedActions">
+  <div class="col" style="gap:12px;align-items:center;justify-content:center;">
+    <button class="imgBtn sysBtn small" data-btn="btn_tabela_typerow.png" id="btnLeagueFromRoom" type="button"><img alt="btnLeagueFromRoom" data-btn="btn_tabela_typerow.png" src="ui/buttons/pl/btn_tabela_typerow.png"/></button>
+    
+
+    <!-- 7009: osobny kontener na przycisk usuwania pokoju (ADMIN) -->
+  <div class="panel leftDeleteRoomCard" id="leftDeleteRoomCard" style="display:none">
+    <button aria-label="Usuń pokój" class="imgBtn sysBtn small" data-btn="btn_delete_room.png" id="btnDeleteRoom" title="Usuń pokój" type="button">
+      <img alt="Usuń pokój" data-btn="btn_delete_room.png" src="ui/buttons/pl/btn_delete_room.png"/>
+    </button>
+  </div>
+  </div>
+</div>
+
 <div class="rightBottomStack">
   <div class="panel rightBottomMessages">
     <button class="imgBtn sysBtn" data-btn="btn_messages.png" id="btnMessagesFromRoom" style="position:relative" type="button">
