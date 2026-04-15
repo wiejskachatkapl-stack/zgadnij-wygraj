@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3023;
+const BUILD = 3024;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4859,32 +4859,32 @@ let __zgData = null;
 let __zgGame = null;
 
 const ZG_WHEEL_SEGMENTS = [
-  {label:"50", value:50, type:"money"},
-  {label:"100", value:100, type:"money"},
   {label:"150", value:150, type:"money"},
   {label:"200", value:200, type:"money"},
   {label:"250", value:250, type:"money"},
   {label:"300", value:300, type:"money"},
   {label:"350", value:350, type:"money"},
   {label:"400", value:400, type:"money"},
-  {label:"450", value:450, type:"money"},
   {label:"500", value:500, type:"money"},
   {label:"600", value:600, type:"money"},
-  {label:"700", value:700, type:"money"},
   {label:"800", value:800, type:"money"},
-  {label:"900", value:900, type:"money"},
   {label:"1000", value:1000, type:"money"},
-  {label:"1100", value:1100, type:"money"},
-  {label:"1200", value:1200, type:"money"},
-  {label:"1400", value:1400, type:"money"},
+  {label:"1500", value:1500, type:"money"},
+  {label:"2000", value:2000, type:"money"},
+  {label:"150", value:150, type:"money"},
+  {label:"200", value:200, type:"money"},
+  {label:"250", value:250, type:"money"},
+  {label:"300", value:300, type:"money"},
+  {label:"350", value:350, type:"money"},
+  {label:"STOP", value:"STOP", type:"stop"},
   {label:"BANKRUT", value:"BANKRUT", type:"bankrupt"},
-  {label:"STOP", value:"STOP", type:"stop"}
+  {label:"BANKRUT", value:"BANKRUT", type:"bankrupt"}
 ];
 let __zgWheelRotation = 0;
 let __zgWheelBusy = false;
 
 function buildZgWheelSvg(){
-  const colors = ["#4cc3ff","#3be08a","#ffd84c","#ff9f40","#ff5b5b","#b25cff","#6de27a","#f3d24e","#4a8cff","#4cd6d0"];
+  const colors = ["#6f8fa8","#7a9c84","#b8a56a","#a98763","#7c8fa0","#8d7aa8","#7f9b76","#b49b68","#748aa1","#7aa79f","#9b866c","#97a06f","#6f8fa8","#7a9c84","#b8a56a","#a98763","#7c8fa0","#7a5a3a","#111111","#222222"];
   const segs = ZG_WHEEL_SEGMENTS.length;
   const step = (Math.PI * 2) / segs;
   const cx = 250, cy = 250, r = 245;
@@ -4931,12 +4931,11 @@ function zgSpinAmount(){
 
   __zgWheelBusy = true;
   const segs = ZG_WHEEL_SEGMENTS.length;
+  const index = Math.floor(Math.random() * segs);
   const segAngle = 360 / segs;
-
-  // Spin to a random raw angle first; final segment will be derived from the actual stop angle.
-  const extraTurns = 360 * (5 + Math.floor(Math.random() * 2));
-  const extraAngle = Math.random() * 360;
-  __zgWheelRotation += extraTurns + extraAngle;
+  const centerAngle = index * segAngle + segAngle / 2;
+  const target = 360 - centerAngle;
+  __zgWheelRotation += 360 * (5 + Math.floor(Math.random()*2)) + target;
 
   result.textContent = (getLang()==="en") ? "Spinning..." : "Losowanie...";
   overlay.classList.add("show");
@@ -4946,8 +4945,7 @@ function zgSpinAmount(){
   disc.style.transform = `rotate(${__zgWheelRotation}deg)`;
 
   window.setTimeout(()=>{
-    const idx = zgSegmentIndexFromRotation(__zgWheelRotation);
-    const seg = ZG_WHEEL_SEGMENTS[idx];
+    const seg = ZG_WHEEL_SEGMENTS[index];
     zgApplyWheelOutcome(seg);
     result.textContent = (getLang()==="en") ? `Result: ${seg.label}` : `Wynik: ${seg.label}`;
     renderMatches();
@@ -4956,16 +4954,6 @@ function zgSpinAmount(){
       __zgWheelBusy = false;
     }, 1200);
   }, 6200);
-}
-
-
-function zgSegmentIndexFromRotation(rotationDeg){
-  const segs = ZG_WHEEL_SEGMENTS.length;
-  const segAngle = 360 / segs;
-  const normalized = ((rotationDeg % 360) + 360) % 360;
-  // Pointer is at top. Determine which segment center is closest to the top after rotation.
-  const wheelAngleAtPointer = (360 - normalized) % 360;
-  return Math.floor(((wheelAngleAtPointer + segAngle / 2) % 360) / segAngle);
 }
 
 function zgApplyWheelOutcome(seg){
