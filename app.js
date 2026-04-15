@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3025;
+const BUILD = 3026;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4883,7 +4883,6 @@ const ZG_WHEEL_SEGMENTS = [
 let __zgReelIndex = 0;
 let __zgReelBusy = false;
 let __zgWheelRotation = 0;
-let __zgReelBusy = false;
 
 
 function zgReelDisplayText(seg){
