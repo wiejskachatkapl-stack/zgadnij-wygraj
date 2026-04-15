@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3026;
+const BUILD = 3027;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4926,7 +4926,7 @@ function renderZgReelBox(){
 
   window.setTimeout(()=>{
     try{
-      const itemHeight = 58;
+      const itemHeight = 72;
       const baseIndex = ZG_WHEEL_SEGMENTS.length + __zgReelIndex;
       track.style.transform = `translateY(-${baseIndex * itemHeight}px)`;
     }catch(e){}
@@ -4940,7 +4940,7 @@ function zgSpinAmount(){
   if(!track) return;
 
   __zgReelBusy = true;
-  const itemHeight = 58;
+  const itemHeight = 72;
   const segs = ZG_WHEEL_SEGMENTS.length;
   const targetIndex = Math.floor(Math.random() * segs);
   const finalIndex = segs * 2 + targetIndex;
@@ -4955,8 +4955,28 @@ function zgSpinAmount(){
     __zgReelIndex = targetIndex;
     zgApplyWheelOutcome(seg);
     renderMatches();
+    window.setTimeout(()=>{ try{ zgShowFlashResult(seg); }catch(e){} }, 50);
     __zgReelBusy = false;
   }, 3900);
+}
+
+
+function zgShowFlashResult(seg){
+  const list = el("matchesList");
+  if(!list) return;
+  let flash = document.getElementById("zgFlashResult");
+  if(!flash){
+    flash = document.createElement("div");
+    flash.id = "zgFlashResult";
+    flash.className = "zgFlashResult";
+    list.appendChild(flash);
+  }
+  flash.className = "zgFlashResult " + seg.type;
+  flash.textContent = seg.label;
+  flash.classList.add("show");
+  window.setTimeout(()=>{
+    flash.classList.remove("show");
+  }, 1000);
 }
 
 function zgNotify(msg){
