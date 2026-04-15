@@ -5,7 +5,7 @@
 <meta charset="utf-8"/>
 <meta content="width=device-width,initial-scale=1,viewport-fit=cover" name="viewport"/>
 <meta content="#08122a" name="theme-color"/>
-  <title>ZGADNIJ v3024</title>
+  <title>ZGADNIJ v3025</title>
 <link href="manifest.json" rel="manifest"/>
 <style>
 .roomCodeRow{display:flex;gap:10px;align-items:center;flex-wrap:nowrap;}
@@ -1894,7 +1894,7 @@
     }
 
 
-/* ZGADNIJ v3024 - serce gry: plansza 40 liter */
+/* ZGADNIJ v3025 - serce gry: plansza 40 liter */
 #room .midHead{display:none !important;}
 #room .matchActionsPanel{display:none !important;}
 #room .matchesWrap{
@@ -1980,7 +1980,7 @@
 }
 
 
-/* ZGADNIJ v3024 mobile fill */
+/* ZGADNIJ v3025 mobile fill */
 html, body {
   width: 100%;
   height: 100%;
@@ -2054,7 +2054,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3024 - smaller responsive board on phones */
+/* ZGADNIJ v3025 - smaller responsive board on phones */
 .zgBoardFrame{
   max-width: 980px;
 }
@@ -2124,7 +2124,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3024 */
+/* ZGADNIJ v3025 */
 #roomProfileCard,
 .substituteRow,
 #btnAllRankingFromRoom,
@@ -2204,7 +2204,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3024 - losowanie haseł, samogłoski za 200, zgadywanie klikaniem */
+/* ZGADNIJ v3025 - losowanie haseł, samogłoski za 200, zgadywanie klikaniem */
 #room .midHead{display:none !important;}
 .zgBoardShell{width:100%;max-width:1120px;margin:0 auto;display:flex;flex-direction:column;align-items:center;gap:16px}
 .zgBoardFrame{width:100%;border-radius:30px;padding:22px 24px 28px;border:1px solid rgba(255,255,255,.16);background:linear-gradient(180deg, rgba(17,33,77,.74), rgba(8,19,51,.74));box-shadow:0 18px 50px rgba(0,0,0,.38), inset 0 0 0 2px rgba(111,255,255,.18);position:relative}
@@ -2255,7 +2255,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3024 - zgadywanie klikaniem w górne pola, litery bez wygaszania */
+/* ZGADNIJ v3025 - zgadywanie klikaniem w górne pola, litery bez wygaszania */
 .zgGuessGrid{display:flex;flex-wrap:wrap;justify-content:center;gap:6px}
 .zgGuessSlot{
   width:36px;height:42px;border-radius:9px;border:1px solid rgba(255,255,255,.16);
@@ -2275,7 +2275,7 @@ html, body {
 }
 
 
-/* ZGADNIJ v3024 - animowane koło fortuny */
+/* ZGADNIJ v3025 - animowane koło fortuny */
 .zgWheelOverlay{
   position:fixed;
   inset:0;
@@ -2356,6 +2356,106 @@ html, body {
 @media (max-width:560px){
   .zgWheelStage{width:min(84vw,420px);height:min(84vw,420px)}
   .zgWheelSvgText{font-size:14px}
+}
+
+
+/* ZGADNIJ v3025 - walec losujący zamiast koła */
+.zgWheelOverlay,.zgWheelModal,.zgWheelStage,.zgWheelPointer,.zgWheelDisc,.zgWheelCenter,.zgWheelTitle,.zgWheelResult{display:none !important;}
+.zgTopControls{
+  display:grid !important;
+  grid-template-columns:auto auto 1fr;
+  align-items:center;
+  gap:12px;
+}
+.zgReelWrap{
+  width:260px;
+  min-width:260px;
+  height:92px;
+  margin-left:auto;
+  border-radius:18px;
+  padding:10px 12px;
+  background:linear-gradient(180deg, rgba(9,30,74,.72), rgba(6,20,56,.72));
+  border:1px solid rgba(255,255,255,.14);
+  box-shadow:0 16px 40px rgba(0,0,0,.28), inset 0 0 0 2px rgba(111,255,255,.10);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.zgReelViewport{
+  position:relative;
+  width:100%;
+  height:58px;
+  overflow:hidden;
+  border-radius:14px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.18);
+}
+.zgReelViewport::before,
+.zgReelViewport::after{
+  content:"";
+  position:absolute;
+  left:0; right:0;
+  height:14px;
+  z-index:2;
+  pointer-events:none;
+}
+.zgReelViewport::before{
+  top:0;
+  background:linear-gradient(180deg, rgba(5,17,45,.92), rgba(5,17,45,0));
+}
+.zgReelViewport::after{
+  bottom:0;
+  background:linear-gradient(0deg, rgba(5,17,45,.92), rgba(5,17,45,0));
+}
+.zgReelCenterLine{
+  position:absolute;
+  left:6px; right:6px;
+  top:50%;
+  transform:translateY(-50%);
+  height:34px;
+  border-radius:12px;
+  box-shadow:0 0 0 2px rgba(255,210,92,.55) inset, 0 0 12px rgba(255,210,92,.18);
+  z-index:1;
+  pointer-events:none;
+}
+.zgReelTrack{
+  position:absolute;
+  left:0; right:0;
+  top:0;
+  transition:transform 3.8s cubic-bezier(.18,.88,.12,1);
+}
+.zgReelItem{
+  height:58px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:1000;
+  font-size:22px;
+  color:#fff;
+  text-shadow:0 2px 6px rgba(0,0,0,.35);
+}
+.zgReelItem.money{color:#f7f4eb}
+.zgReelItem.stop{color:#d4b08a}
+.zgReelItem.bankrupt{color:#ffffff}
+.zgReelLabel{
+  position:absolute;
+  right:10px;
+  top:6px;
+  font-size:11px;
+  font-weight:900;
+  opacity:.72;
+}
+@media (max-width: 900px){
+  .zgTopControls{
+    grid-template-columns:1fr 1fr;
+  }
+  .zgReelWrap{
+    grid-column:1 / -1;
+    width:100%;
+    min-width:0;
+    margin-left:0;
+    height:84px;
+  }
 }
 
 </style>
@@ -2889,18 +2989,6 @@ Gdy obrócisz ekran, wrócisz do typowania.</div>
 <div aria-hidden="true" id="buildCorner">
 <img alt="" id="buildCornerLogo" src="ui/logo/logo_RNAPP.png"/>
 <div id="buildCornerText"><span class="ownerName">Mariusz Gębka</span><span class="ownerVersion">v1.8037</span></div>
-</div>
-
-<div class="zgWheelOverlay" id="zgWheelOverlay" aria-hidden="true">
-  <div class="zgWheelModal">
-    <div class="zgWheelTitle">KOŁO FORTUNY</div>
-    <div class="zgWheelStage">
-      <div class="zgWheelPointer"></div>
-      <div class="zgWheelDisc" id="zgWheelDisc"></div>
-      <div class="zgWheelCenter"></div>
-    </div>
-    <div class="zgWheelResult" id="zgWheelResult"></div>
-  </div>
 </div>
 
 </body>

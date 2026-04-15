@@ -1,5 +1,5 @@
 // BUILD number shown under the logo (cache-bust + version label)
-const BUILD = 3024;
+const BUILD = 3025;
 const SEASON_ROUNDS = 12;
 const KEY_SEEN_EVENT_PREFIX = "typer_seen_event_v1";
 
@@ -4860,116 +4860,105 @@ let __zgGame = null;
 
 const ZG_WHEEL_SEGMENTS = [
   {label:"150", value:150, type:"money"},
-  {label:"200", value:200, type:"money"},
-  {label:"250", value:250, type:"money"},
   {label:"300", value:300, type:"money"},
-  {label:"350", value:350, type:"money"},
-  {label:"400", value:400, type:"money"},
   {label:"500", value:500, type:"money"},
+  {label:"BANKRUT", value:"BANKRUT", type:"bankrupt"},
+  {label:"200", value:200, type:"money"},
   {label:"600", value:600, type:"money"},
-  {label:"800", value:800, type:"money"},
+  {label:"350", value:350, type:"money"},
   {label:"1000", value:1000, type:"money"},
+  {label:"250", value:250, type:"money"},
+  {label:"STOP", value:"STOP", type:"stop"},
+  {label:"400", value:400, type:"money"},
+  {label:"800", value:800, type:"money"},
   {label:"1500", value:1500, type:"money"},
   {label:"2000", value:2000, type:"money"},
-  {label:"150", value:150, type:"money"},
-  {label:"200", value:200, type:"money"},
-  {label:"250", value:250, type:"money"},
   {label:"300", value:300, type:"money"},
-  {label:"350", value:350, type:"money"},
-  {label:"STOP", value:"STOP", type:"stop"},
   {label:"BANKRUT", value:"BANKRUT", type:"bankrupt"},
-  {label:"BANKRUT", value:"BANKRUT", type:"bankrupt"}
+  {label:"500", value:500, type:"money"},
+  {label:"350", value:350, type:"money"},
+  {label:"250", value:250, type:"money"},
+  {label:"600", value:600, type:"money"}
 ];
+let __zgReelIndex = 0;
+let __zgReelBusy = false;
 let __zgWheelRotation = 0;
-let __zgWheelBusy = false;
+let __zgReelBusy = false;
 
-function buildZgWheelSvg(){
-  const colors = ["#6f8fa8","#7a9c84","#b8a56a","#a98763","#7c8fa0","#8d7aa8","#7f9b76","#b49b68","#748aa1","#7aa79f","#9b866c","#97a06f","#6f8fa8","#7a9c84","#b8a56a","#a98763","#7c8fa0","#7a5a3a","#111111","#222222"];
-  const segs = ZG_WHEEL_SEGMENTS.length;
-  const step = (Math.PI * 2) / segs;
-  const cx = 250, cy = 250, r = 245;
-  const textR = 178;
 
-  function polar(a, rr){
-    return [cx + Math.cos(a) * rr, cy + Math.sin(a) * rr];
-  }
-  function pathFor(i){
-    const a0 = -Math.PI/2 + i*step;
-    const a1 = a0 + step;
-    const [x0,y0] = polar(a0, r);
-    const [x1,y1] = polar(a1, r);
-    return `M ${cx} ${cy} L ${x0.toFixed(2)} ${y0.toFixed(2)} A ${r} ${r} 0 0 1 ${x1.toFixed(2)} ${y1.toFixed(2)} Z`;
-  }
-
-  let slices = "";
-  let labels = "";
-  for(let i=0;i<segs;i++){
-    const mid = -Math.PI/2 + i*step + step/2;
-    const [tx,ty] = polar(mid, textR);
-    const angleDeg = (mid * 180 / Math.PI) + 90;
-    slices += `<path d="${pathFor(i)}" fill="${colors[i % colors.length]}" stroke="rgba(255,255,255,.28)" stroke-width="2"/>`;
-    labels += `<text class="zgWheelSvgText" x="${tx.toFixed(1)}" y="${ty.toFixed(1)}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${angleDeg.toFixed(2)} ${tx.toFixed(1)} ${ty.toFixed(1)})">${ZG_WHEEL_SEGMENTS[i].label}</text>`;
-  }
-  return `<svg viewBox="0 0 500 500" width="100%" height="100%" aria-hidden="true">${slices}${labels}</svg>`;
+function zgReelDisplayText(seg){
+  return seg.label;
 }
+function renderZgReelBox(){
+  const wrap = document.createElement("div");
+  wrap.className = "zgReelWrap";
 
-function ensureZgWheelBuilt(){
-  const disc = document.getElementById("zgWheelDisc");
-  if(disc && !disc.dataset.built){
-    disc.innerHTML = buildZgWheelSvg();
-    disc.dataset.built = "1";
+  const viewport = document.createElement("div");
+  viewport.className = "zgReelViewport";
+  viewport.id = "zgReelViewport";
+
+  const label = document.createElement("div");
+  label.className = "zgReelLabel";
+  label.textContent = (getLang()==="en") ? "DRAW" : "LOS";
+
+  const centerLine = document.createElement("div");
+  centerLine.className = "zgReelCenterLine";
+
+  const track = document.createElement("div");
+  track.className = "zgReelTrack";
+  track.id = "zgReelTrack";
+
+  const items = [];
+  const cycles = 4;
+  for(let c=0;c<cycles;c++){
+    ZG_WHEEL_SEGMENTS.forEach(seg => items.push(seg));
   }
-}
+  items.forEach(seg=>{
+    const div = document.createElement("div");
+    div.className = "zgReelItem " + seg.type;
+    div.textContent = zgReelDisplayText(seg);
+    track.appendChild(div);
+  });
 
-function zgSpinAmount(){
-  if(!__zgGame || __zgWheelBusy) return;
-  ensureZgWheelBuilt();
-  const overlay = document.getElementById("zgWheelOverlay");
-  const disc = document.getElementById("zgWheelDisc");
-  const result = document.getElementById("zgWheelResult");
-  if(!overlay || !disc || !result) return;
-
-  __zgWheelBusy = true;
-  const segs = ZG_WHEEL_SEGMENTS.length;
-  const index = Math.floor(Math.random() * segs);
-  const segAngle = 360 / segs;
-  const centerAngle = index * segAngle + segAngle / 2;
-  const target = 360 - centerAngle;
-  __zgWheelRotation += 360 * (5 + Math.floor(Math.random()*2)) + target;
-
-  result.textContent = (getLang()==="en") ? "Spinning..." : "Losowanie...";
-  overlay.classList.add("show");
-  disc.style.transition = "none";
-  disc.getBoundingClientRect();
-  disc.style.transition = "transform 6s cubic-bezier(.16,.9,.1,1)";
-  disc.style.transform = `rotate(${__zgWheelRotation}deg)`;
+  viewport.appendChild(track);
+  viewport.appendChild(centerLine);
+  viewport.appendChild(label);
+  wrap.appendChild(viewport);
 
   window.setTimeout(()=>{
-    const seg = ZG_WHEEL_SEGMENTS[index];
+    try{
+      const itemHeight = 58;
+      const baseIndex = ZG_WHEEL_SEGMENTS.length + __zgReelIndex;
+      track.style.transform = `translateY(-${baseIndex * itemHeight}px)`;
+    }catch(e){}
+  },0);
+
+  return wrap;
+}
+function zgSpinAmount(){
+  if(!__zgGame || __zgReelBusy) return;
+  const track = document.getElementById("zgReelTrack");
+  if(!track) return;
+
+  __zgReelBusy = true;
+  const itemHeight = 58;
+  const segs = ZG_WHEEL_SEGMENTS.length;
+  const targetIndex = Math.floor(Math.random() * segs);
+  const finalIndex = segs * 2 + targetIndex;
+
+  track.style.transition = "none";
+  track.getBoundingClientRect();
+  track.style.transition = "transform 3.8s cubic-bezier(.18,.88,.12,1)";
+  track.style.transform = `translateY(-${finalIndex * itemHeight}px)`;
+
+  window.setTimeout(()=>{
+    const seg = ZG_WHEEL_SEGMENTS[targetIndex];
+    __zgReelIndex = targetIndex;
     zgApplyWheelOutcome(seg);
-    result.textContent = (getLang()==="en") ? `Result: ${seg.label}` : `Wynik: ${seg.label}`;
     renderMatches();
-    window.setTimeout(()=>{
-      overlay.classList.remove("show");
-      __zgWheelBusy = false;
-    }, 1200);
-  }, 6200);
+    __zgReelBusy = false;
+  }, 3900);
 }
-
-function zgApplyWheelOutcome(seg){
-  if(!__zgGame) return;
-  if(seg.type === "money"){
-    __zgGame.currentAmount = seg.value;
-  }else if(seg.type === "bankrupt"){
-    __zgGame.currentAmount = 0;
-    __zgGame.total = 0;
-  }else if(seg.type === "stop"){
-    __zgGame.currentAmount = 0;
-  }
-}
-
-
-
 
 function zgNotify(msg){
   try{ if(typeof showToast === "function") showToast(msg); else alert(msg); }catch(e){}
@@ -5213,6 +5202,7 @@ function renderZgadnijAlphabet(panel){
 
   top.appendChild(amountBox);
   top.appendChild(spinBtn);
+  top.appendChild(renderZgReelBox());
 
   if(zgCountRevealed() > 0){
     const guessBtn = document.createElement("button");
